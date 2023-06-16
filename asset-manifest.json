@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/elourenco/static/css/main.073c9b0a.css",
+    "main.js": "/elourenco/static/js/main.c032a35f.js",
+    "static/js/787.1acc9bd3.chunk.js": "/elourenco/static/js/787.1acc9bd3.chunk.js",
+    "static/media/logo.svg": "/elourenco/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "/elourenco/index.html",
+    "main.073c9b0a.css.map": "/elourenco/static/css/main.073c9b0a.css.map",
+    "main.c032a35f.js.map": "/elourenco/static/js/main.c032a35f.js.map",
+    "787.1acc9bd3.chunk.js.map": "/elourenco/static/js/787.1acc9bd3.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.073c9b0a.css",
+    "static/js/main.c032a35f.js"
+  ]
+}
