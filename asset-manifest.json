@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/elourenco.github.io/static/css/main.073c9b0a.css",
-    "main.js": "/elourenco.github.io/static/js/main.559ef717.js",
-    "static/js/787.1acc9bd3.chunk.js": "/elourenco.github.io/static/js/787.1acc9bd3.chunk.js",
-    "static/media/logo.svg": "/elourenco.github.io/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
-    "index.html": "/elourenco.github.io/index.html",
-    "main.073c9b0a.css.map": "/elourenco.github.io/static/css/main.073c9b0a.css.map",
-    "main.559ef717.js.map": "/elourenco.github.io/static/js/main.559ef717.js.map",
-    "787.1acc9bd3.chunk.js.map": "/elourenco.github.io/static/js/787.1acc9bd3.chunk.js.map"
+    "main.css": "/static/css/main.073c9b0a.css",
+    "main.js": "/static/js/main.1cdd3503.js",
+    "static/js/787.1acc9bd3.chunk.js": "/static/js/787.1acc9bd3.chunk.js",
+    "static/media/logo.svg": "/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "/index.html",
+    "main.073c9b0a.css.map": "/static/css/main.073c9b0a.css.map",
+    "main.1cdd3503.js.map": "/static/js/main.1cdd3503.js.map",
+    "787.1acc9bd3.chunk.js.map": "/static/js/787.1acc9bd3.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.073c9b0a.css",
-    "static/js/main.559ef717.js"
+    "static/js/main.1cdd3503.js"
   ]
 }
