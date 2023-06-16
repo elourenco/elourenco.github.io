@@ -1,7 +1,7 @@
 {
   "name": "elourenco",
   "version": "0.1.0",
-  "homepage": "https://elourenco.github.io/elourenco.github.io",
+  "homepage": "https://elourenco.github.io",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
