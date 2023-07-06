@@ -6,7 +6,11 @@ const LeftHome = () => {
   const { t } = useTranslation();
 
   const [text] = useTypewriter({
-    words: ['Professional Coder.', 'Full Stack Developer.'],
+    words: [
+      t('professional.1'),
+      t('professional.2'),
+      t('professional.3'),
+    ],
     loop: true,
     typeSpeed: 20,
     deleteSpeed: 10,
@@ -15,9 +19,9 @@ const LeftHome = () => {
   return (
     <div className="w-full lgl:w-1/2 flex flex-col gap-20">
       <div className="flex flex-col gap-5">
-        <h4 className=" text-lg font-normal">Welcome to my world</h4>
+        <h4 className=" text-lg font-normal">{t('title')}</h4>
         <h1 className="text-4xl font-bold text-white">
-          Hi, I'm{' '}
+          {t('subTitle')}{' '}
           <span className="text-designColor capitalize">
             {t('fullName')}
           </span>
@@ -31,13 +35,7 @@ const LeftHome = () => {
           />
         </h2>
         <p className="text-base font-bodyFont leading-6 tracking-wide">
-          I have 21 years of experience in the area of information
-          technology and extensive knowledge in platforms such as
-          Microsoft, Apple, Google and AWS. Always committed to
-          achieving and exceeding corporate goals through objectivity,
-          multifunctionality, commitment, assiduity, suitability,
-          great communication skills, responsibility, ethics,
-          self-criticism, dynamism and determination.
+          {t('description')}
         </p>
       </div>
       {/* Media */}
