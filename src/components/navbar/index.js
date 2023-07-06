@@ -3,9 +3,9 @@ import { navLinksdata } from '../../constants';
 
 const NavBar = () => {
   return (
-    <div className="w-full h-16 max-auto  flex justify-between items-center font-titleFont">
+    <div className="w-full h-16 max-auto  flex justify-between items-center font-titleFont px-6">
       <div>
-        EDUARDO
+        <span className="text-white-600 font-normal"> EDUARDO</span>
         <span className="text-yellow-600 font-bold">LOURENCO</span>
       </div>
       <div>

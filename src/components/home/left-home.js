@@ -1,7 +1,10 @@
 import React from 'react';
 import { useTypewriter, Cursor } from 'react-simple-typewriter';
+import { useTranslation } from 'react-i18next';
 
 const LeftHome = () => {
+  const { t } = useTranslation();
+
   const [text] = useTypewriter({
     words: ['Professional Coder.', 'Full Stack Developer.'],
     loop: true,
@@ -16,7 +19,7 @@ const LeftHome = () => {
         <h1 className="text-4xl font-bold text-white">
           Hi, I'm{' '}
           <span className="text-designColor capitalize">
-            Eduardo Lourenço
+            {t('fullName')}
           </span>
         </h1>
         <h2 className="text-2xl font-bold text-white">
@@ -28,10 +31,13 @@ const LeftHome = () => {
           />
         </h2>
         <p className="text-base font-bodyFont leading-6 tracking-wide">
-          I use animation as a third dimension by which to simplify
-          experiences and kuiding thro each and every interaction. I'm
-          not adding motion just to spruce things up, but doing it in
-          ways that.
+          I have 21 years of experience in the area of information
+          technology and extensive knowledge in platforms such as
+          Microsoft, Apple, Google and AWS. Always committed to
+          achieving and exceeding corporate goals through objectivity,
+          multifunctionality, commitment, assiduity, suitability,
+          great communication skills, responsibility, ethics,
+          self-criticism, dynamism and determination.
         </p>
       </div>
       {/* Media */}

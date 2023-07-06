@@ -1,9 +1,6 @@
 import React from 'react';
 import NavBar from './components/navbar';
 import Home from './components/home';
-import Features from './components/features';
-import Projects from './components/projects';
-import Contact from './components/contact';
 
 function App() {
   return (
@@ -13,9 +10,6 @@ function App() {
       </header>
       <div className="max-w-screen-xl mx-auto">
         <Home />
-        <Features />
-        <Projects />
-        <Contact />
       </div>
     </main>
   );
