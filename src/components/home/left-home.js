@@ -27,7 +27,7 @@ const LeftHome = () => {
           </span>
         </h1>
         <h2 className="text-2xl font-bold text-white">
-          a <span>{text}</span>
+          <span>{text}</span>
           <Cursor
             cursorBlinking="false"
             cursorStyle="|"
