@@ -1,6 +1,8 @@
 import React from 'react';
 import { useTypewriter, Cursor } from 'react-simple-typewriter';
 import { useTranslation } from 'react-i18next';
+import Skills from './skills';
+import FindMe from './find-me';
 
 const LeftHome = () => {
   const { t } = useTranslation();
@@ -38,7 +40,10 @@ const LeftHome = () => {
           {t('description')}
         </p>
       </div>
-      {/* Media */}
+      <div className="flex flex-col xl:flex-row gap-6 lgl:gap-0 justify-between">
+        <Skills />
+        <FindMe />
+      </div>
     </div>
   );
 };
