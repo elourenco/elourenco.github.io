@@ -1,3 +1,16 @@
 {
-  "fullName": "Eduardo Lourenço"
+  "title": "Welcome to my world",
+  "subTitle": "Hi I'm",
+  "fullName": "Eduardo Lourenço",
+  "description": "I have 21 years of experience in the area of information technology and extensive knowledge in platforms such as Microsoft, Apple, Google and AWS. Always committed to achieving and exceeding corporate goals through objectivity, multifunctionality, commitment, assiduity, suitability, great communication skills, responsibility, ethics, self-criticism, dynamism and determination.",
+  "professional": {
+    "1": "Professional Coder.",
+    "2": "Full Stack Developer.",
+    "3": "Software Architect."
+  },
+  "menu": {
+    "1001": "Home",
+    "1002": "Features",
+    "1003": "Projects"
+  }
 }

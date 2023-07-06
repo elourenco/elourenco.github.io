@@ -1,3 +1,16 @@
 {
-  "fullName": "Eduardo Lourenço"
+  "title": "Bem-vindo ao meu mundo",
+  "subTitle": "Oi eu sou",
+  "fullName": "Eduardo Lourenço",
+  "description": "Tenho 21 anos de experiência na área de tecnologia da informação e amplo conhecimento em plataformas como Microsoft, Apple, Google e AWS. Sempre empenhado em alcançar e superar os objetivos corporativos através da objetividade, multifuncionalidade, comprometimento, assiduidade, idoneidade, grande capacidade de comunicação, responsabilidade, ética, autocrítica, dinamismo e determinação.",
+  "professional": {
+    "1": "Programador.",
+    "2": "Desenvolvedor Full Stack.",
+    "3": "Arquiteto de software."
+  },
+  "menu": {
+    "1001": "Home",
+    "1002": "Conhecimento",
+    "1003": "Projetos"
+  }
 }
