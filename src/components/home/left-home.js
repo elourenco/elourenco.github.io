@@ -12,6 +12,7 @@ const LeftHome = () => {
       t('professional.1'),
       t('professional.2'),
       t('professional.3'),
+      t('professional.4'),
     ],
     loop: true,
     typeSpeed: 20,
