@@ -10,4 +10,19 @@ html {
 
 body {
   margin: 0;
+  background: #020609;
+}
+
+header,
+main,
+#root > a {
+  position: relative;
+  z-index: 1;
+}
+
+.experience-canvas {
+  position: fixed !important;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }

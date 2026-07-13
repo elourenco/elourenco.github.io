@@ -15,7 +15,9 @@ interface NavigatorWithDeviceMemory extends Navigator {
 }
 
 function matchesMedia(query: string): boolean {
-  return typeof window.matchMedia === 'function' && window.matchMedia(query).matches;
+  return (
+    typeof window.matchMedia === 'function' && window.matchMedia(query).matches
+  );
 }
 
 function supportsWebGL(): boolean {
@@ -50,15 +52,13 @@ export function AdaptiveCanvas({
     <ErrorBoundary fallback={<ExperienceFallback />}>
       <Canvas
         aria-hidden="true"
+        className="experience-canvas"
         dpr={quality.dpr}
         frameloop={reducedMotion ? 'demand' : 'always'}
-        gl={{ antialias: quality.dpr[1] > 1 }}
+        gl={{ antialias: quality.shadows || quality.postprocessing }}
         shadows={quality.shadows}
       >
-        <SceneController
-          quality={quality}
-          state={{ section, reducedMotion }}
-        />
+        <SceneController quality={quality} state={{ section, reducedMotion }} />
       </Canvas>
     </ErrorBoundary>
   );

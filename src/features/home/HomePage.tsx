@@ -7,6 +7,27 @@ import { ContactSection } from '../contact/ContactSection';
 import { ExpertiseSection } from '../expertise/ExpertiseSection';
 import { FeaturedProject } from '../projects/FeaturedProject';
 import { HeroSection } from '../profile/HeroSection';
+import type { SceneSection } from '../../experience/scene-state';
+import { useSectionObserver } from '../../experience/useSectionObserver';
+
+const OBSERVED_SECTION_IDS = [
+  'main-content',
+  'work',
+  'expertise',
+  'career',
+  'contact',
+] as const;
+
+const SCENE_BY_SECTION_ID: Record<
+  (typeof OBSERVED_SECTION_IDS)[number],
+  SceneSection
+> = {
+  'main-content': 'arrival',
+  work: 'ai-core',
+  expertise: 'systems',
+  career: 'career',
+  contact: 'contact',
+};
 
 const AdaptiveCanvas = lazy(() =>
   import('../../experience/AdaptiveCanvas').then(({ AdaptiveCanvas }) => ({
@@ -16,6 +37,8 @@ const AdaptiveCanvas = lazy(() =>
 
 export function HomePage({ content }: { content: PortfolioContent }) {
   const isPortuguese = content.locale === 'pt-BR';
+  const activeSectionId = useSectionObserver(OBSERVED_SECTION_IDS);
+  const sceneSection = SCENE_BY_SECTION_ID[activeSectionId];
 
   return (
     <>
@@ -31,7 +54,7 @@ export function HomePage({ content }: { content: PortfolioContent }) {
         <ContactSection content={content} />
       </main>
       <Suspense fallback={null}>
-        <AdaptiveCanvas section="arrival" />
+        <AdaptiveCanvas section={sceneSection} />
       </Suspense>
     </>
   );
