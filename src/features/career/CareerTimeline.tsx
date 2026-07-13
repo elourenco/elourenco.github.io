@@ -8,7 +8,9 @@ export function CareerTimeline({ content }: { content: PortfolioContent }) {
       aria-labelledby="career-title"
     >
       <div className="section-heading">
-        <p className="eyebrow">FLIGHT LOG // CAREER</p>
+        <p className="eyebrow" aria-hidden="true">
+          // 03
+        </p>
         <h2 id="career-title">{content.career.title}</h2>
       </div>
       <ol className="timeline">

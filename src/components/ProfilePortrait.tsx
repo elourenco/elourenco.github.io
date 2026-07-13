@@ -33,7 +33,7 @@ export function ProfilePortrait({
         </span>
         <span className="profile-portrait__scanline" aria-hidden="true" />
       </div>
-      <figcaption>IDENTITY // EL-01</figcaption>
+      <figcaption aria-hidden="true">EL-01</figcaption>
     </figure>
   );
 }

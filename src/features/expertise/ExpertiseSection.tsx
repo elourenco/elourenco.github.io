@@ -8,7 +8,9 @@ export function ExpertiseSection({ content }: { content: PortfolioContent }) {
       aria-labelledby="expertise-title"
     >
       <div className="section-heading">
-        <p className="eyebrow">SYSTEM MAP // CAPABILITIES</p>
+        <p className="eyebrow" aria-hidden="true">
+          // 02
+        </p>
         <h2 id="expertise-title">{content.navigation.expertise}</h2>
       </div>
       <div className="expertise-grid">

@@ -8,7 +8,9 @@ export function ContactSection({ content }: { content: PortfolioContent }) {
       aria-labelledby="contact-title"
     >
       <div className="section-heading">
-        <p className="eyebrow">OPEN CHANNEL // CONTACT</p>
+        <p className="eyebrow" aria-hidden="true">
+          // 04
+        </p>
         <h2 id="contact-title">{content.contact.title}</h2>
       </div>
       <p className="contact-section__summary">{content.contact.summary}</p>

@@ -62,7 +62,7 @@ describe('HomePage', () => {
   });
 
   it('renders equivalent Portuguese content and section links', () => {
-    render(
+    const { container } = render(
       <MemoryRouter initialEntries={['/pt-br']}>
         <HomePage content={ptBRContent} />
       </MemoryRouter>,
@@ -108,6 +108,14 @@ describe('HomePage', () => {
         'href',
         href,
       );
+    }
+
+    expect(container).not.toHaveTextContent(
+      /AI CORE|FEATURED WORK|SYSTEM MAP|CAPABILITIES|FLIGHT LOG|OPEN CHANNEL|IDENTITY/i,
+    );
+
+    for (const ornament of ['// 01', '// 02', '// 03', '// 04', 'EL-01']) {
+      expect(screen.getByText(ornament)).toHaveAttribute('aria-hidden', 'true');
     }
   });
 });

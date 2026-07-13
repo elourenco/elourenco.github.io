@@ -10,7 +10,9 @@ export function FeaturedProject({ content }: { content: PortfolioContent }) {
       aria-labelledby="work-title"
     >
       <div className="section-heading">
-        <p className="eyebrow">AI CORE // FEATURED WORK</p>
+        <p className="eyebrow" aria-hidden="true">
+          // 01
+        </p>
         <p>{content.dona.label}</p>
         <h2 id="work-title">{content.dona.title}</h2>
       </div>

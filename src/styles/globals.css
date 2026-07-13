@@ -28,6 +28,27 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+.skip-link {
+  position: fixed;
+  top: 0;
+  left: var(--space-4);
+  z-index: var(--layer-skip);
+  display: inline-flex;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2) var(--space-4);
+  transform: translateY(-100%);
+  background: var(--color-cyan);
+  color: var(--color-space);
+  font-weight: 700;
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
 body::before {
   position: fixed;
   inset: 0;
