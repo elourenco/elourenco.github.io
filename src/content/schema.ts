@@ -32,6 +32,18 @@ export interface PortfolioContent {
     metric: string;
     cta: string;
   };
+  donaCase: {
+    outcomeTitle: string;
+    outcome: string;
+    ownershipTitle: string;
+    ownership: string;
+    capabilitiesTitle: string;
+    capabilities: string[];
+    platformsTitle: string;
+    platforms: string[];
+    metric: string;
+    externalCta: string;
+  };
   career: {
     title: string;
     items: Array<{

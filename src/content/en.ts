@@ -61,6 +61,26 @@ export const enContent = {
       'More than 35,000 events created, with Dona AI image and content generation, guest management, notifications, Pix and card payments.',
     cta: 'Explore Dona Events',
   },
+  donaCase: {
+    outcomeTitle: 'Product outcome',
+    outcome:
+      'Dona Events brings the event journey into one product, from creating an invitation to managing guests, confirmations and digital gifts.',
+    ownershipTitle: 'End-to-end ownership',
+    ownership:
+      'Created and engineered end to end across product, mobile, web, backend, infrastructure and AI.',
+    capabilitiesTitle: 'Public capabilities',
+    capabilities: [
+      'Dona AI image and content generation',
+      'Digital invitations',
+      'Guest management and real-time RSVP',
+      'Notifications',
+      'Digital gifts with Pix and card payments',
+    ],
+    platformsTitle: 'Platforms',
+    platforms: ['Mobile apps', 'Web experience'],
+    metric: '35k+ events created',
+    externalCta: 'Visit Dona Events',
+  },
   career: {
     title: 'Career highlights',
     items: [

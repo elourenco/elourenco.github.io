@@ -54,12 +54,32 @@ export const ptBRContent = {
   dona: {
     label: 'Trabalho em destaque',
     title: 'Dona Events',
-    role: 'Criador & Principal Engineer',
+    role: 'Creator & Principal Engineer',
     summary:
       'Plataforma de eventos com IA, aplicativos mobile, convites digitais, RSVP em tempo real, gestão de eventos e presentes digitais.',
     metric:
       'Mais de 35 mil eventos criados, com geração de imagens e conteúdo pela Dona IA, gestão de convidados, notificações e pagamentos via Pix e cartão.',
     cta: 'Explorar Dona Events',
+  },
+  donaCase: {
+    outcomeTitle: 'Resultado do produto',
+    outcome:
+      'Dona Events reúne a jornada do evento em um único produto, da criação do convite à gestão de convidados, confirmações e presentes digitais.',
+    ownershipTitle: 'Responsabilidade de ponta a ponta',
+    ownership:
+      'Criado e desenvolvido de ponta a ponta entre produto, mobile, web, backend, infraestrutura e IA.',
+    capabilitiesTitle: 'Capacidades públicas',
+    capabilities: [
+      'Geração de imagens e conteúdo com Dona IA',
+      'Convites digitais',
+      'Gestão de convidados e RSVP em tempo real',
+      'Notificações',
+      'Presentes digitais com pagamentos via Pix e cartão',
+    ],
+    platformsTitle: 'Plataformas',
+    platforms: ['Aplicativos mobile', 'Experiência web'],
+    metric: '35 mil+ eventos criados',
+    externalCta: 'Visitar Dona Events',
   },
   career: {
     title: 'Destaques da carreira',

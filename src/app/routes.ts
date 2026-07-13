@@ -3,6 +3,7 @@ import { Navigate, createBrowserRouter } from 'react-router-dom';
 import { getContent } from '../content';
 import type { Locale } from '../content';
 import { HomePage } from '../features/home/HomePage';
+import { DonaEventsPage } from '../features/projects/DonaEventsPage';
 import { resolveLocale } from '../i18n/config';
 import { toLocalePath } from '../i18n/locale-paths';
 
@@ -26,11 +27,7 @@ function LocalizedPage({
     return createElement(HomePage, { content });
   }
 
-  return createElement(
-    'main',
-    { id: 'main-content', 'data-locale': locale, 'data-page': page },
-    createElement('h1', null, content.dona.title),
-  );
+  return createElement(DonaEventsPage, { content });
 }
 
 function LocalizedNotFound({ locale }: { locale: Locale }) {
