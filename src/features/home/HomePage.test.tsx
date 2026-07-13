@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { enContent, ptBRContent } from '../../content';
 import { HomePage } from './HomePage';
+import { pageInternalLinks } from '../../site-contract';
 
 afterEach(cleanup);
 
@@ -57,6 +58,14 @@ describe('HomePage', () => {
     for (const id of ['expertise', 'work', 'career', 'contact']) {
       expect(main.querySelector(`#${id}`)).toBeInTheDocument();
     }
+    expect(
+      screen
+        .getAllByRole('link')
+        .map((link) => link.getAttribute('href'))
+        .filter((href): href is string =>
+          Boolean(href?.startsWith('/') || href?.startsWith('#')),
+        ),
+    ).toEqual(pageInternalLinks('en', 'home'));
   });
 
   it('renders equivalent Portuguese content and section links', () => {

@@ -7,8 +7,8 @@ function contentShape(value, path = 'content') {
       if (item && typeof item === 'object' && 'id' in item) {
         assert.equal(typeof item.id, 'string', `${path}[${index}].id`);
         assert.ok(item.id.trim(), `${path}[${index}].id must not be empty`);
-        contentShape(item, `${path}[${index}]`);
-        return { id: item.id, shape: contentShape(item, `${path}[${index}]`) };
+        const shape = contentShape(item, `${path}[${index}]`);
+        return { id: item.id, shape };
       }
       return contentShape(item, `${path}[${index}]`);
     });
@@ -42,6 +42,18 @@ export function validateLocalizedContent(content) {
 }
 
 export function validateBuiltLinks(manifest) {
+  const canonicalRoutes = [
+    '/en',
+    '/en/projects/dona-events',
+    '/pt-br',
+    '/pt-br/projetos/dona-events',
+  ];
+  const actualRoutes = manifest.pages.map((page) => page.pathname).sort();
+  assert.deepEqual(
+    actualRoutes,
+    canonicalRoutes,
+    'manifest must contain the exact unique set of canonical routes',
+  );
   const pagesByPath = new Map(
     manifest.pages.map((page) => [page.pathname, page]),
   );

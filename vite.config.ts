@@ -8,6 +8,7 @@ import {
   DONA_EVENTS_ANCHORS,
   EXTERNAL_URLS,
   HOME_ANCHORS,
+  pageInternalLinks,
   PUBLIC_ASSETS,
 } from './src/site-contract';
 
@@ -19,43 +20,33 @@ function publicationManifest(): Plugin {
         {
           pathname: toLocalePath('en', 'home'),
           anchors: HOME_ANCHORS,
-          internalLinks: [
-            ...HOME_ANCHORS.map((id) => `#${id}`),
-            toLocalePath('en', 'donaEvents'),
-            toLocalePath('pt-BR', 'home'),
-            PUBLIC_ASSETS.resume,
+          internalLinks: pageInternalLinks('en', 'home'),
+          externalLinks: [
+            EXTERNAL_URLS.linkedin,
+            EXTERNAL_URLS.linkedin,
+            EXTERNAL_URLS.github,
           ],
-          externalLinks: [EXTERNAL_URLS.linkedin, EXTERNAL_URLS.github],
         },
         {
           pathname: toLocalePath('en', 'donaEvents'),
           anchors: DONA_EVENTS_ANCHORS,
-          internalLinks: [
-            ...HOME_ANCHORS.map((id) => `${toLocalePath('en', 'home')}#${id}`),
-            toLocalePath('pt-BR', 'donaEvents'),
-          ],
+          internalLinks: pageInternalLinks('en', 'donaEvents'),
           externalLinks: [EXTERNAL_URLS.donaEvents],
         },
         {
           pathname: toLocalePath('pt-BR', 'home'),
           anchors: HOME_ANCHORS,
-          internalLinks: [
-            ...HOME_ANCHORS.map((id) => `#${id}`),
-            toLocalePath('pt-BR', 'donaEvents'),
-            toLocalePath('en', 'home'),
-            PUBLIC_ASSETS.resume,
+          internalLinks: pageInternalLinks('pt-BR', 'home'),
+          externalLinks: [
+            EXTERNAL_URLS.linkedin,
+            EXTERNAL_URLS.linkedin,
+            EXTERNAL_URLS.github,
           ],
-          externalLinks: [EXTERNAL_URLS.linkedin, EXTERNAL_URLS.github],
         },
         {
           pathname: toLocalePath('pt-BR', 'donaEvents'),
           anchors: DONA_EVENTS_ANCHORS,
-          internalLinks: [
-            ...HOME_ANCHORS.map(
-              (id) => `${toLocalePath('pt-BR', 'home')}#${id}`,
-            ),
-            toLocalePath('en', 'donaEvents'),
-          ],
+          internalLinks: pageInternalLinks('pt-BR', 'donaEvents'),
           externalLinks: [EXTERNAL_URLS.donaEvents],
         },
       ];

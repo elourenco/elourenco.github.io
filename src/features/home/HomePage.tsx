@@ -10,24 +10,22 @@ import { HeroSection } from '../profile/HeroSection';
 import type { SceneSection } from '../../experience/scene-state';
 import { useSectionObserver } from '../../experience/useSectionObserver';
 import { Seo } from '../../components/Seo';
+import { HOME_SECTION_ANCHORS, SITE_ANCHORS } from '../../site-contract';
 
 const OBSERVED_SECTION_IDS = [
-  'main-content',
-  'work',
-  'expertise',
-  'career',
-  'contact',
+  SITE_ANCHORS.main,
+  ...HOME_SECTION_ANCHORS,
 ] as const;
 
 const SCENE_BY_SECTION_ID: Record<
   (typeof OBSERVED_SECTION_IDS)[number],
   SceneSection
 > = {
-  'main-content': 'arrival',
-  work: 'ai-core',
-  expertise: 'systems',
-  career: 'career',
-  contact: 'contact',
+  [SITE_ANCHORS.main]: 'arrival',
+  [SITE_ANCHORS.home.work]: 'ai-core',
+  [SITE_ANCHORS.home.expertise]: 'systems',
+  [SITE_ANCHORS.home.career]: 'career',
+  [SITE_ANCHORS.home.contact]: 'contact',
 };
 
 const AdaptiveCanvas = lazy(() =>
@@ -49,7 +47,7 @@ export function HomePage({ content }: { content: PortfolioContent }) {
       />
       <SiteHeader content={content} route="home" />
       <main
-        id="main-content"
+        id={SITE_ANCHORS.main}
         className="site-main"
         data-locale={content.locale}
       >

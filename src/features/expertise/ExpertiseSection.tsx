@@ -1,17 +1,20 @@
 import type { PortfolioContent } from '../../content';
+import { SITE_ANCHORS } from '../../site-contract';
 
 export function ExpertiseSection({ content }: { content: PortfolioContent }) {
   return (
     <section
-      id="expertise"
+      id={SITE_ANCHORS.home.expertise}
       className="expertise-section section-shell"
-      aria-labelledby="expertise-title"
+      aria-labelledby={SITE_ANCHORS.home.expertiseTitle}
     >
       <div className="section-heading">
         <p className="eyebrow" aria-hidden="true">
           // 02
         </p>
-        <h2 id="expertise-title">{content.navigation.expertise}</h2>
+        <h2 id={SITE_ANCHORS.home.expertiseTitle}>
+          {content.navigation.expertise}
+        </h2>
       </div>
       <div className="expertise-grid">
         {content.expertise.map((item, index) => (

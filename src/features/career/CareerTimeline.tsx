@@ -1,17 +1,18 @@
 import type { PortfolioContent } from '../../content';
+import { SITE_ANCHORS } from '../../site-contract';
 
 export function CareerTimeline({ content }: { content: PortfolioContent }) {
   return (
     <section
-      id="career"
+      id={SITE_ANCHORS.home.career}
       className="career-section section-shell"
-      aria-labelledby="career-title"
+      aria-labelledby={SITE_ANCHORS.home.careerTitle}
     >
       <div className="section-heading">
         <p className="eyebrow" aria-hidden="true">
           // 03
         </p>
-        <h2 id="career-title">{content.career.title}</h2>
+        <h2 id={SITE_ANCHORS.home.careerTitle}>{content.career.title}</h2>
       </div>
       <ol className="timeline">
         {content.career.items.map((item) => (

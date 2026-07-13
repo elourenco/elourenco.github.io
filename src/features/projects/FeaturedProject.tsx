@@ -1,20 +1,20 @@
 import { Link } from 'react-router-dom';
 import type { PortfolioContent } from '../../content';
-import { toLocalePath } from '../../i18n/locale-paths';
+import { INTERNAL_DESTINATIONS, SITE_ANCHORS } from '../../site-contract';
 
 export function FeaturedProject({ content }: { content: PortfolioContent }) {
   return (
     <section
-      id="work"
+      id={SITE_ANCHORS.home.work}
       className="feature-section section-shell"
-      aria-labelledby="work-title"
+      aria-labelledby={SITE_ANCHORS.home.workTitle}
     >
       <div className="section-heading">
         <p className="eyebrow" aria-hidden="true">
           // 01
         </p>
         <p>{content.dona.label}</p>
-        <h2 id="work-title">{content.dona.title}</h2>
+        <h2 id={SITE_ANCHORS.home.workTitle}>{content.dona.title}</h2>
       </div>
       <div className="feature-panel">
         <p className="feature-panel__role">{content.dona.role}</p>
@@ -23,7 +23,7 @@ export function FeaturedProject({ content }: { content: PortfolioContent }) {
       </div>
       <Link
         className="button button--primary"
-        to={toLocalePath(content.locale, 'donaEvents')}
+        to={INTERNAL_DESTINATIONS.route(content.locale, 'donaEvents')}
       >
         {content.dona.cta}
       </Link>

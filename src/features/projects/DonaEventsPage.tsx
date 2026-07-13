@@ -2,7 +2,7 @@ import type { PortfolioContent } from '../../content';
 import { SiteHeader } from '../../components/SiteHeader';
 import { SkipLink } from '../../components/SkipLink';
 import { Seo } from '../../components/Seo';
-import { EXTERNAL_URLS } from '../../site-contract';
+import { EXTERNAL_URLS, SITE_ANCHORS } from '../../site-contract';
 
 export function DonaEventsPage({ content }: { content: PortfolioContent }) {
   const isPortuguese = content.locale === 'pt-BR';
@@ -15,7 +15,7 @@ export function DonaEventsPage({ content }: { content: PortfolioContent }) {
         label={isPortuguese ? 'Pular para o conteúdo' : 'Skip to content'}
       />
       <SiteHeader content={content} route="donaEvents" />
-      <main id="main-content" data-locale={content.locale}>
+      <main id={SITE_ANCHORS.main} data-locale={content.locale}>
         <article>
           <header>
             <p>{content.dona.label}</p>
@@ -25,18 +25,24 @@ export function DonaEventsPage({ content }: { content: PortfolioContent }) {
             <p>{project.metric}</p>
           </header>
 
-          <section aria-labelledby="dona-outcome-title">
-            <h2 id="dona-outcome-title">{project.outcomeTitle}</h2>
+          <section aria-labelledby={SITE_ANCHORS.donaEvents.outcomeTitle}>
+            <h2 id={SITE_ANCHORS.donaEvents.outcomeTitle}>
+              {project.outcomeTitle}
+            </h2>
             <p>{project.outcome}</p>
           </section>
 
-          <section aria-labelledby="dona-ownership-title">
-            <h2 id="dona-ownership-title">{project.ownershipTitle}</h2>
+          <section aria-labelledby={SITE_ANCHORS.donaEvents.ownershipTitle}>
+            <h2 id={SITE_ANCHORS.donaEvents.ownershipTitle}>
+              {project.ownershipTitle}
+            </h2>
             <p>{project.ownership}</p>
           </section>
 
-          <section aria-labelledby="dona-capabilities-title">
-            <h2 id="dona-capabilities-title">{project.capabilitiesTitle}</h2>
+          <section aria-labelledby={SITE_ANCHORS.donaEvents.capabilitiesTitle}>
+            <h2 id={SITE_ANCHORS.donaEvents.capabilitiesTitle}>
+              {project.capabilitiesTitle}
+            </h2>
             <ul>
               {project.capabilities.map((capability) => (
                 <li key={capability}>{capability}</li>
@@ -44,8 +50,10 @@ export function DonaEventsPage({ content }: { content: PortfolioContent }) {
             </ul>
           </section>
 
-          <section aria-labelledby="dona-platforms-title">
-            <h2 id="dona-platforms-title">{project.platformsTitle}</h2>
+          <section aria-labelledby={SITE_ANCHORS.donaEvents.platformsTitle}>
+            <h2 id={SITE_ANCHORS.donaEvents.platformsTitle}>
+              {project.platformsTitle}
+            </h2>
             <ul>
               {project.platforms.map((platform) => (
                 <li key={platform}>{platform}</li>

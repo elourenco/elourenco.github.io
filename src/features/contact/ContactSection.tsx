@@ -1,18 +1,18 @@
 import type { PortfolioContent } from '../../content';
-import { EXTERNAL_URLS } from '../../site-contract';
+import { EXTERNAL_URLS, SITE_ANCHORS } from '../../site-contract';
 
 export function ContactSection({ content }: { content: PortfolioContent }) {
   return (
     <section
-      id="contact"
+      id={SITE_ANCHORS.home.contact}
       className="contact-section section-shell"
-      aria-labelledby="contact-title"
+      aria-labelledby={SITE_ANCHORS.home.contactTitle}
     >
       <div className="section-heading">
         <p className="eyebrow" aria-hidden="true">
           // 04
         </p>
-        <h2 id="contact-title">{content.contact.title}</h2>
+        <h2 id={SITE_ANCHORS.home.contactTitle}>{content.contact.title}</h2>
       </div>
       <p className="contact-section__summary">{content.contact.summary}</p>
       <div className="action-cluster">

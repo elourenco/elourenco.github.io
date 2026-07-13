@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { enContent, ptBRContent } from '../../content';
 import { DonaEventsPage } from './DonaEventsPage';
+import { pageInternalLinks } from '../../site-contract';
 
 afterEach(cleanup);
 
@@ -39,6 +40,14 @@ describe('DonaEventsPage', () => {
         within(primary).getByRole('link', { name: label }),
       ).toHaveAttribute('href', href);
     }
+    expect(
+      screen
+        .getAllByRole('link')
+        .map((link) => link.getAttribute('href'))
+        .filter((href): href is string =>
+          Boolean(href?.startsWith('/') || href?.startsWith('#')),
+        ),
+    ).toEqual(pageInternalLinks('en', 'donaEvents'));
     expect(container).not.toHaveTextContent(
       /provider|model latency|internal architecture|private metric/i,
     );

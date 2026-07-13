@@ -26,9 +26,44 @@ const validManifest = {
       internalLinks: ['/en#work'],
       externalLinks: [],
     },
+    {
+      pathname: '/pt-br',
+      anchors: ['main-content', 'work'],
+      internalLinks: ['#work', '/pt-br/projetos/dona-events'],
+      externalLinks: [],
+    },
+    {
+      pathname: '/pt-br/projetos/dona-events',
+      anchors: ['main-content'],
+      internalLinks: ['/pt-br#work'],
+      externalLinks: [],
+    },
   ],
   assets: ['/cv.pdf'],
 };
+
+test('rejects a built manifest missing a canonical route', () => {
+  const broken = structuredClone(validManifest);
+  broken.pages.pop();
+  assert.throws(() => validateBuiltLinks(broken), /canonical routes/);
+});
+
+test('rejects a built manifest with a duplicate canonical route', () => {
+  const broken = structuredClone(validManifest);
+  broken.pages.push(structuredClone(broken.pages[0]));
+  assert.throws(() => validateBuiltLinks(broken), /canonical routes/);
+});
+
+test('rejects a built manifest with an unexpected route', () => {
+  const broken = structuredClone(validManifest);
+  broken.pages.push({
+    pathname: '/unexpected',
+    anchors: ['main-content'],
+    internalLinks: [],
+    externalLinks: [],
+  });
+  assert.throws(() => validateBuiltLinks(broken), /canonical routes/);
+});
 
 test('rejects a built manifest with a route that does not exist', () => {
   const broken = structuredClone(validManifest);

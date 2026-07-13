@@ -1,7 +1,10 @@
 import type { PortfolioContent, RouteKey } from '../content';
-import { toLocalePath } from '../i18n/locale-paths';
 import { LanguageSwitcher } from './LanguageSwitcher';
-import { HOME_ANCHORS } from '../site-contract';
+import {
+  HOME_SECTION_ANCHORS,
+  INTERNAL_DESTINATIONS,
+  SITE_ANCHORS,
+} from '../site-contract';
 
 export interface SiteHeaderProps {
   content: PortfolioContent;
@@ -10,7 +13,7 @@ export interface SiteHeaderProps {
 
 export function SiteHeader({ content, route }: SiteHeaderProps) {
   const isPortuguese = content.locale === 'pt-BR';
-  const homePath = toLocalePath(content.locale, 'home');
+  const homePath = INTERNAL_DESTINATIONS.route(content.locale, 'home');
   const isHome = route === 'home';
   const labels = {
     expertise: content.navigation.expertise,
@@ -19,16 +22,16 @@ export function SiteHeader({ content, route }: SiteHeaderProps) {
     contact: content.navigation.contact,
   };
   const links = [
-    ...HOME_ANCHORS.filter((id) => id !== 'main-content').map(
-      (id) => [id, labels[id]] as const,
-    ),
+    ...HOME_SECTION_ANCHORS.map((id) => [id, labels[id]] as const),
   ] as const;
 
   return (
     <header className="site-header">
       <a
         className="site-header__brand"
-        href={isHome ? '#main-content' : homePath}
+        href={
+          isHome ? INTERNAL_DESTINATIONS.fragment(SITE_ANCHORS.main) : homePath
+        }
         aria-label={isPortuguese ? 'Início' : 'Home'}
       >
         {content.hero.eyebrow}
@@ -38,7 +41,18 @@ export function SiteHeader({ content, route }: SiteHeaderProps) {
         aria-label={isPortuguese ? 'Navegação principal' : 'Primary'}
       >
         {links.map(([id, label]) => (
-          <a key={id} href={isHome ? `#${id}` : `${homePath}#${id}`}>
+          <a
+            key={id}
+            href={
+              isHome
+                ? INTERNAL_DESTINATIONS.fragment(id)
+                : INTERNAL_DESTINATIONS.routeFragment(
+                    content.locale,
+                    'home',
+                    id,
+                  )
+            }
+          >
             {label}
           </a>
         ))}
