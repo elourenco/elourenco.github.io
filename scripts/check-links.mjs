@@ -1,51 +1,26 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { access, readFile } from 'node:fs/promises';
+import { validateBuiltLinks } from './manifest-validation.mjs';
 
-const canonicalRoutes = [
-  '/en',
-  '/en/projects/dona-events',
-  '/pt-br',
-  '/pt-br/projetos/dona-events',
-];
-const sitemap = await readFile(
-  new URL('../dist/sitemap.xml', import.meta.url),
-  'utf8',
+const distUrl = new URL('../dist/', import.meta.url);
+const manifest = JSON.parse(
+  await readFile(new URL('build-manifest.json', distUrl), 'utf8'),
 );
-const fallback = await readFile(
-  new URL('../dist/404.html', import.meta.url),
-  'utf8',
-);
-const assetNames = await (
-  await import('node:fs/promises')
-).readdir(new URL('../dist/assets/', import.meta.url));
-const bundle = await Promise.all(
-  assetNames
-    .filter((name) => name.endsWith('.js'))
-    .map((name) =>
-      readFile(new URL(`../dist/assets/${name}`, import.meta.url), 'utf8'),
-    ),
-);
+const sitemap = await readFile(new URL('sitemap.xml', distUrl), 'utf8');
+const fallback = await readFile(new URL('404.html', distUrl), 'utf8');
 
-for (const route of canonicalRoutes) {
+validateBuiltLinks(manifest);
+
+for (const page of manifest.pages) {
   assert.match(
     sitemap,
-    new RegExp(`<loc>https://elourenco\\.github\\.io${route}</loc>`),
-  );
-  assert.ok(
-    bundle.some((source) => source.includes(route)),
-    `built route missing: ${route}`,
+    new RegExp(`<loc>https://elourenco\\.github\\.io${page.pathname}</loc>`),
   );
 }
-for (const publicUrl of [
-  'https://www.linkedin.com/in/dudulourenco',
-  'https://github.com/elourenco',
-  'https://dona.events',
-]) {
-  assert.ok(
-    bundle.some((source) => source.includes(publicUrl)),
-    `public URL missing: ${publicUrl}`,
-  );
+for (const asset of manifest.assets) {
+  await access(new URL(asset.slice(1), distUrl));
 }
+
 assert.match(fallback, /encodeURIComponent\(location\.pathname\)/);
 assert.match(fallback, /location\.replace/);
-console.log('Built routes and required public URLs: OK');
+console.log('Built route, fragment, asset and external URL targets: OK');

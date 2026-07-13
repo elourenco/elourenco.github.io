@@ -1,26 +1,14 @@
 import assert from 'node:assert/strict';
-import { enContent } from '../src/content/en.ts';
-import { ptBRContent } from '../src/content/pt-BR.ts';
+import { readFile } from 'node:fs/promises';
+import { validateLocalizedContent } from './manifest-validation.mjs';
 
-function shape(value) {
-  if (Array.isArray(value)) {
-    return value.map((item) =>
-      item && typeof item === 'object' && 'id' in item ? item.id : shape(item),
-    );
-  }
-  if (value && typeof value === 'object') {
-    return Object.fromEntries(
-      Object.entries(value)
-        .filter(([key]) => key !== 'locale')
-        .map(([key, child]) => [key, shape(child)]),
-    );
-  }
-  return typeof value;
-}
-
-assert.deepEqual(shape(enContent), shape(ptBRContent));
-assert.deepEqual(
-  enContent.expertise.map(({ id }) => id),
-  ptBRContent.expertise.map(({ id }) => id),
+const manifest = JSON.parse(
+  await readFile(
+    new URL('../dist/build-manifest.json', import.meta.url),
+    'utf8',
+  ),
 );
-console.log('Localized content parity: OK');
+
+assert.equal(manifest.schemaVersion, 1, 'unsupported build manifest schema');
+validateLocalizedContent(manifest.content);
+console.log('Built localized content parity, non-empty values and IDs: OK');

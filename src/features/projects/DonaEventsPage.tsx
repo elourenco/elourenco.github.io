@@ -2,6 +2,7 @@ import type { PortfolioContent } from '../../content';
 import { SiteHeader } from '../../components/SiteHeader';
 import { SkipLink } from '../../components/SkipLink';
 import { Seo } from '../../components/Seo';
+import { EXTERNAL_URLS } from '../../site-contract';
 
 export function DonaEventsPage({ content }: { content: PortfolioContent }) {
   const isPortuguese = content.locale === 'pt-BR';
@@ -52,7 +53,7 @@ export function DonaEventsPage({ content }: { content: PortfolioContent }) {
             </ul>
           </section>
 
-          <a href="https://dona.events" target="_blank" rel="noreferrer">
+          <a href={EXTERNAL_URLS.donaEvents} target="_blank" rel="noreferrer">
             {project.externalCta}
           </a>
         </article>

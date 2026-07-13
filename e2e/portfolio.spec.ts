@@ -20,7 +20,7 @@ for (const route of routes) {
 
 test('switches locale without losing the Dona route', async ({ page }) => {
   await page.goto('/en/projects/dona-events');
-  await page.getByRole('link', { name: 'PT-BR' }).click();
+  await page.getByRole('link', { name: 'PT-BR', exact: true }).click();
   await expect(page).toHaveURL('/pt-br/projetos/dona-events');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(
     'Dona Events',
@@ -33,6 +33,20 @@ test('round-trips equivalent project routes', async ({ page }) => {
   await expect(page).toHaveURL('/en/projects/dona-events');
   await page.getByRole('link', { name: 'PT-BR' }).click();
   await expect(page).toHaveURL('/pt-br/projetos/dona-events');
+});
+
+test('keeps one localized description across route navigation', async ({
+  page,
+}) => {
+  await page.goto('/en');
+  const descriptions = page.locator('meta[name="description"]');
+  await expect(descriptions).toHaveCount(1);
+  await expect(descriptions).toHaveAttribute('content', /focused on AI/);
+
+  await page.getByRole('link', { name: 'PT-BR', exact: true }).click();
+  await expect(page).toHaveURL('/pt-br');
+  await expect(descriptions).toHaveCount(1);
+  await expect(descriptions).toHaveAttribute('content', /com foco em IA/);
 });
 
 test('renders a localized wildcard page', async ({ page }) => {

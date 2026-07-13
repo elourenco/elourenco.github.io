@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import type { Locale, RouteKey } from '../content';
 import { toLocalePath } from '../i18n/locale-paths';
-
-const SITE_ORIGIN = 'https://elourenco.github.io';
+import { EXTERNAL_URLS, SITE_ORIGIN } from '../site-contract';
 
 const metadata = {
   en: {
@@ -92,17 +91,14 @@ export function Seo({ locale, route }: { locale: Locale; route: RouteKey }) {
             name: 'Eduardo Lourenco',
             jobTitle: 'Principal Software Engineer',
             url: canonical,
-            sameAs: [
-              'https://www.linkedin.com/in/dudulourenco',
-              'https://github.com/elourenco',
-            ],
+            sameAs: [EXTERNAL_URLS.linkedin, EXTERNAL_URLS.github],
           }
         : {
             '@context': 'https://schema.org',
             '@type': 'SoftwareApplication',
             name: 'Dona Events',
             applicationCategory: 'LifestyleApplication',
-            url: 'https://dona.events',
+            url: EXTERNAL_URLS.donaEvents,
             creator: { '@type': 'Person', name: 'Eduardo Lourenco' },
           },
     );

@@ -1,6 +1,7 @@
 import type { PortfolioContent, RouteKey } from '../content';
 import { toLocalePath } from '../i18n/locale-paths';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { HOME_ANCHORS } from '../site-contract';
 
 export interface SiteHeaderProps {
   content: PortfolioContent;
@@ -11,11 +12,16 @@ export function SiteHeader({ content, route }: SiteHeaderProps) {
   const isPortuguese = content.locale === 'pt-BR';
   const homePath = toLocalePath(content.locale, 'home');
   const isHome = route === 'home';
+  const labels = {
+    expertise: content.navigation.expertise,
+    work: content.navigation.work,
+    career: content.navigation.career,
+    contact: content.navigation.contact,
+  };
   const links = [
-    ['expertise', content.navigation.expertise],
-    ['work', content.navigation.work],
-    ['career', content.navigation.career],
-    ['contact', content.navigation.contact],
+    ...HOME_ANCHORS.filter((id) => id !== 'main-content').map(
+      (id) => [id, labels[id]] as const,
+    ),
   ] as const;
 
   return (

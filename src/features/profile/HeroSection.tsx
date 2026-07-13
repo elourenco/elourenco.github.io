@@ -1,7 +1,6 @@
 import type { PortfolioContent } from '../../content';
 import { ProfilePortrait } from '../../components/ProfilePortrait';
-
-const LINKEDIN_URL = 'https://www.linkedin.com/in/dudulourenco';
+import { EXTERNAL_URLS, PUBLIC_ASSETS } from '../../site-contract';
 
 export function HeroSection({ content }: { content: PortfolioContent }) {
   const portraitAlt =
@@ -20,12 +19,12 @@ export function HeroSection({ content }: { content: PortfolioContent }) {
           <a className="button button--primary" href="#work">
             {content.hero.workCta}
           </a>
-          <a className="button" href={LINKEDIN_URL}>
+          <a className="button" href={EXTERNAL_URLS.linkedin}>
             {content.hero.linkedinCta}
           </a>
           <a
             className="button button--quiet"
-            href="/cv-eduardo-lourenco-pt-br.pdf"
+            href={PUBLIC_ASSETS.resume}
             download
           >
             {content.hero.resumeCta}

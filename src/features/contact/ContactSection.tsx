@@ -1,4 +1,5 @@
 import type { PortfolioContent } from '../../content';
+import { EXTERNAL_URLS } from '../../site-contract';
 
 export function ContactSection({ content }: { content: PortfolioContent }) {
   return (
@@ -15,13 +16,10 @@ export function ContactSection({ content }: { content: PortfolioContent }) {
       </div>
       <p className="contact-section__summary">{content.contact.summary}</p>
       <div className="action-cluster">
-        <a
-          className="button button--primary"
-          href="https://www.linkedin.com/in/dudulourenco"
-        >
+        <a className="button button--primary" href={EXTERNAL_URLS.linkedin}>
           LinkedIn
         </a>
-        <a className="button" href="https://github.com/elourenco">
+        <a className="button" href={EXTERNAL_URLS.github}>
           GitHub
         </a>
       </div>
