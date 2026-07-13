@@ -24,4 +24,25 @@ describe('locale selection', () => {
     persistLocale('pt-BR');
     expect(localStorage.getItem(LOCALE_STORAGE_KEY)).toBe('pt-BR');
   });
+
+  it('falls back to browser locale when storage reads throw', () => {
+    const throwingStorage = {
+      getItem(): string | null {
+        throw new DOMException('Storage is unavailable', 'SecurityError');
+      },
+    };
+
+    expect(resolveLocale('/', 'pt-BR', throwingStorage)).toBe('pt-BR');
+    expect(resolveLocale('/', 'de-DE', throwingStorage)).toBe('en');
+  });
+
+  it('treats storage writes as best-effort', () => {
+    const throwingStorage = {
+      setItem(): void {
+        throw new DOMException('Storage is unavailable', 'SecurityError');
+      },
+    };
+
+    expect(() => persistLocale('pt-BR', throwingStorage)).not.toThrow();
+  });
 });
