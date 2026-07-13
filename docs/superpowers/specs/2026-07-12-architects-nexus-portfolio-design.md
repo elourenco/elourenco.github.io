@@ -146,7 +146,7 @@ O projeto atual usa React 18 e Create React App 5. A implementacao migrara para:
 - i18next e react-i18next.
 - Vitest, Testing Library, ESLint e Prettier.
 
-Versoes exatas serao fixadas no lockfile e validadas quanto a compatibilidade. Nao serao usadas versoes beta. `react-scripts`, configuracoes legadas, dependencias sem uso e traducoes duplicadas serao removidos.
+Dependencias diretas usarao versoes estaveis exatas, sem `^` ou `~`, e toda a arvore sera fixada no lockfile e validada quanto a compatibilidade. Prereleases transitivos introduzidos por pacotes estaveis sao aceitos quando permanecem fixados no lockfile e o `npm audit` nao reporta vulnerabilidades. `react-scripts`, configuracoes legadas, dependencias sem uso e traducoes duplicadas serao removidos.
 
 Sequencia: CRA para Vite/TypeScript; React 19; testes; i18n; conteudo semantico; fundacao Three.js; cena e acabamento.
 
