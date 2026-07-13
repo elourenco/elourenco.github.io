@@ -2,6 +2,7 @@ import { createElement } from 'react';
 import { Navigate, createBrowserRouter } from 'react-router-dom';
 import { getContent } from '../content';
 import type { Locale } from '../content';
+import { HomePage } from '../features/home/HomePage';
 import { resolveLocale } from '../i18n/config';
 import { toLocalePath } from '../i18n/locale-paths';
 
@@ -21,14 +22,14 @@ function LocalizedPage({
   page: 'home' | 'donaEvents';
 }) {
   const content = getContent(locale);
+  if (page === 'home') {
+    return createElement(HomePage, { content });
+  }
+
   return createElement(
     'main',
     { id: 'main-content', 'data-locale': locale, 'data-page': page },
-    createElement(
-      'h1',
-      null,
-      page === 'home' ? content.hero.title : content.dona.title,
-    ),
+    createElement('h1', null, content.dona.title),
   );
 }
 
