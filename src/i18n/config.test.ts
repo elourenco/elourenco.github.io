@@ -45,4 +45,34 @@ describe('locale selection', () => {
 
     expect(() => persistLocale('pt-BR', throwingStorage)).not.toThrow();
   });
+
+  it('falls back safely when the global localStorage accessor throws', () => {
+    const localStorageDescriptor = Object.getOwnPropertyDescriptor(
+      globalThis,
+      'localStorage',
+    );
+
+    try {
+      Object.defineProperty(globalThis, 'localStorage', {
+        configurable: true,
+        get(): Storage {
+          throw new DOMException('Storage is unavailable', 'SecurityError');
+        },
+      });
+
+      expect(resolveLocale('/', 'pt-BR')).toBe('pt-BR');
+      expect(resolveLocale('/', 'de-DE')).toBe('en');
+      expect(() => persistLocale('pt-BR')).not.toThrow();
+    } finally {
+      if (localStorageDescriptor) {
+        Object.defineProperty(
+          globalThis,
+          'localStorage',
+          localStorageDescriptor,
+        );
+      } else {
+        Reflect.deleteProperty(globalThis, 'localStorage');
+      }
+    }
+  });
 });
