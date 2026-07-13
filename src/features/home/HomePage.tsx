@@ -9,6 +9,7 @@ import { FeaturedProject } from '../projects/FeaturedProject';
 import { HeroSection } from '../profile/HeroSection';
 import type { SceneSection } from '../../experience/scene-state';
 import { useSectionObserver } from '../../experience/useSectionObserver';
+import { Seo } from '../../components/Seo';
 
 const OBSERVED_SECTION_IDS = [
   'main-content',
@@ -42,6 +43,7 @@ export function HomePage({ content }: { content: PortfolioContent }) {
 
   return (
     <>
+      <Seo locale={content.locale} route="home" />
       <SkipLink
         label={isPortuguese ? 'Pular para o conteúdo' : 'Skip to content'}
       />

@@ -29,10 +29,9 @@ describe('HomePage', () => {
     ).toHaveAttribute('href', 'https://www.linkedin.com/in/dudulourenco');
     expect(screen.getByText('Dona Events')).toBeVisible();
 
-    expect(screen.getByRole('link', { name: 'Skip to content' })).toHaveAttribute(
-      'href',
-      '#main-content',
-    );
+    expect(
+      screen.getByRole('link', { name: 'Skip to content' }),
+    ).toHaveAttribute('href', '#main-content');
     expect(
       screen.getByRole('link', { name: 'Download résumé (PT-BR)' }),
     ).toHaveAttribute('href', '/cv-eduardo-lourenco-pt-br.pdf');
@@ -48,10 +47,9 @@ describe('HomePage', () => {
       ['Contact', '#contact'],
     ] as const;
     for (const [label, href] of expectedNavigation) {
-      expect(within(primary).getByRole('link', { name: label })).toHaveAttribute(
-        'href',
-        href,
-      );
+      expect(
+        within(primary).getByRole('link', { name: label }),
+      ).toHaveAttribute('href', href);
     }
 
     const main = screen.getByRole('main');
@@ -104,10 +102,9 @@ describe('HomePage', () => {
       ['Contato', '#contact'],
     ] as const;
     for (const [label, href] of expectedNavigation) {
-      expect(within(primary).getByRole('link', { name: label })).toHaveAttribute(
-        'href',
-        href,
-      );
+      expect(
+        within(primary).getByRole('link', { name: label }),
+      ).toHaveAttribute('href', href);
     }
 
     expect(container).not.toHaveTextContent(

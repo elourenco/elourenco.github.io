@@ -31,4 +31,15 @@ describe('localized routes', () => {
       route: 'home',
     });
   });
+
+  it('round-trips every canonical localized route', () => {
+    for (const locale of ['en', 'pt-BR'] as const) {
+      for (const route of ['home', 'donaEvents'] as const) {
+        expect(parseLocalePath(toLocalePath(locale, route))).toEqual({
+          locale,
+          route,
+        });
+      }
+    }
+  });
 });

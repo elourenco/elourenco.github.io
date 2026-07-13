@@ -16,7 +16,9 @@ vi.mock('@react-three/fiber', () => ({
 
 beforeEach(() => {
   canvasShouldThrow = false;
-  vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue({} as never);
+  vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(
+    {} as never,
+  );
 });
 
 afterEach(() => {

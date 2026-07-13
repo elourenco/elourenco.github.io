@@ -1,9 +1,5 @@
 export type SceneSection =
-  | 'arrival'
-  | 'ai-core'
-  | 'systems'
-  | 'career'
-  | 'contact';
+  'arrival' | 'ai-core' | 'systems' | 'career' | 'contact';
 
 export interface SceneState {
   section: SceneSection;

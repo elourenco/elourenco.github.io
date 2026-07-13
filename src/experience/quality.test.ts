@@ -36,13 +36,21 @@ describe('selectQualityProfile', () => {
       selectQualityProfile({ reducedMotion: false, mobile: true, memoryGb: 8 }),
     ).toEqual(expected);
     expect(
-      selectQualityProfile({ reducedMotion: false, mobile: false, memoryGb: 4 }),
+      selectQualityProfile({
+        reducedMotion: false,
+        mobile: false,
+        memoryGb: 4,
+      }),
     ).toEqual(expected);
   });
 
   it('selects high quality for capable desktop devices', () => {
     expect(
-      selectQualityProfile({ reducedMotion: false, mobile: false, memoryGb: 8 }),
+      selectQualityProfile({
+        reducedMotion: false,
+        mobile: false,
+        memoryGb: 8,
+      }),
     ).toEqual({
       dpr: [1, 2],
       shadows: true,

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>Redirecting…</title>
+    <script>
+      (function (location) {
+        var query = location.search ? location.search.slice(1) : '';
+        location.replace(
+          '/?p=' +
+            encodeURIComponent(location.pathname) +
+            (query ? '&q=' + encodeURIComponent(query) : '') +
+            location.hash,
+        );
+      })(window.location);
+    </script>
+  </head>
+  <body>
+    <p>Redirecting to the requested page…</p>
+  </body>
+</html>

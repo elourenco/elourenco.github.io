@@ -35,10 +35,9 @@ describe('DonaEventsPage', () => {
       ['Contact', '/en#contact'],
     ] as const;
     for (const [label, href] of expectedNavigation) {
-      expect(within(primary).getByRole('link', { name: label })).toHaveAttribute(
-        'href',
-        href,
-      );
+      expect(
+        within(primary).getByRole('link', { name: label }),
+      ).toHaveAttribute('href', href);
     }
     expect(container).not.toHaveTextContent(
       /provider|model latency|internal architecture|private metric/i,
@@ -77,10 +76,9 @@ describe('DonaEventsPage', () => {
       ['Contato', '/pt-br#contact'],
     ] as const;
     for (const [label, href] of expectedNavigation) {
-      expect(within(primary).getByRole('link', { name: label })).toHaveAttribute(
-        'href',
-        href,
-      );
+      expect(
+        within(primary).getByRole('link', { name: label }),
+      ).toHaveAttribute('href', href);
     }
     expect(container).not.toHaveTextContent(
       /provedor|latência de modelo|arquitetura interna|métrica privada/i,

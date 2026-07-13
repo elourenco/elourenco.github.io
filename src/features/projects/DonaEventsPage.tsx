@@ -1,6 +1,7 @@
 import type { PortfolioContent } from '../../content';
 import { SiteHeader } from '../../components/SiteHeader';
 import { SkipLink } from '../../components/SkipLink';
+import { Seo } from '../../components/Seo';
 
 export function DonaEventsPage({ content }: { content: PortfolioContent }) {
   const isPortuguese = content.locale === 'pt-BR';
@@ -8,6 +9,7 @@ export function DonaEventsPage({ content }: { content: PortfolioContent }) {
 
   return (
     <>
+      <Seo locale={content.locale} route="donaEvents" />
       <SkipLink
         label={isPortuguese ? 'Pular para o conteúdo' : 'Skip to content'}
       />

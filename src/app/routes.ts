@@ -6,6 +6,7 @@ import { HomePage } from '../features/home/HomePage';
 import { DonaEventsPage } from '../features/projects/DonaEventsPage';
 import { resolveLocale } from '../i18n/config';
 import { toLocalePath } from '../i18n/locale-paths';
+import { NotFoundPage } from '../components/NotFoundPage';
 
 function RootRedirect() {
   const locale = resolveLocale('/', navigator.language);
@@ -30,28 +31,9 @@ function LocalizedPage({
   return createElement(DonaEventsPage, { content });
 }
 
-function LocalizedNotFound({ locale }: { locale: Locale }) {
-  return createElement(
-    'main',
-    { id: 'main-content', 'data-locale': locale },
-    createElement('h1', null, '404'),
-    createElement(
-      'p',
-      null,
-      locale === 'pt-BR' ? 'Página não encontrada.' : 'Page not found.',
-    ),
-    createElement(
-      'a',
-      { href: toLocalePath(locale, 'home') },
-      locale === 'pt-BR' ? 'Voltar ao início' : 'Back home',
-    ),
-  );
-}
-
 const page = (locale: Locale, route: 'home' | 'donaEvents') =>
   createElement(LocalizedPage, { locale, page: route });
-const notFound = (locale: Locale) =>
-  createElement(LocalizedNotFound, { locale });
+const notFound = (locale: Locale) => createElement(NotFoundPage, { locale });
 
 export const router = createBrowserRouter([
   { path: '/', element: createElement(RootRedirect) },

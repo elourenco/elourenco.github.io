@@ -1,70 +1,68 @@
-# Getting Started with Create React App
+# Architect's Nexus
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Portfolio bilíngue de Eduardo Lourenco, construído com React 19, TypeScript,
+Vite e uma camada Three.js progressiva. Conteúdo, navegação, SEO e ações
+essenciais permanecem em HTML semântico quando WebGL não está disponível.
 
-## Available Scripts
+## Operação
 
-In the project directory, you can run:
+Requer Node.js 22 ou superior e `npm`. As dependências diretas têm versões
+exatas; não altere os pins para ranges.
 
-### `npm start`
+```bash
+npm ci
+npm run dev
+npm run check
+npm run e2e
+npm audit --omit=dev
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+`npm run check` executa formatação, ESLint, TypeScript, testes unitários,
+build de produção, paridade recursiva do conteúdo localizado e validação das
+rotas/URLs no bundle. `npm run e2e` constrói o contrato de navegador sobre o
+preview de produção isolado na porta `4188`, com projetos desktop e mobile.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+O deploy publica `dist/` no GitHub Pages. `public/404.html` transporta o path e
+a query do deep link para `/`; o bootstrap restaura a URL antes da inicialização
+do router. Os quatro documentos canônicos são:
 
-### `npm test`
+- `/en`
+- `/en/projects/dona-events`
+- `/pt-br`
+- `/pt-br/projetos/dona-events`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Performance e limites medidos
 
-### `npm run build`
+Baseline do build de produção em 2026-07-13:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+| Artefato              | Minificado |      Gzip |
+| --------------------- | ---------: | --------: |
+| app principal         |  293,13 kB |  92,59 kB |
+| `AdaptiveCanvas`      |    6,98 kB |   2,59 kB |
+| vendor Three/R3F/Drei |  899,17 kB | 239,74 kB |
+| runtime do bundler    |    0,69 kB |   0,42 kB |
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+O vendor 3D é um chunk separado, mas atualmente é solicitado logo após o
+primeiro render. O build emite o warning de chunk acima de 500 kB. O custo é
+aceito como budget explícito desta versão porque o conteúdo semântico não
+depende dele; visibility/idle gating deve ser a próxima otimização se medição
+em dispositivo mostrar contenção de rede/main thread. Não foi adicionada
+complexidade de scheduling sem essa evidência.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Lighthouse não estava instalado no ambiente de validação, portanto não há
+números inventados de LCP, CLS ou INP. Também não foi feita medição de FPS em
+dispositivo representativo. Os gates automatizados provam apenas carregamento
+desktop/mobile, rotas diretas, equivalência de locale e usabilidade sem WebGL;
+não provam os pisos de 60/30 FPS. Nenhum warning de API Three depreciada foi
+observado em build, testes ou E2E; upgrades de Three/R3F/Drei devem manter o
+chunk isolado e repetir profiling de dispositivo.
 
-### `npm run eject`
+## Resiliência e escalabilidade
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+O runtime é estático: throughput do servidor é delegado ao CDN do GitHub Pages.
+Concorrência e latência críticas estão no browser (download, parse, shaders e
+GPU). Falha de WebGL fica isolada pelo fallback 2D; conteúdo e CTAs continuam
+operacionais. Falha de rota produz 404 localizado, e falha de locale recua para
+inglês. Mudanças de conteúdo devem preservar IDs, estrutura recursiva e as
+quatro rotas canônicas; os scripts de `check` falham deterministicamente em
+drift.

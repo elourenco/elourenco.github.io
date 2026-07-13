@@ -9,13 +9,27 @@
       name="description"
       content="Resume: https://www.linkedin.com/in/dudulourenco"
     />
-    <link rel="apple-touch-icon" href="/logo192.png" />
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="manifest" href="/site.webmanifest" />
     <title>::EDUARDO LOURENCO::</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <script>
+      (function (history) {
+        var params = new URLSearchParams(window.location.search);
+        var restoredPath = params.get('p');
+        if (!restoredPath) return;
+        var restoredQuery = params.get('q');
+        history.replaceState(
+          null,
+          '',
+          restoredPath +
+            (restoredQuery ? '?' + restoredQuery : '') +
+            window.location.hash,
+        );
+      })(window.history);
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
