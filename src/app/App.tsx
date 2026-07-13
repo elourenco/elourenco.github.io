@@ -1,3 +1,5 @@
+import { AppRouter } from './AppRouter';
+
 export function App() {
-  return <main id="main-content" />;
+  return <AppRouter />;
 }
