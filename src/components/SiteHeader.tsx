@@ -19,14 +19,18 @@ export function SiteHeader({ content, route }: SiteHeaderProps) {
   ] as const;
 
   return (
-    <header>
+    <header className="site-header">
       <a
+        className="site-header__brand"
         href={isHome ? '#main-content' : homePath}
         aria-label={isPortuguese ? 'Início' : 'Home'}
       >
         {content.hero.eyebrow}
       </a>
-      <nav aria-label={isPortuguese ? 'Navegação principal' : 'Primary'}>
+      <nav
+        className="site-header__nav"
+        aria-label={isPortuguese ? 'Navegação principal' : 'Primary'}
+      >
         {links.map(([id, label]) => (
           <a key={id} href={isHome ? `#${id}` : `${homePath}#${id}`}>
             {label}

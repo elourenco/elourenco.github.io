@@ -7,7 +7,10 @@ export function LanguageSwitcher({ route }: { route: RouteKey }) {
   const { locale, setLocale } = useLocale();
 
   return (
-    <nav aria-label={locale === 'pt-BR' ? 'Idioma' : 'Language'}>
+    <nav
+      className="language-switcher"
+      aria-label={locale === 'pt-BR' ? 'Idioma' : 'Language'}
+    >
       {(['en', 'pt-BR'] as const).map((nextLocale) => (
         <Link
           key={nextLocale}

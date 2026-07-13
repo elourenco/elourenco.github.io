@@ -46,10 +46,14 @@ export function HomePage({ content }: { content: PortfolioContent }) {
         label={isPortuguese ? 'Pular para o conteúdo' : 'Skip to content'}
       />
       <SiteHeader content={content} route="home" />
-      <main id="main-content" data-locale={content.locale}>
+      <main
+        id="main-content"
+        className="site-main"
+        data-locale={content.locale}
+      >
         <HeroSection content={content} />
-        <ExpertiseSection content={content} />
         <FeaturedProject content={content} />
+        <ExpertiseSection content={content} />
         <CareerTimeline content={content} />
         <ContactSection content={content} />
       </main>
