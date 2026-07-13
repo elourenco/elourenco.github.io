@@ -59,3 +59,22 @@ Result: exit 0; 8 test files passed, 19 tests passed; typecheck and lint passed;
 - `AppRouter.tsx` remains the provider shell. Route composition already lives in `src/app/routes.ts`, so the case replaced the placeholder there instead of duplicating routing authority.
 - Styling remains intentionally minimal because the approved task sequence assigns the visual system to Task 7.
 - Existing unrelated `.gitignore` changes and generated `dist/` files are excluded from this task commit.
+
+## Review fix — route-aware header navigation
+
+Architect's Nexus review identified that the Dona Events header used fragment-only links, so navigation targeted sections absent from the case page. `SiteHeader` now has an explicit `SiteHeaderProps` contract with a `RouteKey`: home preserves `#main-content`, `#expertise`, `#work`, `#career`, and `#contact`; Dona Events resolves the localized home with `toLocalePath(content.locale, 'home')` and appends each section fragment.
+
+### TDD evidence
+
+- RED: `npm run test:run -- src/features/projects/DonaEventsPage.test.tsx` exited 1 with 2 expected failures: English Home received `#main-content` instead of `/en`, and Portuguese Início received `#main-content` instead of `/pt-br`.
+- GREEN: `npm run test:run -- src/features/projects/DonaEventsPage.test.tsx src/features/home/HomePage.test.tsx` exited 0; 2 files and 4 tests passed. The case tests assert exact brand and primary-navigation hrefs for both locales; existing homepage assertions continue to require fragment-only hrefs.
+- Full verification: `git diff --check && npm run test:run && npm run typecheck && npm run lint && npm run build` exited 0; 8 files and 19 tests passed, typecheck and lint passed, and the Vite production build completed with 298.87 kB JavaScript (94.87 kB gzip).
+
+### Fix commit
+
+`fix: make site header route-aware` (the commit containing this report)
+
+### Concerns
+
+- This uses normal anchors intentionally because the target includes fragments on another localized document route; there is no new runtime state, async work, or throughput-sensitive path.
+- Route generation remains centralized in `toLocalePath`; no locale path is hardcoded in production code.

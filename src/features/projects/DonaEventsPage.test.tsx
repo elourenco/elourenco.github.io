@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { enContent, ptBRContent } from '../../content';
@@ -23,6 +23,23 @@ describe('DonaEventsPage', () => {
       screen.getByRole('link', { name: 'Visit Dona Events' }),
     ).toHaveAttribute('href', 'https://dona.events');
     expect(screen.getByRole('navigation', { name: 'Primary' })).toBeVisible();
+    expect(screen.getByRole('link', { name: 'Home' })).toHaveAttribute(
+      'href',
+      '/en',
+    );
+    const primary = screen.getByRole('navigation', { name: 'Primary' });
+    const expectedNavigation = [
+      ['Expertise', '/en#expertise'],
+      ['Selected work', '/en#work'],
+      ['Career', '/en#career'],
+      ['Contact', '/en#contact'],
+    ] as const;
+    for (const [label, href] of expectedNavigation) {
+      expect(within(primary).getByRole('link', { name: label })).toHaveAttribute(
+        'href',
+        href,
+      );
+    }
     expect(container).not.toHaveTextContent(
       /provider|model latency|internal architecture|private metric/i,
     );
@@ -46,6 +63,25 @@ describe('DonaEventsPage', () => {
     expect(
       screen.getByRole('navigation', { name: 'Navegação principal' }),
     ).toBeVisible();
+    expect(screen.getByRole('link', { name: 'Início' })).toHaveAttribute(
+      'href',
+      '/pt-br',
+    );
+    const primary = screen.getByRole('navigation', {
+      name: 'Navegação principal',
+    });
+    const expectedNavigation = [
+      ['Especialidades', '/pt-br#expertise'],
+      ['Trabalhos selecionados', '/pt-br#work'],
+      ['Carreira', '/pt-br#career'],
+      ['Contato', '/pt-br#contact'],
+    ] as const;
+    for (const [label, href] of expectedNavigation) {
+      expect(within(primary).getByRole('link', { name: label })).toHaveAttribute(
+        'href',
+        href,
+      );
+    }
     expect(container).not.toHaveTextContent(
       /provedor|latência de modelo|arquitetura interna|métrica privada/i,
     );
