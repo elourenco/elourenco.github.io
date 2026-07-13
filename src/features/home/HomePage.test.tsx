@@ -22,6 +22,9 @@ describe('HomePage', () => {
     ).toBeVisible();
     expect(screen.getByRole('navigation', { name: 'Primary' })).toBeVisible();
     expect(
+      within(screen.getByRole('banner')).getByRole('link', { name: 'Home' }),
+    ).toHaveAttribute('href', '#main-content');
+    expect(
       screen.getByRole('link', { name: 'Connect on LinkedIn' }),
     ).toHaveAttribute('href', 'https://www.linkedin.com/in/dudulourenco');
     expect(screen.getByText('Dona Events')).toBeVisible();
@@ -74,6 +77,9 @@ describe('HomePage', () => {
     expect(
       screen.getByText('IA · Mobile · Arquitetura de Software'),
     ).toBeVisible();
+    expect(
+      within(screen.getByRole('banner')).getByRole('link', { name: 'Início' }),
+    ).toHaveAttribute('href', '#main-content');
     expect(
       screen.getByRole('link', { name: 'Conectar no LinkedIn' }),
     ).toHaveAttribute('href', 'https://www.linkedin.com/in/dudulourenco');
