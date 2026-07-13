@@ -26,6 +26,31 @@ describe('HomePage', () => {
     ).toHaveAttribute('href', 'https://www.linkedin.com/in/dudulourenco');
     expect(screen.getByText('Dona Events')).toBeVisible();
 
+    expect(screen.getByRole('link', { name: 'Skip to content' })).toHaveAttribute(
+      'href',
+      '#main-content',
+    );
+    expect(
+      screen.getByRole('link', { name: 'Download résumé (PT-BR)' }),
+    ).toHaveAttribute('href', '/cv-eduardo-lourenco-pt-br.pdf');
+    expect(
+      screen.getByRole('link', { name: 'Download résumé (PT-BR)' }),
+    ).toHaveAttribute('download');
+
+    const primary = screen.getByRole('navigation', { name: 'Primary' });
+    const expectedNavigation = [
+      ['Expertise', '#expertise'],
+      ['Selected work', '#work'],
+      ['Career', '#career'],
+      ['Contact', '#contact'],
+    ] as const;
+    for (const [label, href] of expectedNavigation) {
+      expect(within(primary).getByRole('link', { name: label })).toHaveAttribute(
+        'href',
+        href,
+      );
+    }
+
     const main = screen.getByRole('main');
     expect(main).toHaveAttribute('id', 'main-content');
     for (const id of ['expertise', 'work', 'career', 'contact']) {
@@ -53,14 +78,30 @@ describe('HomePage', () => {
       screen.getByRole('link', { name: 'Conectar no LinkedIn' }),
     ).toHaveAttribute('href', 'https://www.linkedin.com/in/dudulourenco');
 
+    expect(
+      screen.getByRole('link', { name: 'Pular para o conteúdo' }),
+    ).toHaveAttribute('href', '#main-content');
+    expect(
+      screen.getByRole('link', { name: 'Baixar currículo' }),
+    ).toHaveAttribute('href', '/cv-eduardo-lourenco-pt-br.pdf');
+    expect(
+      screen.getByRole('link', { name: 'Baixar currículo' }),
+    ).toHaveAttribute('download');
+
     const primary = screen.getByRole('navigation', {
       name: 'Navegação principal',
     });
-    expect(
-      within(primary).getByRole('link', { name: 'Especialidades' }),
-    ).toHaveAttribute('href', '#expertise');
-    expect(
-      within(primary).getByRole('link', { name: 'Contato' }),
-    ).toHaveAttribute('href', '#contact');
+    const expectedNavigation = [
+      ['Especialidades', '#expertise'],
+      ['Trabalhos selecionados', '#work'],
+      ['Carreira', '#career'],
+      ['Contato', '#contact'],
+    ] as const;
+    for (const [label, href] of expectedNavigation) {
+      expect(within(primary).getByRole('link', { name: label })).toHaveAttribute(
+        'href',
+        href,
+      );
+    }
   });
 });

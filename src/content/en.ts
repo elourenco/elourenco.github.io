@@ -16,7 +16,7 @@ export const enContent = {
       'I design and build intelligent digital products, from system architecture to production.',
     workCta: 'View selected work',
     linkedinCta: 'Connect on LinkedIn',
-    resumeCta: 'Download résumé',
+    resumeCta: 'Download résumé (PT-BR)',
   },
   expertise: [
     {

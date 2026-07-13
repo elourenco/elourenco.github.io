@@ -11,6 +11,9 @@ export function HeroSection({ content }: { content: PortfolioContent }) {
       <p>{content.hero.summary}</p>
       <a href="#work">{content.hero.workCta}</a>
       <a href={LINKEDIN_URL}>{content.hero.linkedinCta}</a>
+      <a href="/cv-eduardo-lourenco-pt-br.pdf" download>
+        {content.hero.resumeCta}
+      </a>
     </section>
   );
 }
