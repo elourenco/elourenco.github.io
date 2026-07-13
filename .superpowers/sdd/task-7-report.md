@@ -113,3 +113,52 @@ Commit hash is recorded after commit creation.
 - The legacy, unimported JavaScript component tree still contains utility-style
   class strings. No Tailwind directives or `tailwind` references remain under
   `src`, and the active Vite entrypoint imports only the new global CSS system.
+
+## Architect's Nexus review fixes
+
+Implemented in commit `1d02fba` (`fix: address visual accessibility review`).
+
+- Added the dedicated `.skip-link` contract. It remains rendered and keyboard
+  reachable while translated above the viewport, provides a 44 x 44 minimum
+  target, and is revealed by `:focus-visible` above the header through
+  `--layer-skip`. It does not use `display: none` or `visibility: hidden`.
+- Replaced the fixed English section labels on the locale-aware home surface
+  with locale-neutral `// 01` through `// 04` ornaments.
+- Replaced `IDENTITY // EL-01` with the locale-neutral `EL-01` ornament.
+  All five ornaments use `aria-hidden="true"`, leaving localized headings as
+  the accessible section labels without duplicate accessible text.
+- Added regression coverage for the skip-link class/href contract, absence of
+  the removed English visual labels on the PT-BR page, and the ornaments'
+  `aria-hidden` contract.
+
+### Review-fix TDD evidence
+
+RED:
+
+```text
+npm run test:run -- src/components/SkipLink.test.tsx src/features/home/HomePage.test.tsx
+```
+
+Failed 2 tests as expected: `SkipLink` had no `skip-link` class, and the PT-BR
+home still exposed the English visual labels.
+
+GREEN:
+
+```text
+npm run test:run -- src/components/SkipLink.test.tsx src/features/home/HomePage.test.tsx
+```
+
+Pass: 2 files, 3 tests.
+
+Fresh full verification after the fixes:
+
+```text
+npm run test:run
+npm run typecheck
+npm run lint
+npm run build
+```
+
+Pass: 13 test files / 33 tests; typecheck, lint, and build all exited 0. Vite
+continues to emit the existing advisory for the 899.17 kB Three.js vendor
+chunk; this remains non-blocking and `AdaptiveCanvas` is still lazy-loaded.
