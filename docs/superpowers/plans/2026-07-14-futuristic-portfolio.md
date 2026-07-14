@@ -68,7 +68,13 @@
 
 ---
 
-### Task 1: Capability profiles and progressive experience gate
+### Task 1: Capability gate and progressive particle runtime
+
+**Execution amendment approved on 2026-07-14:** the original Tasks 1 and 2
+form one atomic delivery. Do not commit the `QualityProfile` shape while the
+orbital consumers still depend on its removed fields. Implement and validate
+the capability gate and particle runtime together, then create one commit only
+after focused tests and `npm run typecheck` pass.
 
 **Files:**
 - Modify: `src/experience/quality.ts`
@@ -210,16 +216,16 @@ Run: `npm test -- --run src/experience/quality.test.ts src/experience/useExperie
 
 Expected: both files PASS with no leaked timer warning.
 
-- [ ] **Step 7: Commit the capability boundary**
+- [ ] **Step 7: Verify the capability boundary without committing**
 
 ```bash
-git add src/experience/quality.ts src/experience/quality.test.ts src/experience/useExperienceGate.ts src/experience/useExperienceGate.test.tsx
-git commit -m "feat: gate the adaptive particle experience"
+npm run typecheck
 ```
 
----
+Expected: this check may remain red until Part B replaces the legacy
+consumers. Do not create an intermediate commit.
 
-### Task 2: Deterministic single-draw-call particle scene
+#### Part B: Deterministic single-draw-call particle scene
 
 **Files:**
 - Create: `src/experience/particles/particle-layout.ts`
@@ -337,11 +343,12 @@ Run: `npm test -- --run src/experience/particles/particle-layout.test.ts src/exp
 
 Expected: PASS; React reports no state update during a mocked frame.
 
-- [ ] **Step 9: Commit the replacement runtime**
+- [ ] **Step 9: Typecheck and commit the atomic replacement runtime**
 
 ```bash
+npm run typecheck
 git add src/experience
-git commit -m "feat: add the progressive neural particle scene"
+git commit -m "feat: add the progressive neural particle runtime"
 ```
 
 ---
