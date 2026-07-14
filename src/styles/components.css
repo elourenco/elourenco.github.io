@@ -58,22 +58,23 @@
   color: var(--color-signal);
 }
 
-.home-hero__title {
-  max-width: 9ch;
-  font-size: clamp(4.5rem, 9vw, 8.5rem);
-}
-
 .home-hero__name,
 .home-hero__role {
   display: block;
 }
 
 .home-hero__name {
+  max-width: 9ch;
   color: var(--color-text);
+  font-size: clamp(4.5rem, 9vw, 8.5rem);
+  line-height: 0.82;
 }
 
 .home-hero__role {
+  margin-top: var(--space-4);
   color: var(--color-signal);
+  font-size: clamp(1.75rem, 3vw, 3rem);
+  line-height: 0.95;
 }
 
 .home-hero__disciplines {
@@ -359,7 +360,7 @@
 }
 
 @media (max-width: 800px) {
-  .home-hero__title {
+  .home-hero__name {
     font-size: clamp(4.5rem, 25vw, 7rem);
   }
 
