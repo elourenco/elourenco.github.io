@@ -82,4 +82,41 @@ describe('useExperienceGate', () => {
     expect(window.cancelIdleCallback).toHaveBeenCalledWith(7);
     expect(disconnect).toHaveBeenCalledOnce();
   });
+
+  it('requires fresh idle and intersection signals after reactivation', () => {
+    const target = { current: document.createElement('div') };
+    const { result, rerender } = renderHook(
+      ({ eligible }) => useExperienceGate({ eligible, target }),
+      { initialProps: { eligible: true } },
+    );
+
+    act(() => idleCallback?.({ didTimeout: false, timeRemaining: () => 10 }));
+    act(() =>
+      intersectionCallback?.(
+        [{ isIntersecting: true } as IntersectionObserverEntry],
+        {} as IntersectionObserver,
+      ),
+    );
+    expect(result.current).toEqual({ ready: true, visible: true });
+
+    rerender({ eligible: false });
+    expect(result.current).toEqual({ ready: false, visible: false });
+
+    Object.defineProperty(document, 'visibilityState', {
+      configurable: true,
+      value: 'hidden',
+    });
+    rerender({ eligible: true });
+    expect(result.current).toEqual({ ready: false, visible: false });
+    expect(window.requestIdleCallback).toHaveBeenCalledTimes(2);
+
+    act(() => idleCallback?.({ didTimeout: false, timeRemaining: () => 10 }));
+    act(() =>
+      intersectionCallback?.(
+        [{ isIntersecting: true } as IntersectionObserverEntry],
+        {} as IntersectionObserver,
+      ),
+    );
+    expect(result.current).toEqual({ ready: true, visible: false });
+  });
 });

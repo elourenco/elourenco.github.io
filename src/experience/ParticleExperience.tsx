@@ -51,7 +51,11 @@ export function ParticleExperience({ className }: { className?: string }) {
   const open = quality.enabled && !contextLost && gate.ready && gate.visible;
 
   return (
-    <div ref={hostRef} className={className}>
+    <div
+      ref={hostRef}
+      className={className}
+      style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
+    >
       {open ? (
         <ErrorBoundary fallback={<ExperienceFallback />}>
           <Suspense fallback={<ExperienceFallback />}>

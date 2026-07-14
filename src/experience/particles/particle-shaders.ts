@@ -15,6 +15,6 @@ export const particleFragmentShader = `
 void main() {
   float radius = distance(gl_PointCoord, vec2(0.5));
   if (radius > 0.5) discard;
-  float alpha = smoothstep(0.5, 0.08, radius);
+  float alpha = 1.0 - smoothstep(0.08, 0.5, radius);
   gl_FragColor = vec4(0.28, 0.76, 1.0, alpha * 0.72);
 }`;
