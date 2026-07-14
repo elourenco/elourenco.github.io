@@ -106,6 +106,19 @@ a {
   backdrop-filter: var(--glass-blur);
 }
 
+.desktop-section-rail {
+  display: contents;
+}
+
+.mobile-site-header {
+  display: none;
+}
+
+.mobile-site-header__toggle {
+  min-width: 44px;
+  min-height: 44px;
+}
+
 .site-header__brand,
 .site-header__nav a,
 .language-switcher a,
@@ -455,6 +468,13 @@ h3 {
 }
 
 @media (max-width: 800px) {
+  .desktop-section-rail {
+    display: none;
+  }
+
+  .mobile-site-header {
+    display: contents;
+  }
   body::before {
     position: sticky;
     top: 0;
@@ -469,6 +489,10 @@ h3 {
   }
   .site-header__nav {
     display: none;
+  }
+  .mobile-site-header .site-header__nav {
+    display: flex;
+    grid-column: 1 / -1;
   }
   .section-shell {
     width: min(calc(100% - 2rem), var(--container));

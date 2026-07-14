@@ -5,6 +5,8 @@ import {
   INTERNAL_DESTINATIONS,
   SITE_ANCHORS,
 } from '../site-contract';
+import { DesktopSectionRail } from './navigation/DesktopSectionRail';
+import { MobileSiteHeader } from './navigation/MobileSiteHeader';
 
 export interface SiteHeaderProps {
   content: PortfolioContent;
@@ -21,42 +23,35 @@ export function SiteHeader({ content, route }: SiteHeaderProps) {
     career: content.navigation.career,
     contact: content.navigation.contact,
   };
-  const links = [
-    ...HOME_SECTION_ANCHORS.map((id) => [id, labels[id]] as const),
+  const homeHref = isHome
+    ? INTERNAL_DESTINATIONS.fragment(SITE_ANCHORS.main)
+    : homePath;
+  const items = [
+    { index: '01', label: isPortuguese ? 'Início' : 'Home', href: homeHref },
+    ...HOME_SECTION_ANCHORS.map((id, offset) => ({
+      index: String(offset + 2).padStart(2, '0'),
+      label: labels[id],
+      href: isHome
+        ? INTERNAL_DESTINATIONS.fragment(id)
+        : INTERNAL_DESTINATIONS.routeFragment(content.locale, 'home', id),
+    })),
   ] as const;
+  const navigationLabel = isPortuguese ? 'Navegação principal' : 'Primary';
 
   return (
     <header className="site-header">
-      <a
-        className="site-header__brand"
-        href={
-          isHome ? INTERNAL_DESTINATIONS.fragment(SITE_ANCHORS.main) : homePath
-        }
-        aria-label={isPortuguese ? 'Início' : 'Home'}
-      >
-        {content.hero.eyebrow}
-      </a>
-      <nav
-        className="site-header__nav"
-        aria-label={isPortuguese ? 'Navegação principal' : 'Primary'}
-      >
-        {links.map(([id, label]) => (
-          <a
-            key={id}
-            href={
-              isHome
-                ? INTERNAL_DESTINATIONS.fragment(id)
-                : INTERNAL_DESTINATIONS.routeFragment(
-                    content.locale,
-                    'home',
-                    id,
-                  )
-            }
-          >
-            {label}
-          </a>
-        ))}
-      </nav>
+      <DesktopSectionRail
+        brand={content.hero.eyebrow}
+        navigationLabel={navigationLabel}
+        items={items}
+      />
+      <MobileSiteHeader
+        brand={content.hero.eyebrow}
+        navigationLabel={navigationLabel}
+        openLabel={isPortuguese ? 'Abrir navegação' : 'Open navigation'}
+        closeLabel={isPortuguese ? 'Fechar navegação' : 'Close navigation'}
+        items={items}
+      />
       <LanguageSwitcher route={route} />
     </header>
   );
