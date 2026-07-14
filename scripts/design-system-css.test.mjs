@@ -30,3 +30,15 @@ test('keeps the display clamp on the hero name and the role secondary', () => {
   assert.match(role, /font-size:\s*clamp\(1\.75rem,/);
   assert.match(role, /color:\s*var\(--color-signal\)/);
 });
+
+test('confines the particle dissolve to a softly faded right-side field', () => {
+  const particles = rule('.home-hero__particles');
+
+  assert.match(particles, /left:\s*42%/);
+  assert.match(particles, /overflow:\s*hidden/);
+  assert.match(particles, /opacity:\s*0\.58/);
+  assert.match(
+    particles,
+    /mask-image:\s*linear-gradient\(\s*to right,\s*transparent 0,\s*black 24%,\s*black 86%,\s*transparent 100%\s*\)/s,
+  );
+});

@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { particleFragmentShader } from './particle-shaders';
+import {
+  particleFragmentShader,
+  particleVertexShader,
+} from './particle-shaders';
 
 describe('particleFragmentShader', () => {
   it('uses a defined ascending-edge smoothstep for radial alpha', () => {
@@ -15,5 +18,14 @@ describe('particleFragmentShader', () => {
     expect(particleFragmentShader).toContain(
       'vec4(0.66, 1.0, 0.24, alpha * 0.88)',
     );
+  });
+});
+
+describe('particleVertexShader', () => {
+  it('uses fine points for the 9k desktop particle field', () => {
+    expect(particleVertexShader).toContain(
+      'pointSize * (24.0 / max(1.0, -viewPosition.z))',
+    );
+    expect(particleVertexShader).not.toContain('pointSize * (70.0');
   });
 });

@@ -211,8 +211,18 @@
 .home-hero__particles {
   position: absolute !important;
   inset: -8%;
+  left: 42%;
   z-index: 1;
+  overflow: hidden;
+  opacity: 0.58;
   pointer-events: none;
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black 24%,
+    black 86%,
+    transparent 100%
+  );
 }
 
 .home-hero__particles .experience-canvas,

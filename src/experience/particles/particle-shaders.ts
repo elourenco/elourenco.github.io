@@ -8,7 +8,7 @@ void main() {
   animated.xz += vec2(cos(phase + uTime * 0.12), sin(phase + uTime * 0.12)) * 0.05;
   vec4 viewPosition = modelViewMatrix * vec4(animated, 1.0);
   gl_Position = projectionMatrix * viewPosition;
-  gl_PointSize = pointSize * (70.0 / max(1.0, -viewPosition.z));
+  gl_PointSize = pointSize * (24.0 / max(1.0, -viewPosition.z));
 }`;
 
 export const particleFragmentShader = `
