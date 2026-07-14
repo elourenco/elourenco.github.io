@@ -1,7 +1,7 @@
 # Portfólio futurista com experiência 3D
 
 Data: 2026-07-14
-Status: aguardando aprovação final da especificação
+Status: aprovado em 2026-07-14
 
 ## Relação com a especificação anterior
 
