@@ -10,4 +10,10 @@ describe('particleFragmentShader', () => {
       'smoothstep(0.5, 0.08, radius)',
     );
   });
+
+  it('keeps the particle field in the constructed-reality signal palette', () => {
+    expect(particleFragmentShader).toContain(
+      'vec4(0.66, 1.0, 0.24, alpha * 0.88)',
+    );
+  });
 });

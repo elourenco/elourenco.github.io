@@ -123,6 +123,23 @@
   gap: clamp(2rem, 8vw, 7rem);
 }
 
+@media (min-width: 801px) and (max-width: 1100px) {
+  .home-hero {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: auto;
+    align-items: start;
+  }
+
+  .home-hero__content {
+    width: 100%;
+  }
+
+  .home-hero__visual {
+    width: min(100%, 42rem);
+    justify-self: end;
+  }
+}
+
 @media (max-width: 800px) {
   .site-main,
   .dona-page {

@@ -16,5 +16,5 @@ void main() {
   float radius = distance(gl_PointCoord, vec2(0.5));
   if (radius > 0.5) discard;
   float alpha = 1.0 - smoothstep(0.08, 0.5, radius);
-  gl_FragColor = vec4(0.28, 0.76, 1.0, alpha * 0.72);
+  gl_FragColor = vec4(0.66, 1.0, 0.24, alpha * 0.88);
 }`;

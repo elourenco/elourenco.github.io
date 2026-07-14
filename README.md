@@ -51,8 +51,8 @@ Build de produção medido em 2026-07-14:
 
 | Artefato                               | Minificado | Gzip (`gzip -c`) |
 | -------------------------------------- | ---------: | ---------------: |
-| app `index-xY2OxQ5X.js`                |   298601 B |          92930 B |
-| cena `ParticleScene-K8NNHlea.js`       |     2617 B |           1331 B |
+| app `index-BU2Cr35N.js`                |   298601 B |          92932 B |
+| cena `ParticleScene-DNXLebkj.js`       |     2617 B |           1332 B |
 | vendor `three-vendor-CTAtCiMJ.js`      |   883519 B |         233094 B |
 | runtime `rolldown-runtime-QTnfLwEv.js` |      694 B |           420 B¹ |
 | fonte WOFF2                            |    22444 B |                — |
@@ -79,11 +79,27 @@ gzip -c dist/assets/ParticleScene-*.js | wc -c
 npm audit --omit=dev
 ```
 
-Não houve profiling de dispositivo/browser representativo nesta validação.
-Portanto não há números de FPS, LCP, CLS ou INP nem afirmação medida sobre
-quantidade de loops RAF, commits React por frame ou retenção de recursos WebGL.
-Esses itens exigem uma sessão real de Performance/Memory com GPU e não devem ser
-apresentados como provados por testes funcionais ou inspeção de código.
+## Profiling instrumentado do runtime
+
+Uma sessão Chromium contra o preview de produção instrumentou
+`requestAnimationFrame` antes do bootstrap e instalou o hook de commits do
+React. Em um intervalo estável de 1 segundo com um canvas animando, foi observado
+máximo de `1` callback RAF pendente, `60` callbacks executados e `0` commits
+React adicionais. Essa contagem de callbacks não é uma medição de FPS.
+
+Ao navegar da home para Dona Events, o canvas passou de `1` para `0`, o RAF
+pendente de `1` para `0` e houve `1` cancelamento. Ao despachar
+`visibilitychange` com `visibilityState=hidden`, canvas e RAF pendente também
+passaram a `0`; ao retornar para `visible`, o gate reabriu com `1` canvas e `1`
+RAF pendente.
+
+A evidência completa está fora do bundle em
+`/tmp/elourenco-futuristic-captures/runtime-profile.json`. O teste de visibilidade
+controla `document.visibilityState` antes do bootstrap e despacha o evento real,
+portanto prova o boundary da aplicação, não uma troca de aba pelo sistema
+operacional. A instrumentação não observa trabalho interno do compositor,
+alocações da GPU nem liberação de recursos no driver. Não há alegação de FPS,
+GPU resources, LCP, CLS ou INP.
 
 ## Resiliência e escalabilidade
 

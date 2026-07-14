@@ -33,6 +33,30 @@ test.describe('responsive particle contracts', () => {
       .toBe(true);
   });
 
+  test('reflows the hero while preserving the desktop rail at 834px', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 834, height: 1194 });
+    await page.goto('/en');
+
+    await expect(page.locator('.desktop-section-rail')).toBeVisible();
+    await expect(page.locator('.mobile-site-header')).toBeHidden();
+
+    const name = await page.locator('.home-hero__name').boundingBox();
+    const content = await page.locator('.home-hero__content').boundingBox();
+    expect(name).not.toBeNull();
+    expect(content).not.toBeNull();
+    expect(name!.height).toBeLessThanOrEqual(170);
+    expect(content!.width).toBeGreaterThanOrEqual(500);
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () => document.documentElement.scrollWidth <= window.innerWidth,
+        ),
+      )
+      .toBe(true);
+  });
+
   test('does not mount the particle canvas with reduced motion', async ({
     page,
   }) => {
