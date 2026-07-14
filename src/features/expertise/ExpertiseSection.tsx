@@ -8,7 +8,7 @@ export function ExpertiseSection({ content }: { content: PortfolioContent }) {
       className="expertise-section section-shell"
       aria-labelledby={SITE_ANCHORS.home.expertiseTitle}
     >
-      <div className="section-heading">
+      <div className="section-heading expertise-section__heading">
         <p className="eyebrow" aria-hidden="true">
           // 02
         </p>
@@ -16,17 +16,19 @@ export function ExpertiseSection({ content }: { content: PortfolioContent }) {
           {content.navigation.expertise}
         </h2>
       </div>
-      <div className="expertise-grid">
+      <div className="expertise-grid expertise-section__list">
         {content.expertise.map((item, index) => (
           <article className="expertise-card" key={item.id}>
             <span className="expertise-card__index" aria-hidden="true">
               0{index + 1}
             </span>
-            <h3>{item.title}</h3>
-            <p>{item.description}</p>
-            <ul>
+            <h3 className="expertise-card__title">{item.title}</h3>
+            <p className="expertise-card__description">{item.description}</p>
+            <ul className="expertise-card__skills">
               {item.skills.map((skill) => (
-                <li key={skill}>{skill}</li>
+                <li className="expertise-card__skill" key={skill}>
+                  {skill}
+                </li>
               ))}
             </ul>
           </article>

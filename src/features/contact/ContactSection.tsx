@@ -8,7 +8,7 @@ export function ContactSection({ content }: { content: PortfolioContent }) {
       className="contact-section section-shell"
       aria-labelledby={SITE_ANCHORS.home.contactTitle}
     >
-      <div className="section-heading">
+      <div className="section-heading contact-section__heading">
         <p className="eyebrow" aria-hidden="true">
           // 04
         </p>

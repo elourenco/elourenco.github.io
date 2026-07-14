@@ -8,6 +8,28 @@ import { pageInternalLinks } from '../../site-contract';
 afterEach(cleanup);
 
 describe('DonaEventsPage', () => {
+  it('exposes the shared editorial class contracts without changing semantics', () => {
+    const { container } = render(
+      <MemoryRouter initialEntries={['/en/projects/dona-events']}>
+        <DonaEventsPage content={enContent} />
+      </MemoryRouter>,
+    );
+
+    expect(container.querySelector('main.dona-page')).toBeInTheDocument();
+    expect(container.querySelector('article.dona-case')).toBeInTheDocument();
+    expect(
+      container.querySelector('header.dona-case__hero'),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelectorAll('section.dona-case__section'),
+    ).toHaveLength(4);
+    expect(container.querySelectorAll('ul.dona-case__list')).toHaveLength(2);
+    expect(container.querySelector('a.dona-case__cta')).toHaveAttribute(
+      'target',
+      '_blank',
+    );
+  });
+
   it('renders the public English case without proprietary disclosures', () => {
     const { container } = render(
       <MemoryRouter initialEntries={['/en/projects/dona-events']}>
