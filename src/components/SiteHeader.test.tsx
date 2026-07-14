@@ -68,7 +68,12 @@ describe('SiteHeader', () => {
     expect(toggle).toHaveAttribute('aria-expanded', 'false');
     fireEvent.click(toggle);
     expect(toggle).toHaveAttribute('aria-expanded', 'true');
-    fireEvent.click(screen.getAllByRole('link', { name: 'Início' }).at(-1)!);
+    const mobileHomeLink = screen
+      .getAllByRole('link', { name: 'Início' })
+      .at(-1)!;
+    expect(mobileHomeLink).toHaveAttribute('href', '/pt-br');
+    mobileHomeLink.addEventListener('click', (event) => event.preventDefault());
+    fireEvent.click(mobileHomeLink);
     expect(toggle).toHaveAttribute('aria-expanded', 'false');
 
     fireEvent.click(toggle);
