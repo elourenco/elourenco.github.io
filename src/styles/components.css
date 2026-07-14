@@ -208,14 +208,18 @@
   text-align: right;
 }
 
-.home-hero__particles {
-  position: absolute !important;
-  inset: -8%;
+.particle-experience {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.particle-experience.home-hero__particles {
+  inset: -8% 0;
   left: 42%;
   z-index: 1;
   overflow: hidden;
   opacity: 0.58;
-  pointer-events: none;
   mask-image: linear-gradient(
     to right,
     transparent 0,

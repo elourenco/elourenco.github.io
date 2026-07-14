@@ -53,8 +53,9 @@ export function ParticleExperience({ className }: { className?: string }) {
   return (
     <div
       ref={hostRef}
-      className={className}
-      style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
+      className={
+        className ? `particle-experience ${className}` : 'particle-experience'
+      }
     >
       {open ? (
         <ErrorBoundary fallback={<ExperienceFallback />}>

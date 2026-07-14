@@ -51,7 +51,7 @@ Build de produção medido em 2026-07-14:
 
 | Artefato                               | Minificado | Gzip (`gzip -c`) |
 | -------------------------------------- | ---------: | ---------------: |
-| app `index-BHCukdHM.js`                |   298601 B |          92930 B |
+| app `index-BC5Sk6KR.js`                |   298597 B |          92921 B |
 | cena `ParticleScene-DrdVQiSv.js`       |     2617 B |           1333 B |
 | vendor `three-vendor-CTAtCiMJ.js`      |   883519 B |         233094 B |
 | runtime `rolldown-runtime-QTnfLwEv.js` |      694 B |           420 B¹ |

@@ -96,6 +96,7 @@ test.describe('responsive particle contracts', () => {
   test('mounts at most one canvas after the idle gate opens', async ({
     page,
   }) => {
+    await page.setViewportSize({ width: 1440, height: 1024 });
     await page.addInitScript(() => {
       Object.defineProperty(navigator, 'deviceMemory', {
         configurable: true,
@@ -115,6 +116,18 @@ test.describe('responsive particle contracts', () => {
     });
     if (webglAvailable) {
       await expect.poll(() => page.locator('canvas').count()).toBe(1);
+
+      const visual = await page.locator('.home-hero__visual').boundingBox();
+      const host = await page.locator('.home-hero__particles').boundingBox();
+      const content = await page.locator('.home-hero__content').boundingBox();
+      expect(visual).not.toBeNull();
+      expect(host).not.toBeNull();
+      expect(content).not.toBeNull();
+      expect(host!.width).toBeGreaterThan(0);
+      expect(host!.height).toBeGreaterThan(0);
+      expect(host!.x).toBeGreaterThan(visual!.x);
+      expect(host!.width).toBeLessThan(visual!.width);
+      expect(host!.x).toBeGreaterThanOrEqual(content!.x + content!.width);
     }
   });
 

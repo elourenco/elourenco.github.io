@@ -8,17 +8,13 @@ afterEach(() => {
 });
 
 describe('ParticleExperience', () => {
-  it('provides a full containing-block surface while preserving className', () => {
+  it('delegates geometry to its base class while preserving className', () => {
     vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
 
     render(<ParticleExperience className="hero-particles" />);
 
     const host = screen.getByTestId('experience-fallback').parentElement;
-    expect(host).toHaveClass('hero-particles');
-    expect(host).toHaveStyle({
-      position: 'absolute',
-      inset: '0',
-      pointerEvents: 'none',
-    });
+    expect(host).toHaveClass('particle-experience', 'hero-particles');
+    expect(host).not.toHaveAttribute('style');
   });
 });

@@ -32,8 +32,13 @@ test('keeps the display clamp on the hero name and the role secondary', () => {
 });
 
 test('confines the particle dissolve to a softly faded right-side field', () => {
+  const base = rule('.particle-experience');
   const particles = rule('.home-hero__particles');
 
+  assert.match(base, /position:\s*absolute/);
+  assert.match(base, /inset:\s*0/);
+  assert.match(base, /pointer-events:\s*none/);
+  assert.match(particles, /inset:\s*-8% 0/);
   assert.match(particles, /left:\s*42%/);
   assert.match(particles, /overflow:\s*hidden/);
   assert.match(particles, /opacity:\s*0\.58/);
