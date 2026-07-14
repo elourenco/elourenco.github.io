@@ -1,47 +1,32 @@
 export interface QualityProfile {
+  enabled: boolean;
   dpr: [number, number];
-  shadows: boolean;
   particles: number;
-  postprocessing: boolean;
 }
 
 export interface QualityProfileInput {
+  webgl: boolean;
   reducedMotion: boolean;
+  saveData: boolean;
   mobile: boolean;
   memoryGb?: number;
 }
 
-const LOW: QualityProfile = {
-  dpr: [1, 1],
-  shadows: false,
-  particles: 0,
-  postprocessing: false,
-};
-
-const MEDIUM: QualityProfile = {
-  dpr: [1, 1.5],
-  shadows: true,
-  particles: 300,
-  postprocessing: false,
-};
-
-const HIGH: QualityProfile = {
-  dpr: [1, 2],
-  shadows: true,
-  particles: 900,
-  postprocessing: true,
-};
+const DISABLED: QualityProfile = { enabled: false, dpr: [1, 1], particles: 0 };
 
 export function selectQualityProfile(
   input: QualityProfileInput,
 ): QualityProfile {
-  if (input.reducedMotion || (input.mobile && (input.memoryGb ?? 4) <= 2)) {
-    return LOW;
+  if (
+    !input.webgl ||
+    input.reducedMotion ||
+    input.saveData ||
+    (input.mobile && (input.memoryGb ?? 4) <= 2)
+  ) {
+    return DISABLED;
   }
 
-  if (input.mobile || (input.memoryGb ?? 4) < 8) {
-    return MEDIUM;
-  }
-
-  return HIGH;
+  return input.mobile || (input.memoryGb ?? 4) < 8
+    ? { enabled: true, dpr: [1, 1], particles: 3000 }
+    : { enabled: true, dpr: [1, 1.5], particles: 9000 };
 }
