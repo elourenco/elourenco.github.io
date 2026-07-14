@@ -13,7 +13,7 @@ export function useExperienceGate({
   eligible,
   target,
 }: ExperienceGateInput): ExperienceGateState {
-  const activation = useMemo(() => ({}), [eligible]);
+  const activation = useMemo(() => ({ eligible }), [eligible]);
   const [readyActivation, setReadyActivation] = useState<object | null>(null);
   const [intersection, setIntersection] = useState<{
     activation: object | null;
