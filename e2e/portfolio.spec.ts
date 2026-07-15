@@ -1,60 +1,96 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('responsive particle contracts', () => {
-  test('shows the desktop rail and constructed-reality hero', async ({
+  for (const viewport of [
+    { width: 390, height: 844 },
+    { width: 768, height: 1024 },
+    { width: 1024, height: 768 },
+    { width: 1440, height: 1024 },
+    { width: 1488, height: 1058 },
+  ]) {
+    test(`has no responsive horizontal overflow at ${viewport.width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize(viewport);
+      await page.goto('/en');
+      await page.evaluate(() => document.fonts.ready);
+
+      const geometry = await page.evaluate(() => ({
+        viewportWidth: window.innerWidth,
+        scrollWidth: document.documentElement.scrollWidth,
+        offenders: [...document.querySelectorAll<HTMLElement>('body *')]
+          .map((element) => {
+            const bounds = element.getBoundingClientRect();
+            return {
+              className: element.className,
+              left: Math.round(bounds.left),
+              right: Math.round(bounds.right),
+            };
+          })
+          .filter(
+            ({ left, right }) => left < -1 || right > window.innerWidth + 1,
+          )
+          .slice(0, 12),
+      }));
+
+      expect(
+        geometry.scrollWidth,
+        JSON.stringify(geometry, null, 2),
+      ).toBeLessThanOrEqual(geometry.viewportWidth);
+    });
+  }
+
+  test('matches the reference viewport geometry at 1488px', async ({
     page,
   }) => {
-    await page.setViewportSize({ width: 1440, height: 1024 });
+    await page.setViewportSize({ width: 1488, height: 1058 });
     await page.goto('/en');
 
-    await expect(page.locator('.desktop-section-rail')).toBeVisible();
-    await expect(
-      page.getByRole('heading', {
-        level: 1,
-        name: /Principal Software Engineer/,
-      }),
-    ).toBeVisible();
+    const hero = await page.locator('.home-hero').boundingBox();
+    const project = await page.locator('#work').boundingBox();
+    const portrait = await page.locator('.hero-portrait').boundingBox();
+    const rail = await page.locator('.site-header').boundingBox();
+
+    expect(hero).not.toBeNull();
+    expect(project).not.toBeNull();
+    expect(portrait).not.toBeNull();
+    expect(rail).not.toBeNull();
+    expect(project!.y).toBeLessThan(1058);
+    expect(portrait!.x).toBeGreaterThan(700);
+    expect(rail!.width).toBeLessThanOrEqual(132);
   });
 
-  test('shows the mobile header without horizontal overflow', async ({
+  test('shows the compact header and hides the desktop rail at 1024px', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1024, height: 768 });
+    await page.goto('/en');
+
+    await expect(page.locator('.desktop-section-rail')).toBeHidden();
+    await expect(page.locator('.mobile-site-header')).toBeVisible();
+    await expect(page.locator('.site-header')).toHaveCSS('position', 'sticky');
+  });
+
+  test('keeps the responsive mobile menu visible and restores focus on Escape', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/en');
 
-    await expect(page.locator('.mobile-site-header')).toBeVisible();
-    await expect(page.locator('.desktop-section-rail')).toBeHidden();
-    await expect
-      .poll(() =>
-        page.evaluate(
-          () => document.documentElement.scrollWidth <= window.innerWidth,
-        ),
-      )
-      .toBe(true);
-  });
+    const toggle = page.locator('.mobile-site-header__toggle');
+    await toggle.click();
 
-  test('reflows the hero while preserving the desktop rail at 834px', async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width: 834, height: 1194 });
-    await page.goto('/en');
+    const primary = page.getByRole('navigation', { name: 'Primary' });
+    await expect(primary).toBeVisible();
+    const links = primary.getByRole('link');
+    await expect(links).toHaveCount(5);
+    for (const link of await links.all()) {
+      await expect(link).toBeVisible();
+    }
 
-    await expect(page.locator('.desktop-section-rail')).toBeVisible();
-    await expect(page.locator('.mobile-site-header')).toBeHidden();
-
-    const name = await page.locator('.home-hero__name').boundingBox();
-    const content = await page.locator('.home-hero__content').boundingBox();
-    expect(name).not.toBeNull();
-    expect(content).not.toBeNull();
-    expect(name!.height).toBeLessThanOrEqual(170);
-    expect(content!.width).toBeGreaterThanOrEqual(500);
-    await expect
-      .poll(() =>
-        page.evaluate(
-          () => document.documentElement.scrollWidth <= window.innerWidth,
-        ),
-      )
-      .toBe(true);
+    await page.keyboard.press('Escape');
+    await expect(primary).toBeHidden();
+    await expect(toggle).toBeFocused();
   });
 
   test('does not mount the particle canvas with reduced motion', async ({
@@ -77,19 +113,16 @@ test.describe('responsive particle contracts', () => {
       page,
     }) => {
       await page.setViewportSize({ width: 390, height: 844 });
-      await page.addInitScript(
-        ({ memoryGb, saveData }) => {
-          Object.defineProperty(navigator, 'deviceMemory', {
-            configurable: true,
-            value: memoryGb,
-          });
-          Object.defineProperty(navigator, 'connection', {
-            configurable: true,
-            value: { saveData },
-          });
-        },
-        constrainedProfile,
-      );
+      await page.addInitScript(({ memoryGb, saveData }) => {
+        Object.defineProperty(navigator, 'deviceMemory', {
+          configurable: true,
+          value: memoryGb,
+        });
+        Object.defineProperty(navigator, 'connection', {
+          configurable: true,
+          value: { saveData },
+        });
+      }, constrainedProfile);
       await page.goto('/en');
       await page.waitForTimeout(1_300);
 
@@ -132,10 +165,9 @@ test.describe('responsive particle contracts', () => {
     await expect(page.getByTestId('particle-canvas')).toHaveCount(0);
   });
 
-  test('preserves content and CTAs after WebGL context loss', async (
-    { page },
-    testInfo,
-  ) => {
+  test('preserves content and CTAs after WebGL context loss', async ({
+    page,
+  }, testInfo) => {
     test.skip(
       testInfo.project.name !== 'desktop-chromium',
       'context loss requires the desktop WebGL-eligible profile',
