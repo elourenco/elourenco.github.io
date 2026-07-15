@@ -1,3 +1,4 @@
+import { ListIcon, XIcon } from '@phosphor-icons/react';
 import { useId, useRef, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import type { SectionNavigationItem } from './navigation-types';
@@ -8,6 +9,7 @@ interface MobileSiteHeaderProps {
   openLabel: string;
   closeLabel: string;
   items: readonly SectionNavigationItem[];
+  activeId: string;
 }
 
 export function MobileSiteHeader({
@@ -16,6 +18,7 @@ export function MobileSiteHeader({
   openLabel,
   closeLabel,
   items,
+  activeId,
 }: MobileSiteHeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const navigationId = useId();
@@ -47,7 +50,11 @@ export function MobileSiteHeader({
         aria-label={isOpen ? closeLabel : openLabel}
         onClick={() => setIsOpen((open) => !open)}
       >
-        <span aria-hidden="true">{isOpen ? '×' : '☰'}</span>
+        {isOpen ? (
+          <XIcon size={22} aria-hidden="true" />
+        ) : (
+          <ListIcon size={22} aria-hidden="true" />
+        )}
       </button>
       {isOpen ? (
         <nav
@@ -56,7 +63,14 @@ export function MobileSiteHeader({
           aria-label={navigationLabel}
         >
           {items.map((item) => (
-            <a key={item.href} href={item.href} onClick={closeNavigation}>
+            <a
+              key={item.href}
+              href={item.href}
+              aria-current={
+                item.sectionId === activeId ? 'location' : undefined
+              }
+              onClick={closeNavigation}
+            >
               <span aria-hidden="true">{item.index}</span>
               <span>{item.label}</span>
             </a>

@@ -38,6 +38,18 @@ describe('selectQualityProfile', () => {
     ).toEqual({ enabled: true, dpr: [1, 1.5], particles: 9000 });
   });
 
+  it('disables the runtime on memory-constrained desktop devices', () => {
+    expect(
+      selectQualityProfile({
+        webgl: true,
+        reducedMotion: false,
+        saveData: false,
+        mobile: false,
+        memoryGb: 2,
+      }),
+    ).toEqual({ enabled: false, dpr: [1, 1], particles: 0 });
+  });
+
   it('explicitly disables every unsupported capability', () => {
     const disabledInputs: QualityProfileInput[] = [
       {

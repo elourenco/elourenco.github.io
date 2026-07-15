@@ -5,6 +5,13 @@ import { getContent, ptBRContent } from './index';
 describe('localized portfolio content', () => {
   it('keeps content structures in parity', () => {
     expect(Object.keys(enContent)).toEqual(Object.keys(ptBRContent));
+    const capabilityIds = ['distributed', 'mobile', 'ai', 'observability'];
+    expect(enContent.hero.capabilities.map((item) => item.id)).toEqual(
+      capabilityIds,
+    );
+    expect(ptBRContent.hero.capabilities.map((item) => item.id)).toEqual(
+      capabilityIds,
+    );
     expect(enContent.expertise.map((item) => item.id)).toEqual(
       ptBRContent.expertise.map((item) => item.id),
     );

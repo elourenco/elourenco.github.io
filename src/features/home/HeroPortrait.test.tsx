@@ -5,7 +5,7 @@ import { HeroPortrait } from './HeroPortrait';
 afterEach(cleanup);
 
 describe('HeroPortrait', () => {
-  it('starts loading with intrinsic dimensions and priority hints', () => {
+  it('loads the transparent portrait with intrinsic dimensions and no legacy frame', () => {
     const { container } = render(
       <HeroPortrait alt="Portrait of Eduardo Lourenco" priority />,
     );
@@ -17,10 +17,18 @@ describe('HeroPortrait', () => {
     const portrait = screen.getByRole('img', {
       name: 'Portrait of Eduardo Lourenco',
     });
-    expect(portrait).toHaveAttribute('width', '752');
-    expect(portrait).toHaveAttribute('height', '752');
+    expect(portrait).toHaveAttribute('src', '/src/assets/eduardo-portrait.png');
+    expect(portrait).toHaveAttribute('width', '1024');
+    expect(portrait).toHaveAttribute('height', '1240');
     expect(portrait).toHaveAttribute('loading', 'eager');
     expect(portrait).toHaveAttribute('fetchpriority', 'high');
+    expect(
+      container.querySelector('.hero-portrait__frame'),
+    ).not.toBeInTheDocument();
+    expect(
+      container.querySelector('.hero-portrait__scanline'),
+    ).not.toBeInTheDocument();
+    expect(container.querySelector('figcaption')).not.toBeInTheDocument();
   });
 
   it('marks the portrait ready only after the image loads', () => {

@@ -1,86 +1,101 @@
-# Task 5 — Progressive 3D boundary and resilient fallback
+# Task 5 — Compact remaining sections and add one-shot reveals
 
 ## Status
 
-Implemented and verified. Scope is limited to the progressive R3F boundary; the
-Cosmic Station scene remains for Task 6.
+Implemented and verified on base `b159d22`. Scope is limited to the reveal hook,
+FeaturedProject, expertise, career, contact, and their CSS. Navigation, hero,
+particles, global breakpoints, E2E, and final visual QA were not changed.
 
-## RED
+## RED evidence
 
-Command:
+### Reveal hook
 
 ```bash
-npm run test:run -- src/experience
+npm test -- src/components/useRevealOnView.test.tsx
 ```
 
-Result: failed as expected. Both suites could not resolve the not-yet-created
-`./quality` and `./AdaptiveCanvas` modules. This established the test-first
-baseline before production code existed.
+Failed as expected because `./useRevealOnView` did not exist.
 
-## GREEN
-
-Implemented:
-
-- Exact `SceneSection`, `SceneState`, and `QualityProfile` contracts.
-- Deterministic low/medium/high quality selection.
-- Reduced motion always selects low quality.
-- Memory-constrained mobile devices select low quality.
-- WebGL capability check before R3F mounts.
-- `forceFallback` test seam and presentational 2D fallback.
-- Canvas render-error isolation through `ErrorBoundary`.
-- Lazy `AdaptiveCanvas` integration after semantic homepage content.
-- No React state updates or frame-loop hooks in the boundary.
-
-Focused command:
+### Featured project
 
 ```bash
-npm run test:run -- src/experience
+npm test -- src/features/home/HomePage.test.tsx
 ```
 
-Result: 2 files passed, 7 tests passed.
+Failed as expected because `#work` did not contain `.feature-card`. The run also
+exposed a stale `EL-01` assertion left after Task 3 removed that ornament; the
+assertion was corrected without modifying the hero.
 
-## Full verification
+## GREEN implementation
+
+- Added `useRevealOnView<T>()` with one observer per section, one-shot reveal,
+  idempotent disconnect, and no scroll listener or frame-driven React state.
+- Reduced motion, missing `IntersectionObserver`, and missing target elements
+  reveal content immediately.
+- Kept the four semantic `section` roots and attached typed refs plus
+  `data-revealed`; no heading relationship or wrapper hierarchy changed.
+- Rebuilt FeaturedProject as one card with exactly one localized `h2`, preserved
+  internal locale route, and used `donaCase.metric` for the compact metric.
+- Added the real dashboard WebP with intrinsic `1120 x 700` dimensions,
+  decorative semantics, and lazy loading to reserve layout space and avoid CLS.
+- Compacted expertise cards, timeline rhythm, contact geometry, and the project
+  layout. Reveal transitions use only opacity and translateY; reduced-motion CSS
+  forces the final state with transitions disabled.
+
+Focused GREEN command:
 
 ```bash
-npm run test:run
+npm test -- src/components/useRevealOnView.test.tsx src/features/home/HomePage.test.tsx
+```
+
+Result: 2 files passed, 5 tests passed.
+
+## Verification evidence
+
+```bash
 npm run typecheck
-npm run lint
 npm run build
 ```
 
 Results:
 
-- Tests: 10 files passed, 26 tests passed.
 - Typecheck: passed (`tsc -b --pretty false`).
-- Lint: passed with zero errors and zero warnings.
 - Build: passed (`tsc -b && vite build`).
+- Dashboard output: `dist/assets/dona-events-dashboard-JgUJpnrW.webp`, 33.84 kB.
+- Progressive chunks remain separate: `ParticleScene` 3.16 kB and
+  `three-vendor` 883.51 kB.
 
-## Chunk evidence
+## Review follow-up
 
-Vite production output:
+The focused review reproduced two quality-gate failures before the fix:
 
-```text
-dist/assets/index-CE1VfUeO.js           299.30 kB │ gzip:  95.06 kB
-dist/assets/AdaptiveCanvas-zIzOl6LG.js  873.48 kB │ gzip: 232.34 kB
+- ESLint reported `@typescript-eslint/no-this-alias` in the observer mock.
+- Prettier reported all three reviewed TypeScript files as unformatted.
+
+The observer mock now returns one stable `IntersectionObserver` object through a
+named constructible function, preserving the callback and observer arguments
+without capturing `this`. Prettier was applied only to the three reviewed files.
+
+```bash
+npm test -- src/components/useRevealOnView.test.tsx src/features/home/HomePage.test.tsx
+npx eslint src/components/useRevealOnView.ts src/components/useRevealOnView.test.tsx src/features/projects/FeaturedProject.tsx
+npx prettier --check src/components/useRevealOnView.ts src/components/useRevealOnView.test.tsx src/features/projects/FeaturedProject.tsx
+npm run typecheck
 ```
 
-The Three/R3F boundary is isolated in the lazy `AdaptiveCanvas` chunk and does
-not inflate the initial semantic application chunk.
+Results: 5 focused tests passed; ESLint, Prettier, and typecheck exited 0.
 
-## Commit
+## Commits
 
-`feat: add resilient adaptive 3D experience boundary`
+- `53c850c feat: refine portfolio sections and motion`
+- `80ef218 fix: satisfy reveal hook quality gates`
 
 ## Self-review and concerns
 
-- Scope review: no station geometry, scroll observer, camera transition, assets,
-  postprocessing implementation, or per-frame React state was introduced.
-- Resilience review: forced fallback, missing WebGL, and render exceptions are
-  covered by tests; semantic HTML remains independent of the canvas.
-- Performance concern: the separate Three/R3F chunk is 873.48 kB minified
-  (232.34 kB gzip), so Vite emits its >500 kB warning. The split protects initial
-  content latency, but Task 6 should continue to gate secondary assets and avoid
-  importing unused Drei/postprocessing modules.
-- Capability selection intentionally uses stable device signals only. Missing
-  `navigator.deviceMemory` defaults to the medium profile rather than risking a
-  high profile on unknown hardware.
+- Responsive `.feature-card` stacking remains intentionally deferred to Task 6;
+  no global breakpoint or E2E contract was changed in this task.
+- Vite still warns about the pre-existing 883.51 kB minified Three vendor chunk.
+  This task did not add code to that chunk; the semantic app and dashboard remain
+  independent of WebGL failure.
+- Build and tests resolve the dashboard import. Final viewport comparison and
+  interaction QA remain Task 7 responsibilities.

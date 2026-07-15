@@ -23,8 +23,18 @@ html {
 body {
   margin: 0;
   min-width: 320px;
-  overflow-x: hidden;
-  background: var(--color-void);
+  background:
+    radial-gradient(
+      circle at 69% 13rem,
+      rgb(168 255 62 / 8%),
+      transparent 28rem
+    ),
+    radial-gradient(
+      ellipse at 53% 48rem,
+      rgb(52 111 43 / 10%),
+      transparent 38rem
+    ),
+    linear-gradient(105deg, #020503 0%, #020805 52%, #010302 100%);
   color: var(--color-text);
   font-family: var(--font-sans);
   font-size: var(--step-0);
@@ -84,7 +94,7 @@ h3 {
 }
 
 h2 {
-  font-size: var(--step-2);
+  font-size: clamp(2.5rem, 4vw, 4.25rem);
 }
 
 h3 {

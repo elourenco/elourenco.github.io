@@ -1,20 +1,43 @@
 import {
+  act,
   cleanup,
   fireEvent,
   render,
   screen,
   within,
 } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { enContent, ptBRContent } from '../content';
 import { SiteHeader } from './SiteHeader';
 
-afterEach(cleanup);
+let observerCallback: IntersectionObserverCallback | undefined;
+
+beforeEach(() => {
+  observerCallback = undefined;
+  class ObserverMock implements IntersectionObserver {
+    constructor(callback: IntersectionObserverCallback) {
+      observerCallback = callback;
+    }
+    observe = vi.fn();
+    unobserve = vi.fn();
+    disconnect = vi.fn();
+    root = null;
+    rootMargin = '';
+    thresholds = [];
+    takeRecords = () => [];
+  }
+  vi.stubGlobal('IntersectionObserver', ObserverMock);
+});
+
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+});
 
 describe('SiteHeader', () => {
   it('builds one English home navigation contract for both responsive shells', () => {
-    render(
+    const { container } = render(
       <MemoryRouter initialEntries={['/en']}>
         <SiteHeader content={enContent} route="home" />
       </MemoryRouter>,
@@ -33,13 +56,47 @@ describe('SiteHeader', () => {
       within(primary)
         .getAllByRole('link')
         .map((link) => link.getAttribute('href')),
-    ).toEqual(['#main-content', '#work', '#expertise', '#career', '#contact']);
+    ).toEqual(['#home', '#work', '#expertise', '#career', '#contact']);
     for (const index of ['01', '02', '03', '04', '05']) {
       expect(within(primary).getByText(index)).toHaveAttribute(
         'aria-hidden',
         'true',
       );
     }
+    expect(
+      container.querySelectorAll('.desktop-section-rail__node'),
+    ).toHaveLength(5);
+    expect(
+      container.querySelector('.desktop-section-rail__footer'),
+    ).toBeInTheDocument();
+
+    const rail = container.querySelector<HTMLElement>('.desktop-section-rail')!;
+    expect(
+      [...rail.querySelectorAll('.desktop-section-rail__visible-label')].map(
+        (label) => label.textContent,
+      ),
+    ).toEqual(['Home', 'Work', 'Expertise', 'Career', 'Contact']);
+    expect(
+      within(rail).getByRole('link', { name: 'Selected work' }),
+    ).toBeVisible();
+  });
+
+  it('keeps full Portuguese accessible names behind source-faithful rail labels', () => {
+    const { container } = render(
+      <MemoryRouter initialEntries={['/pt-br']}>
+        <SiteHeader content={ptBRContent} route="home" />
+      </MemoryRouter>,
+    );
+
+    const rail = container.querySelector<HTMLElement>('.desktop-section-rail')!;
+    expect(
+      [...rail.querySelectorAll('.desktop-section-rail__visible-label')].map(
+        (label) => label.textContent,
+      ),
+    ).toEqual(['Início', 'Trabalhos', 'Especialidades', 'Carreira', 'Contato']);
+    expect(
+      within(rail).getByRole('link', { name: 'Trabalhos selecionados' }),
+    ).toBeVisible();
   });
 
   it('uses localized home paths on project routes and closes the mobile disclosure', () => {
@@ -63,6 +120,9 @@ describe('SiteHeader', () => {
       '/pt-br#career',
       '/pt-br#contact',
     ]);
+    for (const link of within(primary).getAllByRole('link')) {
+      expect(link).not.toHaveAttribute('aria-current');
+    }
 
     const toggle = screen.getByRole('button', { name: 'Abrir navegação' });
     expect(toggle).toHaveAttribute('aria-expanded', 'false');
@@ -80,5 +140,32 @@ describe('SiteHeader', () => {
     fireEvent.keyDown(toggle, { key: 'Escape' });
     expect(toggle).toHaveAttribute('aria-expanded', 'false');
     expect(toggle).toHaveFocus();
+  });
+
+  it('marks the strongest visible home section as the current location', () => {
+    render(
+      <MemoryRouter initialEntries={['/pt-br']}>
+        <SiteHeader content={ptBRContent} route="home" />
+        <section id="home" />
+        <section id="work" />
+      </MemoryRouter>,
+    );
+
+    act(() => {
+      observerCallback?.(
+        [
+          {
+            target: document.getElementById('work')!,
+            isIntersecting: true,
+            intersectionRatio: 0.75,
+          } as unknown as IntersectionObserverEntry,
+        ],
+        {} as IntersectionObserver,
+      );
+    });
+
+    expect(
+      screen.getByRole('link', { name: 'Trabalhos selecionados' }),
+    ).toHaveAttribute('aria-current', 'location');
   });
 });

@@ -1,113 +1,170 @@
-# Task 6 — Cosmic Realism station and scroll-driven scene
+# Task 6 — Responsive geometry, typography, and menu behavior
 
 ## Status
 
-Implemented and verified. The homepage keeps semantic HTML as the authoritative
-content layer while a procedural, runtime-asset-free orbital station responds to
-stable section anchors.
+Implemented from baseline `551b08b`. The desktop rail now begins at 1180 px,
+768–1179 px uses the compact sticky header, and widths below 768 px use the
+stacked mobile layout. The change is CSS-only at runtime and adds no listeners,
+state, or dependencies.
 
-## RED
+## Scope
 
-Command:
+Changed only the Task 6 owners:
 
-```bash
-npm run test:run -- src/experience/useSectionObserver.test.tsx
-```
+- `scripts/design-system-css.test.mjs`
+- `src/styles/base.css`
+- `src/styles/layout.css`
+- `src/styles/components.css`
+- `e2e/portfolio.spec.ts`
+- `.superpowers/sdd/task-6-report.md`
 
-Result: failed as expected because `./useSectionObserver` did not exist. This
-established the test-first boundary before observer production code was added.
+No copy, route, destination, SEO, locale, hero/particle runtime, or semantic
+section markup changed.
 
-## GREEN
+## RED evidence
 
-Implemented:
-
-- Deterministic `IntersectionObserver` selection by largest ratio, with declared
-  section order as the equal-ratio tie-breaker.
-- Prior-section retention when no section intersects, thresholds
-  `[0.25, 0.5, 0.7]`, and observer cleanup on unmount.
-- Stable anchor mapping: `main-content -> arrival`, `work -> ai-core`,
-  `expertise -> systems`, `career -> career`, and `contact -> contact`.
-- Procedural station deck, physical AI core, two orbital rings, antenna modules,
-  parabolic dishes, and deterministic instanced sparse stars. No model, texture,
-  font, CDN, or remote runtime request is used by the experience source.
-- Standard/physical metal, ceramic, glass, and restrained cyan emissive
-  materials, plus a directional key, point fill, and hemisphere environment.
-- Fixed camera positions and look targets for all five `SceneSection` values.
-  Delta-time exponential damping mutates Three.js objects only; no React setter
-  is called from `useFrame`.
-- Reduced motion disables camera travel, orbital motion, stars, shadows,
-  antialiasing, and bloom; the canvas uses `frameloop="demand"` and invalidates
-  only on explicit section changes.
-- Quality gates control shadow maps, star instance count, antialiasing, and a
-  restrained `UnrealBloomPass`.
-- Fixed presentational canvas layer with no pointer input. HTML, links, routing,
-  accessibility, and the existing WebGL/error fallbacks remain independent.
-- Explicit Rolldown code splitting isolates Three/R3F/postprocessing from both
-  the initial semantic application and the small scene integration chunk.
-
-Focused command:
+CSS boundary command:
 
 ```bash
-npm run test:run -- src/experience
+node --test scripts/design-system-css.test.mjs
 ```
 
-Result: 3 files passed, 10 tests passed.
+Result: 2 passed, 2 failed. The failures were exactly the absent 1179/767 media
+boundaries and the unbounded section-title/metric typography contract.
 
-## Full verification
+Responsive E2E command:
 
 ```bash
-npm run test:run
-npm run typecheck
-npm run lint
-npm run build
+npm run e2e -- --grep "responsive|reference viewport|compact header"
 ```
 
-Results:
+The first attempt was blocked before test execution by sandbox `EPERM` while
+binding `127.0.0.1:4188`. The permitted rerun executed the suite and produced
+7 failures, 22 passes, and 1 expected skip:
 
-- Tests: 11 files passed, 29 tests passed.
-- Typecheck: passed (`tsc -b --pretty false`).
-- Lint: passed with zero errors and zero warnings.
-- Build: passed (`tsc -b && vite build`).
-- Experience source scan found no HTTP URL, `useGLTF`, or React setter inside a
-  frame callback.
+- overflow at 390, 768, 1024, 1440, and 1488 px in desktop Chromium;
+- desktop rail still visible at 1024 px in both Playwright projects;
+- mobile menu visibility and Escape focus restoration already passed.
 
-## Chunk evidence
+Playwright diagnostics at 1488 px measured `scrollWidth=1540` for a
+`viewportWidth=1488`. The only out-of-bounds nodes were the particle host and
+fallback (`left=1020`, `right=1540`), tracing the overflow to the visual host
+not clipping the intentional `right: -12%` dissolve field.
 
-Final Vite production output:
+A final repeated run also exposed a font-load race at 390 px: after the display
+font became active, `.home-hero__content` retained its grid-item
+`min-width:auto` and expanded the page to 394 px. The E2E now waits for
+`document.fonts.ready`, and the content grid item explicitly uses `min-width: 0`.
+
+The review correction added two more RED contracts. The CSS suite failed 1 of
+5 tests because `body` still masked overflow globally. The stabilized reference
+E2E failed in both projects with the actual `.feature-card` at
+`y=1217.390625`, proving that checking only the `#work` section boundary was
+insufficient.
+
+## Implementation
+
+- Replaced the 800/1100 px breakpoint system with exact 1179/767 px boundaries.
+- Kept desktop rail geometry as the default and scoped `white-space: nowrap` to
+  rail labels only.
+- Converted the header to a full-width sticky compact shell through 1179 px;
+  the mobile panel can wrap long labels and keeps 44 px controls.
+- At 768–1179 px, the hero remains two columns with both tracks bounded at
+  `21rem`; the project card uses smaller compact-only minimum tracks.
+- Below 768 px, hero, project card, expertise, contact, and Dona detail grids
+  stack to one column; the capability strip uses two bounded columns.
+- Added `overflow: clip` to `.home-hero__visual`, fixing the actual particle
+  boundary instead of hiding overflow globally.
+- Removed `overflow-x: hidden` from `body`; horizontal overflow now fails the
+  real document-width assertions instead of being globally masked.
+- Removed the hero content grid item's intrinsic minimum so the loaded display
+  font cannot expand the 390 px layout.
+- Reduced hero minimum height, vertical padding, row gap, portrait bound, and
+  capability padding; reduced only the feature section's leading padding. This
+  moves the real project card into the reference fold while keeping the
+  portrait and capability strip intact.
+- Added a shared E2E readiness helper that waits for `document.fonts.ready`,
+  decodes the portrait, scroll-loads and decodes the lazy dashboard when
+  relevant, then returns to `scrollY=0`. It never waits for canvas or WebGL.
+- Set section titles to `clamp(2.5rem, 4vw, 4.25rem)`, Dona detail title to
+  `clamp(4rem, 9vw, 8rem)`, and bounded its metric separately.
+- Removed the viewport-driven `72svh` minimum from the Dona case hero. Existing
+  content-sized expertise, career, and contact sections remain viewport-free.
+
+## GREEN evidence
+
+Required gates, run fresh after implementation:
 
 ```text
-dist/assets/rolldown-runtime-QTnfLwEv.js    0.69 kB │ gzip:   0.42 kB
-dist/assets/AdaptiveCanvas-CZcgY2hn.js      6.98 kB │ gzip:   2.59 kB
-dist/assets/index-CBwd1gOO.js             288.24 kB │ gzip:  91.40 kB
-dist/assets/three-vendor-BCGIBXBX.js      899.17 kB │ gzip: 239.74 kB
+node --test scripts/design-system-css.test.mjs
+5 passed, 0 failed
+
+npm run e2e -- --grep "responsive|reference viewport|compact header"
+29 passed, 1 skipped, 0 failed (7.8s)
+
+npm run test:run
+22 Vitest files passed, 55 tests passed
+14 Node script tests passed
 ```
 
-The initial application does not fetch the Three vendor chunk until the lazy
-experience boundary is requested. Scene-owned code remains a separate 2.59 kB
-gzip chunk.
+The Playwright gate verifies real document width without global clipping at 390,
+768, 1024, 1440, and 1488 px in both configured projects. Stable 1488 x 1058
+measurements were:
 
-## Self-review and concerns
+```text
+hero            x=164.00  y=52.14   width=1292  height=794.64
+capability      x=164.00  y=779.78  width=1292  bottom=830.78
+feature-card    x=164.00  y=1024.78 width=1292  height=542.94
+portrait        x=832.73  y=105.03  width=544   height=658.75
+rail            x=0       y=0       width=132   height=1058
+```
 
-- Scope review: only Task 6 experience, homepage integration, canvas-layer CSS,
-  build chunking, observer tests, and this report are included. Existing user
-  changes to `.gitignore`, `.superpowers/sdd/task-4-report.md`, and generated
-  `dist/` are excluded from the commit.
-- Performance: star matrices are deterministic and written once per quality
-  count; frame callbacks mutate existing Three.js objects and clamp large
-  deltas. Low quality performs no continuous rendering.
-- Throughput/concurrency: no runtime network assets compete with HTML or the
-  initial JavaScript. GPU load is bounded by fixed geometry and quality-profile
-  instance counts.
-- Resilience: WebGL capability and render failures still fall back without
-  affecting semantic content. IntersectionObserver absence retains `arrival`.
-- Concern: the isolated Three vendor chunk is 899.17 kB minified / 239.74 kB
-  gzip and still triggers Vite's 500 kB warning. It is lazy and cache-stable, but
-  future visual features should not add broad Drei imports or more postprocessing
-  without a measured frame-time and transfer-budget review.
-- Concern: automated tests validate observer and fallback behavior, but visual
-  frame-time/FPS and cinematic composition still require browser/device profiling
-  in the later performance-polish task.
+Thus the actual card begins 33.22 px before the fold; capability strip is fully
+visible, portrait `x > 700`, and rail width is exactly 132 px. At 1024 the gate
+verifies compact-header/hidden-rail behavior. At 390 it verifies all five menu
+links are visible and Escape closes the panel with focus returned to the toggle.
+
+Additional evidence:
+
+```text
+npm run build       passed; production chunks generated
+npm run lint        passed
+npm run typecheck   passed
+git diff --check    passed
+targeted Prettier   passed for every Task 6 source/test file
+```
+
+The single E2E skip is expected: WebGL context loss only runs in the eligible
+desktop project. No WebGL test failed.
+
+## Performance, concurrency, and resilience
+
+- Runtime cost is CSS-only; there are no new resize, scroll, key, or animation
+  listeners and no React work per frame.
+- The particle canvas/fallback remains one progressive boundary; clipping is
+  applied at its existing visual owner and does not add paint layers elsewhere.
+- Responsive layout uses deterministic media queries and bounded grid tracks,
+  so concurrent asset decode or delayed WebGL startup cannot change shell
+  ownership or menu availability.
+- The existing disclosure state owns Escape handling and focus restoration;
+  E2E verifies the complete keyboard close path.
+- Long navigation labels wrap only in the compact/mobile panel, preventing a
+  localization-driven horizontal overflow while desktop rail labels stay stable.
+
+## Concerns
+
+- The Codex Browser plugin had no available backend in this session
+  (`agent.browsers.list() = []`), so rendered verification used the repository's
+  required Playwright workflow.
+- Global `npm run format:check` still reports the preexisting, unchanged
+  `src/experience/webgl-context-loss.ts`. Every Task 6 source/test file passes
+  targeted Prettier, and the out-of-scope WebGL module was intentionally not
+  modified.
+- Full pixel-level comparison with the approved 1488 x 1058 image remains Task
+  7; Task 6 closes the structural geometry and responsive contracts only.
 
 ## Commit
 
-`feat: create Cosmic Realism station experience`
+`fix: lock portfolio responsive geometry`
+
+Review correction: `fix: address responsive review findings`

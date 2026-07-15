@@ -1,12 +1,17 @@
+import { useRevealOnView } from '../../components/useRevealOnView';
 import type { PortfolioContent } from '../../content';
 import { SITE_ANCHORS } from '../../site-contract';
 
 export function CareerTimeline({ content }: { content: PortfolioContent }) {
+  const { ref, revealed } = useRevealOnView<HTMLElement>();
+
   return (
     <section
+      ref={ref}
       id={SITE_ANCHORS.home.career}
       className="career-section section-shell"
       aria-labelledby={SITE_ANCHORS.home.careerTitle}
+      data-revealed={revealed}
     >
       <div className="section-heading career-section__heading">
         <p className="eyebrow" aria-hidden="true">

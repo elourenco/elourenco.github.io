@@ -2,6 +2,7 @@ export interface ParticleLayout {
   positions: Float32Array;
   phases: Float32Array;
   sizes: Float32Array;
+  connections: Float32Array;
 }
 
 function mulberry32(seed: number): () => number {
@@ -15,26 +16,68 @@ function mulberry32(seed: number): () => number {
 }
 
 export function buildParticleLayout(count: number, seed = 197): ParticleLayout {
-  if (count <= 0)
+  if (count <= 0) {
     return {
       positions: new Float32Array(),
       phases: new Float32Array(),
       sizes: new Float32Array(),
+      connections: new Float32Array(),
     };
+  }
+
   const positions = new Float32Array(count * 3);
   const phases = new Float32Array(count);
   const sizes = new Float32Array(count);
+  const connectionValues: number[] = [];
   const random = mulberry32(seed);
+
   for (let index = 0; index < count; index += 1) {
     const offset = index * 3;
-    const t = index / count;
-    const angle = t * Math.PI * 12 + random() * 0.35;
-    const ring = 3.6 + Math.sin(t * Math.PI * 7) * 1.1 + random() * 0.7;
-    positions[offset] = Math.cos(angle) * ring;
-    positions[offset + 1] = (random() - 0.5) * 5.6;
-    positions[offset + 2] = Math.sin(angle) * ring + (random() - 0.5) * 1.8;
+    const spread = Math.pow(random(), 0.72);
+    positions[offset] = -0.6 + spread * 7.2;
+    positions[offset + 1] = (random() - 0.5) * (5.2 + spread * 2.1);
+    positions[offset + 2] = (random() - 0.5) * 3.6;
     phases[index] = random() * Math.PI * 2;
-    sizes[index] = 0.6 + random() * 1.8;
+    sizes[index] = 0.55 + random() * 1.65;
+
+    if (index === 0 || index % 6 !== 0) continue;
+
+    let nearestIndex = -1;
+    let nearestDistance = Number.POSITIVE_INFINITY;
+    for (
+      let candidate = Math.max(0, index - 12);
+      candidate < index;
+      candidate += 1
+    ) {
+      const candidateOffset = candidate * 3;
+      const distance = Math.hypot(
+        positions[offset] - positions[candidateOffset],
+        positions[offset + 1] - positions[candidateOffset + 1],
+        positions[offset + 2] - positions[candidateOffset + 2],
+      );
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestIndex = candidate;
+      }
+    }
+
+    if (nearestIndex >= 0 && nearestDistance <= 4.5) {
+      const nearestOffset = nearestIndex * 3;
+      connectionValues.push(
+        positions[offset],
+        positions[offset + 1],
+        positions[offset + 2],
+        positions[nearestOffset],
+        positions[nearestOffset + 1],
+        positions[nearestOffset + 2],
+      );
+    }
   }
-  return { positions, phases, sizes };
+
+  return {
+    positions,
+    phases,
+    sizes,
+    connections: new Float32Array(connectionValues),
+  };
 }

@@ -39,36 +39,52 @@ quatro documentos canônicos são:
 Existe um único runtime 3D de produção: `ParticleExperience` seleciona o perfil
 de qualidade e carrega `ParticleScene` sob demanda. A cena só monta quando
 WebGL está disponível, movimento reduzido e Save-Data estão desativados, o
-perfil de memória é elegível, o browser ficou ocioso, o hero está visível e a
-aba está ativa. Perda de contexto desmonta a cena e mantém o fallback 2D. O
-conteúdo semântico, as rotas e os CTAs não dependem do canvas.
+perfil reporta mais de `2 GB` de memória, o browser ficou ocioso, o hero está
+visível e a aba está ativa. O limite de memória vale para desktop e mobile antes
+do import dinâmico. Perda de contexto desmonta a cena e mantém o fallback 2D.
+O conteúdo semântico, as rotas e os CTAs não dependem do canvas.
 
 O contrato de navegador cobre movimento reduzido, WebGL indisponível, limite
 de zero ou um canvas, abertura do gate, ausência de overflow mobile e conteúdo
-interativo abaixo do hero. Os perfis de baixa memória e Save-Data também são
-fechados deterministicamente na seleção unitária de qualidade.
+interativo abaixo do hero. Movimento reduzido, Save-Data, baixa memória e
+WebGL indisponível também verificam zero requests do chunk pesado. Um perfil
+elegível solicita exatamente um `ParticleScene` sob demanda.
+
+O gate de telemetria do browser falha em qualquer `console.error`, `pageerror`,
+`requestfailed` ou warning não reconhecido. Chromium headless pode emitir dois
+warnings conhecidos do runtime/dependência: stall do driver em `ReadPixels` e
+depreciação de `THREE.Clock`. Eles são allowlisted como warnings, nunca como
+erros, e permanecem explícitos na evidência de QA.
 
 ## Performance e limites medidos
 
-Build de produção medido em 2026-07-14:
+Build de produção medido em 2026-07-15:
 
-| Artefato                               | Minificado | Gzip (`gzip -c`) |
-| -------------------------------------- | ---------: | ---------------: |
-| app `index-BC5Sk6KR.js`                |   298597 B |          92921 B |
-| cena `ParticleScene-DrdVQiSv.js`       |     2617 B |           1333 B |
-| vendor `three-vendor-CTAtCiMJ.js`      |   883519 B |         233094 B |
-| runtime `rolldown-runtime-QTnfLwEv.js` |      694 B |           420 B¹ |
-| fonte WOFF2                            |    22444 B |                — |
+| Artefato                                     | Minificado | Gzip (`gzip -c`) |
+| -------------------------------------------- | ---------: | ---------------: |
+| app `index-DOaxfdvZ.js`                      |   344122 B |         105036 B |
+| cena + R3F/Three `ParticleScene-SdoYL_Oy.js` |   875193 B |         230252 B |
+| CSS `index-HJNICxcs.css`                     |    17977 B |                — |
+| fonte WOFF2                                  |    22444 B |                — |
 
-¹ Valor reportado pelo Vite; o comando de budget comprime explicitamente app,
-cena e vendor. O Vite reportou `93,98 kB` gzip para o app, crescimento de
-`1,39 kB` sobre o baseline de `92,59 kB`, abaixo do limite de `10 kB`. O vendor
-Three/R3F/Drei caiu de `239,74 kB` para `236,06 kB` no relatório do Vite. A
-fonte permanece abaixo do limite de `50 kB`.
+O limite legado era baseline `92,59 kB` + `10 kB` para o app. O app corrigido
+mede `106,41 kB` no relatório do Vite e `105036 B` com `gzip -c`, portanto
+ultrapassa o teto legado de `102590 B` em `2446 B`; essa diferença não é
+ocultada por um chunk inicial auxiliar.
+
+A medição anterior de `101201 B` era incompleta: `index.html` também fazia
+`modulepreload` do vendor Three/R3F de `233094 B`, que continha dependências
+compartilhadas do React e era importado estaticamente pelo entry. O critical
+initial JavaScript real era aproximadamente `334747 B`. O grafo corrigido
+entrega somente `105036 B` de JavaScript inicial, redução de aproximadamente
+`68,6%`, e move R3F/Three integralmente para o único `ParticleScene` dinâmico.
+O contrato de produção limita o total inicial corrigido a `106000 B` para evitar
+novo drift. A fonte permanece abaixo de `50 kB`.
 
 O build continua emitindo o warning conhecido de chunk acima de `500 kB` para
-`three-vendor`; ele é registrado e aceito, não ocultado. A cena permanece em
-chunk assíncrono e os gates evitam download/execução nos perfis inelegíveis.
+`ParticleScene`; ele é registrado e aceito, não ocultado. `modulePreload` foi
+desativado porque a cena é um único boundary assíncrono, e os gates de browser
+provam que perfis inelegíveis não baixam nem executam esse chunk.
 
 Validação exata:
 

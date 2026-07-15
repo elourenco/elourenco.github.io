@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@phosphor-icons/react": "2.1.10",
     "@react-three/drei": "10.7.7",
     "@react-three/fiber": "9.6.1",
     "i18next": "25.10.10",
@@ -45,6 +46,7 @@
     "globals": "17.7.0",
     "jsdom": "28.1.0",
     "prettier": "3.9.5",
+    "sharp": "0.35.3",
     "typescript": "5.9.3",
     "typescript-eslint": "8.63.0",
     "vite": "8.1.4",

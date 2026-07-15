@@ -17,6 +17,12 @@ export const enContent = {
     workCta: 'View selected work',
     linkedinCta: 'Connect on LinkedIn',
     resumeCta: 'Download résumé (PT-BR)',
+    capabilities: [
+      { id: 'distributed', label: 'Distributed systems' },
+      { id: 'mobile', label: 'Mobile' },
+      { id: 'ai', label: 'Applied AI' },
+      { id: 'observability', label: 'Observability' },
+    ],
   },
   expertise: [
     {

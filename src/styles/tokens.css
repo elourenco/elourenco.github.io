@@ -21,9 +21,12 @@
   --space-4: 1.5rem;
   --space-5: 2rem;
   --space-6: clamp(3rem, 7vw, 7rem);
-  --space-section: clamp(5rem, 12vw, 11rem);
-  --container: 78rem;
+  --space-section: clamp(4rem, 7vw, 6.5rem);
+  --rail-width: 8.25rem;
+  --container: 81rem;
   --reading-width: 65ch;
+  --hero-name: clamp(5.75rem, 8.8vw, 8.2rem);
+  --hero-role: clamp(1.25rem, 1.8vw, 1.65rem);
   --focus-ring: 0 0 0 3px rgb(168 255 62 / 48%);
   --layer-scene: 0;
   --layer-content: 1;
