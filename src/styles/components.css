@@ -158,8 +158,26 @@
 .hero-portrait img {
   width: 100%;
   height: auto;
-  -webkit-mask-image: linear-gradient(to bottom, black 0 82%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 0 82%, transparent 100%);
+  -webkit-mask-image:
+    linear-gradient(to bottom, black 0 82%, transparent 100%),
+    linear-gradient(
+      to right,
+      black 0 56%,
+      rgb(0 0 0 / 88%) 66%,
+      rgb(0 0 0 / 34%) 82%,
+      transparent 96%
+    );
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to bottom, black 0 82%, transparent 100%),
+    linear-gradient(
+      to right,
+      black 0 56%,
+      rgb(0 0 0 / 88%) 66%,
+      rgb(0 0 0 / 34%) 82%,
+      transparent 96%
+    );
+  mask-composite: intersect;
 }
 
 .hero-portrait__fallback {
@@ -185,16 +203,24 @@
 }
 
 .particle-experience.home-hero__particles {
-  inset: -8% 0;
-  left: 42%;
-  z-index: 1;
+  inset: -10% -12% -4% 38%;
+  z-index: 3;
   overflow: hidden;
-  opacity: 0.58;
+  opacity: 0.78;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    rgb(0 0 0 / 35%) 12%,
+    black 34%,
+    black 88%,
+    transparent 100%
+  );
   mask-image: linear-gradient(
     to right,
     transparent 0,
-    black 24%,
-    black 86%,
+    rgb(0 0 0 / 35%) 12%,
+    black 34%,
+    black 88%,
     transparent 100%
   );
 }

@@ -16,27 +16,46 @@ export function NeuralParticleField({ count }: { count: number }) {
       materialRef.current.uniforms.uTime.value = clock.elapsedTime;
   });
   return (
-    <points frustumCulled={false}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[layout.positions, 3]}
+    <>
+      <points frustumCulled={false}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            args={[layout.positions, 3]}
+          />
+          <bufferAttribute
+            attach="attributes-phase"
+            args={[layout.phases, 1]}
+          />
+          <bufferAttribute
+            attach="attributes-pointSize"
+            args={[layout.sizes, 1]}
+          />
+        </bufferGeometry>
+        <shaderMaterial
+          ref={materialRef}
+          uniforms={uniforms}
+          vertexShader={particleVertexShader}
+          fragmentShader={particleFragmentShader}
+          transparent
+          depthWrite={false}
+          blending={AdditiveBlending}
         />
-        <bufferAttribute attach="attributes-phase" args={[layout.phases, 1]} />
-        <bufferAttribute
-          attach="attributes-pointSize"
-          args={[layout.sizes, 1]}
+      </points>
+      <lineSegments frustumCulled={false}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            args={[layout.connections, 3]}
+          />
+        </bufferGeometry>
+        <lineBasicMaterial
+          color="#8fdc35"
+          transparent
+          opacity={0.16}
+          depthWrite={false}
         />
-      </bufferGeometry>
-      <shaderMaterial
-        ref={materialRef}
-        uniforms={uniforms}
-        vertexShader={particleVertexShader}
-        fragmentShader={particleFragmentShader}
-        transparent
-        depthWrite={false}
-        blending={AdditiveBlending}
-      />
-    </points>
+      </lineSegments>
+    </>
   );
 }

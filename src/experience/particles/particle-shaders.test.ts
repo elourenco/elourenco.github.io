@@ -16,7 +16,7 @@ describe('particleFragmentShader', () => {
 
   it('keeps the particle field in the constructed-reality signal palette', () => {
     expect(particleFragmentShader).toContain(
-      'vec4(0.66, 1.0, 0.24, alpha * 0.88)',
+      'vec4(0.66, 1.0, 0.24, alpha * 0.72)',
     );
   });
 });
@@ -27,5 +27,12 @@ describe('particleVertexShader', () => {
       'pointSize * (24.0 / max(1.0, -viewPosition.z))',
     );
     expect(particleVertexShader).not.toContain('pointSize * (70.0');
+  });
+
+  it('uses slow independent drift for a stable dissolve edge', () => {
+    expect(particleVertexShader).toContain('uTime * 0.18');
+    expect(particleVertexShader).toContain('uTime * 0.08');
+    expect(particleVertexShader).not.toContain('uTime * 0.35');
+    expect(particleVertexShader).not.toContain('uTime * 0.12');
   });
 });

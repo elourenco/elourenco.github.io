@@ -69,6 +69,41 @@ test.describe('responsive particle contracts', () => {
     ).toBeVisible();
   });
 
+  for (const constrainedProfile of [
+    { label: 'Save-Data', memoryGb: 8, saveData: true },
+    { label: 'low memory', memoryGb: 2, saveData: false },
+  ]) {
+    test(`keeps semantic hero available under the ${constrainedProfile.label} gate`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.addInitScript(
+        ({ memoryGb, saveData }) => {
+          Object.defineProperty(navigator, 'deviceMemory', {
+            configurable: true,
+            value: memoryGb,
+          });
+          Object.defineProperty(navigator, 'connection', {
+            configurable: true,
+            value: { saveData },
+          });
+        },
+        constrainedProfile,
+      );
+      await page.goto('/en');
+      await page.waitForTimeout(1_300);
+
+      await expect(page.getByTestId('particle-canvas')).toHaveCount(0);
+      await expect(
+        page.getByRole('img', { name: 'Portrait of Eduardo Lourenco' }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('link', { name: 'View selected work' }),
+      ).toBeVisible();
+      await expect(page.locator('.site-header')).toBeVisible();
+    });
+  }
+
   test('keeps primary calls to action visible without WebGL', async ({
     page,
   }) => {
@@ -90,7 +125,52 @@ test.describe('responsive particle contracts', () => {
     await expect(
       page.getByRole('link', { name: 'Connect on LinkedIn' }),
     ).toBeVisible();
+    await expect(
+      page.getByRole('img', { name: 'Portrait of Eduardo Lourenco' }),
+    ).toBeVisible();
+    await expect(page.locator('.site-header')).toBeVisible();
     await expect(page.getByTestId('particle-canvas')).toHaveCount(0);
+  });
+
+  test('preserves content and CTAs after WebGL context loss', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 1024 });
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'deviceMemory', {
+        configurable: true,
+        value: 8,
+      });
+    });
+    await page.goto('/en');
+    await page.locator('.home-hero__visual').scrollIntoViewIfNeeded();
+
+    const canvas = page.getByTestId('particle-canvas');
+    await expect
+      .poll(() => page.locator('canvas').count(), { timeout: 5_000 })
+      .toBeLessThanOrEqual(1);
+
+    if ((await canvas.count()) === 1) {
+      await canvas.dispatchEvent('webglcontextlost');
+      await expect(canvas).toHaveCount(0);
+    }
+
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: /Principal Software Engineer/,
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('img', { name: 'Portrait of Eduardo Lourenco' }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: 'View selected work' }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: 'Connect on LinkedIn' }),
+    ).toBeVisible();
+    await expect(page.locator('.site-header')).toBeVisible();
   });
 
   test('mounts at most one canvas after the idle gate opens', async ({
