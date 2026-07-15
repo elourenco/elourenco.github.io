@@ -45,30 +45,39 @@ conteúdo semântico, as rotas e os CTAs não dependem do canvas.
 
 O contrato de navegador cobre movimento reduzido, WebGL indisponível, limite
 de zero ou um canvas, abertura do gate, ausência de overflow mobile e conteúdo
-interativo abaixo do hero. Os perfis de baixa memória e Save-Data também são
-fechados deterministicamente na seleção unitária de qualidade.
+interativo abaixo do hero. Movimento reduzido, Save-Data, baixa memória e
+WebGL indisponível também verificam zero requests do chunk pesado. Um perfil
+elegível solicita exatamente um `ParticleScene` sob demanda.
 
 ## Performance e limites medidos
 
 Build de produção medido em 2026-07-15:
 
-| Artefato                               | Minificado | Gzip (`gzip -c`) |
-| -------------------------------------- | ---------: | ---------------: |
-| app `index-Dxtly_5o.js`                |   332632 B |         101201 B |
-| cena `ParticleScene-CXH7HEvE.js`       |     3162 B |           1520 B |
-| vendor `three-vendor-CTAtCiMJ.js`      |   883519 B |         233094 B |
-| runtime `rolldown-runtime-QTnfLwEv.js` |      694 B |           420 B¹ |
-| fonte WOFF2                            |    22444 B |                — |
+| Artefato                                     | Minificado | Gzip (`gzip -c`) |
+| -------------------------------------------- | ---------: | ---------------: |
+| app `index-DmlQ1oVo.js`                      |   344132 B |         105041 B |
+| cena + R3F/Three `ParticleScene-DiwRRYPO.js` |   875193 B |         230252 B |
+| CSS `index-FudVdUwk.css`                     |    17877 B |                — |
+| fonte WOFF2                                  |    22444 B |                — |
 
-¹ Valor reportado pelo Vite; o comando de budget comprime explicitamente app,
-cena e vendor. O Vite reportou `102,49 kB` gzip para o app, crescimento de
-`9,90 kB` sobre o baseline de `92,59 kB`, abaixo do limite de `10 kB`. O vendor
-Three/R3F/Drei caiu de `239,74 kB` para `236,06 kB` no relatório do Vite. A
-fonte permanece abaixo do limite de `50 kB`.
+O limite legado era baseline `92,59 kB` + `10 kB` para o app. O app corrigido
+mede `106,42 kB` no relatório do Vite e `105041 B` com `gzip -c`, portanto
+ultrapassa o teto legado de `102590 B` em `2451 B`; essa diferença não é
+ocultada por um chunk inicial auxiliar.
+
+A medição anterior de `101201 B` era incompleta: `index.html` também fazia
+`modulepreload` do vendor Three/R3F de `233094 B`, que continha dependências
+compartilhadas do React e era importado estaticamente pelo entry. O critical
+initial JavaScript real era aproximadamente `334747 B`. O grafo corrigido
+entrega somente `105041 B` de JavaScript inicial, redução de aproximadamente
+`68,6%`, e move R3F/Three integralmente para o único `ParticleScene` dinâmico.
+O contrato de produção limita o total inicial corrigido a `106000 B` para evitar
+novo drift. A fonte permanece abaixo de `50 kB`.
 
 O build continua emitindo o warning conhecido de chunk acima de `500 kB` para
-`three-vendor`; ele é registrado e aceito, não ocultado. A cena permanece em
-chunk assíncrono e os gates evitam download/execução nos perfis inelegíveis.
+`ParticleScene`; ele é registrado e aceito, não ocultado. `modulePreload` foi
+desativado porque a cena é um único boundary assíncrono, e os gates de browser
+provam que perfis inelegíveis não baixam nem executam esse chunk.
 
 Validação exata:
 

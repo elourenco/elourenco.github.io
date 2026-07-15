@@ -22,10 +22,22 @@ export function SiteHeader({ content, route }: SiteHeaderProps) {
   const activeId = useActiveSection(HOME_NAVIGATION_ANCHORS, isHome);
   const navigationActiveId = isHome ? activeId : '';
   const labels = {
-    expertise: content.navigation.expertise,
-    work: content.navigation.work,
-    career: content.navigation.career,
-    contact: content.navigation.contact,
+    expertise: {
+      full: content.navigation.expertise,
+      short: isPortuguese ? 'Especialidades' : 'Expertise',
+    },
+    work: {
+      full: content.navigation.work,
+      short: isPortuguese ? 'Trabalhos' : 'Work',
+    },
+    career: {
+      full: content.navigation.career,
+      short: isPortuguese ? 'Carreira' : 'Career',
+    },
+    contact: {
+      full: content.navigation.contact,
+      short: isPortuguese ? 'Contato' : 'Contact',
+    },
   };
   const homeHref = isHome
     ? INTERNAL_DESTINATIONS.fragment(SITE_ANCHORS.home.hero)
@@ -34,12 +46,14 @@ export function SiteHeader({ content, route }: SiteHeaderProps) {
     {
       index: '01',
       label: isPortuguese ? 'Início' : 'Home',
+      shortLabel: isPortuguese ? 'Início' : 'Home',
       href: homeHref,
       sectionId: SITE_ANCHORS.home.hero,
     },
     ...HOME_SECTION_ANCHORS.map((id, offset) => ({
       index: String(offset + 2).padStart(2, '0'),
-      label: labels[id],
+      label: labels[id].full,
+      shortLabel: labels[id].short,
       sectionId: id,
       href: isHome
         ? INTERNAL_DESTINATIONS.fragment(id)

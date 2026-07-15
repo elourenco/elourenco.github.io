@@ -22,6 +22,7 @@ export function DesktopSectionRail({
             <a
               key={item.href}
               href={item.href}
+              aria-label={item.label}
               aria-current={current ? 'location' : undefined}
             >
               <CircleIcon
@@ -32,7 +33,12 @@ export function DesktopSectionRail({
               />
               <span className="desktop-section-rail__label">
                 <span aria-hidden="true">{item.index}</span>
-                <span>{item.label}</span>
+                <span
+                  className="desktop-section-rail__visible-label"
+                  aria-hidden="true"
+                >
+                  {item.shortLabel}
+                </span>
               </span>
             </a>
           );

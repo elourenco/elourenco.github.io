@@ -29,6 +29,16 @@ async function waitForVisualReadiness(
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
 }
 
+function trackHeavyParticleRequests(page: Page) {
+  const requests: string[] = [];
+  page.on('request', (request) => {
+    if (/\/(?:ParticleScene|three-vendor)-/.test(request.url())) {
+      requests.push(request.url());
+    }
+  });
+  return requests;
+}
+
 test.describe('responsive particle contracts', () => {
   for (const viewport of [
     { width: 390, height: 844 },
@@ -102,6 +112,20 @@ test.describe('responsive particle contracts', () => {
       .evaluateAll((links) =>
         links.every((link) => link.getBoundingClientRect().right <= 132),
       );
+    const railLabelGeometry = await page
+      .locator('.desktop-section-rail__visible-label')
+      .evaluateAll((labels) =>
+        labels.map((label) => {
+          const bounds = label.getBoundingClientRect();
+          return {
+            text: label.textContent,
+            height: bounds.height,
+            right: bounds.right,
+            scrollWidth: label.scrollWidth,
+            clientWidth: label.clientWidth,
+          };
+        }),
+      );
 
     expect(hero).not.toBeNull();
     expect(capability).not.toBeNull();
@@ -126,6 +150,24 @@ test.describe('responsive particle contracts', () => {
       ),
     ).toBe(true);
     expect(railLinksFit).toBe(true);
+    expect(railLabelGeometry.map(({ text }) => text)).toEqual([
+      'Home',
+      'Work',
+      'Expertise',
+      'Career',
+      'Contact',
+    ]);
+    expect(
+      railLabelGeometry.every(
+        ({ height, right, scrollWidth, clientWidth }) =>
+          height < 20 && right <= 132 && scrollWidth <= clientWidth,
+      ),
+    ).toBe(true);
+    await expect(
+      page
+        .locator('.desktop-section-rail')
+        .getByRole('link', { name: 'Selected work' }),
+    ).toHaveAttribute('href', '#work');
     expect(project!.y).toBeLessThan(1058);
     expect(project!.y).toBeLessThan(900);
     expect(capability!.y).toBeLessThan(760);
@@ -144,6 +186,47 @@ test.describe('responsive particle contracts', () => {
     await expect(page.locator('.desktop-section-rail')).toBeHidden();
     await expect(page.locator('.mobile-site-header')).toBeVisible();
     await expect(page.locator('.site-header')).toHaveCSS('position', 'sticky');
+  });
+
+  test('keeps Portuguese rail labels single-line, accessible, and inside 132px', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1488, height: 1058 });
+    await page.goto('/pt-br');
+    await waitForVisualReadiness(page);
+
+    const rail = page.locator('.desktop-section-rail');
+    const labels = await rail
+      .locator('.desktop-section-rail__visible-label')
+      .evaluateAll((elements) =>
+        elements.map((element) => {
+          const bounds = element.getBoundingClientRect();
+          return {
+            text: element.textContent,
+            right: bounds.right,
+            height: bounds.height,
+            scrollWidth: element.scrollWidth,
+            clientWidth: element.clientWidth,
+          };
+        }),
+      );
+
+    expect(labels.map(({ text }) => text)).toEqual([
+      'Início',
+      'Trabalhos',
+      'Especialidades',
+      'Carreira',
+      'Contato',
+    ]);
+    expect(
+      labels.every(
+        ({ right, height, scrollWidth, clientWidth }) =>
+          right <= 132 && height < 20 && scrollWidth <= clientWidth,
+      ),
+    ).toBe(true);
+    await expect(
+      rail.getByRole('link', { name: 'Trabalhos selecionados' }),
+    ).toHaveAttribute('href', '#work');
   });
 
   test('keeps the responsive mobile menu visible and restores focus on Escape', async ({
@@ -171,6 +254,7 @@ test.describe('responsive particle contracts', () => {
   test('does not mount the particle canvas with reduced motion', async ({
     page,
   }) => {
+    const heavyParticleRequests = trackHeavyParticleRequests(page);
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/en');
 
@@ -178,6 +262,7 @@ test.describe('responsive particle contracts', () => {
     await expect(
       page.getByRole('link', { name: 'Connect on LinkedIn' }),
     ).toBeVisible();
+    expect(heavyParticleRequests).toEqual([]);
   });
 
   for (const constrainedProfile of [
@@ -187,6 +272,7 @@ test.describe('responsive particle contracts', () => {
     test(`keeps semantic hero available under the ${constrainedProfile.label} gate`, async ({
       page,
     }) => {
+      const heavyParticleRequests = trackHeavyParticleRequests(page);
       await page.setViewportSize({ width: 390, height: 844 });
       await page.addInitScript(({ memoryGb, saveData }) => {
         Object.defineProperty(navigator, 'deviceMemory', {
@@ -209,12 +295,14 @@ test.describe('responsive particle contracts', () => {
         page.getByRole('link', { name: 'View selected work' }),
       ).toBeVisible();
       await expect(page.locator('.site-header')).toBeVisible();
+      expect(heavyParticleRequests).toEqual([]);
     });
   }
 
   test('keeps primary calls to action visible without WebGL', async ({
     page,
   }) => {
+    const heavyParticleRequests = trackHeavyParticleRequests(page);
     await page.addInitScript(() => {
       const originalGetContext = HTMLCanvasElement.prototype.getContext;
       Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
@@ -238,6 +326,7 @@ test.describe('responsive particle contracts', () => {
     ).toBeVisible();
     await expect(page.locator('.site-header')).toBeVisible();
     await expect(page.getByTestId('particle-canvas')).toHaveCount(0);
+    expect(heavyParticleRequests).toEqual([]);
   });
 
   test('preserves content and CTAs after WebGL context loss', async ({
@@ -303,6 +392,7 @@ test.describe('responsive particle contracts', () => {
   test('mounts at most one canvas after the idle gate opens', async ({
     page,
   }) => {
+    const heavyParticleRequests = trackHeavyParticleRequests(page);
     await page.setViewportSize({ width: 1440, height: 1024 });
     await page.addInitScript(() => {
       Object.defineProperty(navigator, 'deviceMemory', {
@@ -323,6 +413,8 @@ test.describe('responsive particle contracts', () => {
     });
     if (webglAvailable) {
       await expect.poll(() => page.locator('canvas').count()).toBe(1);
+      expect(heavyParticleRequests).toHaveLength(1);
+      expect(heavyParticleRequests[0]).toContain('/ParticleScene-');
 
       const visual = await page.locator('.home-hero__visual').boundingBox();
       const host = await page.locator('.home-hero__particles').boundingBox();

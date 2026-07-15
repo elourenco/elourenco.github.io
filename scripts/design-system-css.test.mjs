@@ -74,6 +74,15 @@ test('keeps the reference desktop hero and rail geometry structural', () => {
   assert.match(hero, /grid-template-rows:\s*45\.5rem auto/);
   assert.match(content, /margin-top:\s*9rem/);
   assert.match(desktopNav, /border-left:\s*1px solid var\(--color-line\)/);
+  const desktopLink = rule(
+    componentsCss,
+    '.desktop-section-rail .site-header__nav a',
+  );
+  const desktopLabel = rule(componentsCss, '.desktop-section-rail__label');
+  assert.match(desktopLink, /min-height:\s*44px/);
+  assert.match(desktopLink, /white-space:\s*nowrap/);
+  assert.match(desktopLabel, /white-space:\s*nowrap/);
+  assert.doesNotMatch(desktopLabel, /overflow-wrap:\s*break-word/);
   assert.match(actions, /flex-wrap:\s*nowrap/);
   assert.match(disciplines, /font-family:\s*var\(--font-mono\)/);
   assert.doesNotMatch(disciplines, /text-transform:\s*uppercase/);

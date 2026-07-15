@@ -71,18 +71,7 @@ function publicationManifest(): Plugin {
 export default defineConfig({
   plugins: [react(), publicationManifest()],
   build: {
-    rolldownOptions: {
-      output: {
-        codeSplitting: {
-          groups: [
-            {
-              name: 'three-vendor',
-              test: /node_modules\/(?:three|@react-three)\//,
-            },
-          ],
-        },
-      },
-    },
+    modulePreload: false,
   },
   test: {
     include: ['src/**/*.test.{ts,tsx}'],

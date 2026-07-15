@@ -51,7 +51,7 @@
 .desktop-section-rail .site-header__nav {
   flex: none;
   height: min(38rem, 62vh);
-  margin: clamp(6rem, 13vh, 8.5rem) 0 0 2.75rem;
+  margin: clamp(6rem, 13vh, 8.5rem) 0 0 1.9rem;
   border-left: 1px solid var(--color-line);
 }
 

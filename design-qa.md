@@ -25,6 +25,9 @@ The Product Design workflow selected the Codex in-app Browser. The browser-clien
 - Mobile menu: all five navigation links were visible before closing.
 - Reduced motion: zero canvases mounted and the primary CTA remained visible.
 - No WebGL: zero canvases mounted and the primary CTA remained visible.
+- Reduced motion, Save-Data, low-memory, and no-WebGL profiles requested zero
+  `ParticleScene`/`three-vendor` assets; an eligible profile requested exactly
+  one `ParticleScene` asset on demand.
 - Console and uncaught page errors: none across desktop, mobile, reduced-motion, and no-WebGL contexts.
 
 ## Required fidelity surfaces
@@ -33,15 +36,15 @@ The Product Design workflow selected the Codex in-app Browser. The browser-clien
 - Spacing and layout rhythm: capability begins at y=740; the first project card begins at y=831; Dona Events title begins at y=927.22. All three desktop CTAs share y=622.42 and a 44 px height.
 - Colors and tokens: black-green base, lime accents, dividers, halo, and grid preserve the reference hierarchy. Minor halo and line-opacity differences remain P3.
 - Image quality and asset fidelity: portrait and dashboard are real bounded raster assets. The right-side portrait mask and one particle field overlap through the face and torso; no custom SVG/CSS image substitute is used.
-- Icons: all navigation, CTA, capability, and scroll affordances use Phosphor icons. Rail nodes and footer markers remain within the 132 px rail.
-- Copy and content: Portuguese/English copy, routes, curriculum asset, and destinations remain intact. The source-like visual preheader was compacted without removing semantic copy.
+- Icons: all navigation, CTA, capability, and scroll affordances use Phosphor icons. Rail nodes, labels, and footer markers remain within the 132 px rail.
+- Copy and content: Portuguese/English copy, routes, curriculum asset, and destinations remain intact. Desktop rail labels use source-faithful short copy while each link's accessible name and every mobile label preserve the full localized copy.
 
 ## Final findings
 
 - P0: 0.
 - P1: 0.
 - P2: 0.
-- P3: compact locale typography, controlled rail wrapping for the preserved longer navigation copy, and small differences in CTA density, halo opacity, and particle distribution.
+- P3: compact locale typography and small differences in rail type scale, CTA density, halo opacity, and particle distribution.
 
 ## Comparison history
 
@@ -85,6 +88,34 @@ The Product Design workflow selected the Codex in-app Browser. The browser-clien
 - Earlier findings: first-project copy was vertically centered and Dona Events title began at y=968.83.
 - Fixes made: aligned project copy to the card top; title moved to y=927.22. Mobile action clusters were stacked and the particle host was bounded to remove 390 px overflow while preserving one canvas.
 - Post-fix evidence: `.superpowers/design-qa/portfolio-1488x1058-iteration-6.png`, `.superpowers/design-qa/comparison-final-full.png`, and all final focused comparisons listed above.
+- Result: no actionable P0/P1/P2 findings remain.
+
+### Iteration 7 — blocked after review
+
+- Earlier findings: desktop rail rendered full localized copy, forcing visual
+  wrapping, and the manual Three/R3F group recursively captured React. The app
+  statically imported and `index.html` preloaded the 233094 B gzip vendor even
+  when runtime gates rejected the experience.
+- RED evidence: two SiteHeader tests failed for absent short labels; the CSS
+  contract failed on `white-space: normal`; the production graph contract
+  failed on the `three-vendor` preload; the Portuguese Playwright rail contract
+  failed with `Especialidades` ending at x=140.78.
+- Result: blocked by two P1 structural/latency findings.
+
+### Iteration 8 — passed
+
+- Fixes made: separated full and short localized labels; desktop links expose
+  the full `aria-label`, render short labels in one line, keep 44 px targets,
+  and end at x=123 inside the 132 px rail. Mobile continues to render the full
+  localized copy. Removed the recursive manual Three group and disabled module
+  preloading; R3F/Three now live entirely inside the dynamic `ParticleScene`.
+- GREEN evidence: rail labels are x=42.58/right=123, h=12.08, and
+  `scrollWidth=clientWidth=80`; PT/EN rail E2E passed 4/4. Production graph
+  contract passed; constrained network profiles made zero heavy requests and
+  an eligible profile made exactly one on-demand request.
+- Post-fix evidence: `.superpowers/design-qa/portfolio-1488x1058.png`,
+  `.superpowers/design-qa/portfolio-390x844.png`, and the regenerated full and
+  focused comparisons.
 - Result: no actionable P0/P1/P2 findings remain.
 
 ## Follow-up polish

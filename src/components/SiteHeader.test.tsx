@@ -69,6 +69,34 @@ describe('SiteHeader', () => {
     expect(
       container.querySelector('.desktop-section-rail__footer'),
     ).toBeInTheDocument();
+
+    const rail = container.querySelector<HTMLElement>('.desktop-section-rail')!;
+    expect(
+      [...rail.querySelectorAll('.desktop-section-rail__visible-label')].map(
+        (label) => label.textContent,
+      ),
+    ).toEqual(['Home', 'Work', 'Expertise', 'Career', 'Contact']);
+    expect(
+      within(rail).getByRole('link', { name: 'Selected work' }),
+    ).toBeVisible();
+  });
+
+  it('keeps full Portuguese accessible names behind source-faithful rail labels', () => {
+    const { container } = render(
+      <MemoryRouter initialEntries={['/pt-br']}>
+        <SiteHeader content={ptBRContent} route="home" />
+      </MemoryRouter>,
+    );
+
+    const rail = container.querySelector<HTMLElement>('.desktop-section-rail')!;
+    expect(
+      [...rail.querySelectorAll('.desktop-section-rail__visible-label')].map(
+        (label) => label.textContent,
+      ),
+    ).toEqual(['Início', 'Trabalhos', 'Especialidades', 'Carreira', 'Contato']);
+    expect(
+      within(rail).getByRole('link', { name: 'Trabalhos selecionados' }),
+    ).toBeVisible();
   });
 
   it('uses localized home paths on project routes and closes the mobile disclosure', () => {
