@@ -78,3 +78,25 @@ Architect's Nexus review identified that the Dona Events header used fragment-on
 
 - This uses normal anchors intentionally because the target includes fragments on another localized document route; there is no new runtime state, async work, or throughput-sensitive path.
 - Route generation remains centralized in `toLocalePath`; no locale path is hardcoded in production code.
+
+## Review coverage fix — homepage brand links
+
+Added exact homepage assertions for the shared header brand link in both locales. The tests scope the query to the `banner` landmark before selecting `Home` or `Início`, so the assertion cannot accidentally match the separate skip link. Both brand links are required to target `#main-content`.
+
+### Verification evidence
+
+- Focused: `npm run test:run -- src/features/home/HomePage.test.tsx src/features/projects/DonaEventsPage.test.tsx` exited 0; 2 files and 4 tests passed.
+- Full tests: `npm run test:run` exited 0; 8 files and 19 tests passed.
+- Typecheck: `npm run typecheck` exited 0.
+- Lint: `npm run lint` exited 0.
+- Build: `npm run build` exited 0; Vite built 42 modules and emitted 298.87 kB JavaScript (94.87 kB gzip).
+- Diff validation: `git diff --check` exited 0 before commit.
+
+### Test-only commit
+
+`f20f78e test: cover home header brand links`
+
+### Concerns
+
+- No production code changed because the existing `SiteHeader` behavior already satisfies the contract.
+- The report update is intentionally outside the test-only commit.

@@ -22,9 +22,12 @@ build de produção, paridade recursiva do conteúdo localizado e validação da
 rotas/URLs no bundle. `npm run e2e` constrói o contrato de navegador sobre o
 preview de produção isolado na porta `4188`, com projetos desktop e mobile.
 
-O deploy publica `dist/` no GitHub Pages. `public/404.html` transporta o path e
-a query do deep link para `/`; o bootstrap restaura a URL antes da inicialização
-do router. Os quatro documentos canônicos são:
+O workflow `Deploy GitHub Pages` valida e publica `dist/` automaticamente após
+pushes na `main`; ele também pode ser disparado manualmente pela aba Actions. A
+fonte de publicação do repositório deve estar configurada como `GitHub Actions`
+em `Settings > Pages`. `public/404.html` transporta o path e a query do deep
+link para `/`; o bootstrap restaura a URL antes da inicialização do router. Os
+quatro documentos canônicos são:
 
 - `/en`
 - `/en/projects/dona-events`
