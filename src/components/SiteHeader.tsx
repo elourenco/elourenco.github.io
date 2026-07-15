@@ -20,6 +20,7 @@ export function SiteHeader({ content, route }: SiteHeaderProps) {
   const homePath = INTERNAL_DESTINATIONS.route(content.locale, 'home');
   const isHome = route === 'home';
   const activeId = useActiveSection(HOME_NAVIGATION_ANCHORS, isHome);
+  const navigationActiveId = isHome ? activeId : '';
   const labels = {
     expertise: content.navigation.expertise,
     work: content.navigation.work,
@@ -53,7 +54,7 @@ export function SiteHeader({ content, route }: SiteHeaderProps) {
         brand={content.hero.eyebrow}
         navigationLabel={navigationLabel}
         items={items}
-        activeId={activeId}
+        activeId={navigationActiveId}
       />
       <MobileSiteHeader
         brand={content.hero.eyebrow}
@@ -61,7 +62,7 @@ export function SiteHeader({ content, route }: SiteHeaderProps) {
         openLabel={isPortuguese ? 'Abrir navegação' : 'Open navigation'}
         closeLabel={isPortuguese ? 'Fechar navegação' : 'Close navigation'}
         items={items}
-        activeId={activeId}
+        activeId={navigationActiveId}
       />
       <LanguageSwitcher route={route} />
     </header>

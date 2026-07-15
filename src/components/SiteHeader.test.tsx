@@ -86,6 +86,9 @@ describe('SiteHeader', () => {
       '/pt-br#career',
       '/pt-br#contact',
     ]);
+    for (const link of within(primary).getAllByRole('link')) {
+      expect(link).not.toHaveAttribute('aria-current');
+    }
 
     const toggle = screen.getByRole('button', { name: 'Abrir navegação' });
     expect(toggle).toHaveAttribute('aria-expanded', 'false');
