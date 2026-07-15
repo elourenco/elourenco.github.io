@@ -127,3 +127,63 @@ on port 4188.
   claimed here; that remains the explicitly assigned Task 7 QA boundary.
 - No full unit suite, global responsive QA, or production build was run because
   this worker was restricted to the Task 4 focused unit and E2E gates.
+
+## Independent review fix — deterministic context-loss evidence
+
+An independent review found that the original E2E context-loss case could pass
+without dispatching `webglcontextlost`: it accepted zero canvases and guarded
+the dispatch with `if (canvas.count() === 1)`.
+
+Root-cause tracing also identified that React Three Fiber attaches
+`data-testid="particle-canvas"` to its host surface, while the WebGL listener is
+registered on `gl.domElement`, the nested native `<canvas>`. Dispatching against
+the test-id surface therefore did not exercise the listener.
+
+### RED
+
+Deterministic listener command:
+
+```text
+npm test -- src/experience/ParticleScene.test.ts
+```
+
+Result: exit 1; `observeWebGLContextLoss is not a function`. This proved the
+listener lifecycle had no independently testable DOM contract.
+
+The strengthened E2E then failed on desktop Chromium when the first attempt
+dispatched against the React Three Fiber host instead of the renderer canvas:
+`defaultPrevented` remained false. A second focused run exposed the same timing
+contract until the test targeted the native canvas and waited for the effect
+listener to observe the cancelable event.
+
+### GREEN
+
+Focused listener and fallback command:
+
+```text
+npm test -- src/experience/ParticleScene.test.ts src/experience/ParticleExperience.test.tsx
+```
+
+Result: exit 0; 2 files and 2 tests passed. The new DOM contract proves
+`preventDefault`, exactly one callback, listener removal, and no callback after
+cleanup.
+
+Focused browser command:
+
+```text
+npm run e2e -- --grep "WebGL|context|canvas"
+```
+
+Result: exit 0; 9 tests passed and 1 was explicitly skipped in 3.0 seconds.
+Desktop Chromium proved WebGL availability, required exactly one native canvas,
+polled until the registered listener prevented the synthetic context-loss
+event, required the canvas to unmount, and then rechecked heading, portrait,
+navigation, and CTAs. Mobile Chromium skips only this context-loss case because
+its quality profile intentionally does not mount WebGL; its reduced-motion,
+no-WebGL, and one-canvas fallback coverage still ran.
+
+Fix commit: `73bf93a test: make WebGL context loss deterministic`.
+
+This fix does not add a canvas, RAF, render loop, or per-frame React state. It
+extracts the existing listener registration into a testable function and keeps
+the same effect cleanup semantics in `ParticleScene`.
