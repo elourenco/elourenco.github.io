@@ -11,7 +11,7 @@ export const ptBRContent = {
   hero: {
     eyebrow: 'Eduardo Lourenco',
     title: 'Principal Software Engineer',
-    disciplines: 'IA · Mobile · Arquitetura de Software',
+    disciplines: 'IA · Mobile · Arquitetura de Software e Soluções',
     summary:
       'Projeto e construo produtos digitais inteligentes, da arquitetura de sistemas até a produção.',
     workCta: 'Ver trabalhos',

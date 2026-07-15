@@ -11,7 +11,7 @@ export const enContent = {
   hero: {
     eyebrow: 'Eduardo Lourenco',
     title: 'Principal Software Engineer',
-    disciplines: 'AI · Mobile · Software Architecture',
+    disciplines: 'AI · Mobile · Software Architecture and Solutions',
     summary:
       'I design and build intelligent digital products, from system architecture to production.',
     workCta: 'View selected work',
