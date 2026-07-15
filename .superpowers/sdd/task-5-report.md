@@ -65,9 +65,30 @@ Results:
 - Progressive chunks remain separate: `ParticleScene` 3.16 kB and
   `three-vendor` 883.51 kB.
 
+## Review follow-up
+
+The focused review reproduced two quality-gate failures before the fix:
+
+- ESLint reported `@typescript-eslint/no-this-alias` in the observer mock.
+- Prettier reported all three reviewed TypeScript files as unformatted.
+
+The observer mock now returns one stable `IntersectionObserver` object through a
+named constructible function, preserving the callback and observer arguments
+without capturing `this`. Prettier was applied only to the three reviewed files.
+
+```bash
+npm test -- src/components/useRevealOnView.test.tsx src/features/home/HomePage.test.tsx
+npx eslint src/components/useRevealOnView.ts src/components/useRevealOnView.test.tsx src/features/projects/FeaturedProject.tsx
+npx prettier --check src/components/useRevealOnView.ts src/components/useRevealOnView.test.tsx src/features/projects/FeaturedProject.tsx
+npm run typecheck
+```
+
+Results: 5 focused tests passed; ESLint, Prettier, and typecheck exited 0.
+
 ## Commits
 
 - `53c850c feat: refine portfolio sections and motion`
+- `80ef218 fix: satisfy reveal hook quality gates`
 
 ## Self-review and concerns
 
