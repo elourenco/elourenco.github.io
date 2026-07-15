@@ -113,6 +113,7 @@
   height: 45.5rem;
   min-width: 0;
   overflow: clip;
+  overflow-clip-margin: 5rem;
 }
 
 .contact-section {
@@ -239,6 +240,7 @@
 
   .home-hero__visual {
     height: auto;
+    overflow-clip-margin: 0;
   }
 
   .feature-card {

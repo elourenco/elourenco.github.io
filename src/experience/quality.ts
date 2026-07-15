@@ -21,7 +21,7 @@ export function selectQualityProfile(
     !input.webgl ||
     input.reducedMotion ||
     input.saveData ||
-    (input.mobile && (input.memoryGb ?? 4) <= 2)
+    (input.memoryGb ?? 4) <= 2
   ) {
     return DISABLED;
   }

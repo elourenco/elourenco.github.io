@@ -206,9 +206,9 @@
 .hero-portrait {
   position: relative;
   z-index: 2;
-  width: min(100%, 39rem);
+  width: 44rem;
   aspect-ratio: 1024 / 1240;
-  margin: 0 auto;
+  margin: 0 0 0 -5rem;
   filter: drop-shadow(0 0 2.5rem rgb(168 255 62 / 14%));
 }
 
@@ -576,6 +576,11 @@
 }
 
 @media (max-width: 1179px) {
+  .hero-portrait {
+    width: min(100%, 39rem);
+    margin-inline: auto;
+  }
+
   .home-hero__name {
     transform: none;
   }

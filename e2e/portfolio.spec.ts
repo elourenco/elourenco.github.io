@@ -172,7 +172,9 @@ test.describe('responsive particle contracts', () => {
     expect(project!.y).toBeLessThan(900);
     expect(capability!.y).toBeLessThan(760);
     expect(capability!.y + capability!.height).toBeLessThan(1058);
-    expect(portrait!.x).toBeGreaterThan(700);
+    expect(portrait!.x).toBeGreaterThanOrEqual(680);
+    expect(portrait!.x).toBeLessThanOrEqual(735);
+    expect(portrait!.width).toBeGreaterThanOrEqual(680);
     expect(rail!.width).toBeLessThanOrEqual(132);
   });
 
@@ -266,14 +268,24 @@ test.describe('responsive particle contracts', () => {
   });
 
   for (const constrainedProfile of [
-    { label: 'Save-Data', memoryGb: 8, saveData: true },
-    { label: 'low memory', memoryGb: 2, saveData: false },
+    {
+      label: 'Save-Data',
+      memoryGb: 8,
+      saveData: true,
+      viewport: { width: 390, height: 844 },
+    },
+    {
+      label: 'low memory desktop',
+      memoryGb: 2,
+      saveData: false,
+      viewport: { width: 1440, height: 1024 },
+    },
   ]) {
     test(`keeps semantic hero available under the ${constrainedProfile.label} gate`, async ({
       page,
     }) => {
       const heavyParticleRequests = trackHeavyParticleRequests(page);
-      await page.setViewportSize({ width: 390, height: 844 });
+      await page.setViewportSize(constrainedProfile.viewport);
       await page.addInitScript(({ memoryGb, saveData }) => {
         Object.defineProperty(navigator, 'deviceMemory', {
           configurable: true,
@@ -298,6 +310,49 @@ test.describe('responsive particle contracts', () => {
       expect(heavyParticleRequests).toEqual([]);
     });
   }
+
+  test('has zero application errors and request failures on the eligible home', async ({
+    page,
+  }) => {
+    const consoleErrors: string[] = [];
+    const consoleWarnings: string[] = [];
+    const pageErrors: string[] = [];
+    const requestFailures: string[] = [];
+    page.on('console', (message) => {
+      if (message.type() === 'error') consoleErrors.push(message.text());
+      if (message.type() === 'warning') consoleWarnings.push(message.text());
+    });
+    page.on('pageerror', (error) => pageErrors.push(error.message));
+    page.on('requestfailed', (request) => {
+      requestFailures.push(
+        `${request.url()}: ${request.failure()?.errorText ?? 'unknown failure'}`,
+      );
+    });
+
+    await page.setViewportSize({ width: 1440, height: 1024 });
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'deviceMemory', {
+        configurable: true,
+        value: 8,
+      });
+    });
+    await page.goto('/en');
+    await waitForVisualReadiness(page);
+    await page.waitForTimeout(1_300);
+
+    expect({ consoleErrors, pageErrors, requestFailures }).toEqual({
+      consoleErrors: [],
+      pageErrors: [],
+      requestFailures: [],
+    });
+    expect(
+      consoleWarnings.filter(
+        (warning) =>
+          !/GPU stall due to ReadPixels/.test(warning) &&
+          !/THREE\.THREE\.Clock: This module has been deprecated/.test(warning),
+      ),
+    ).toEqual([]);
+  });
 
   test('keeps primary calls to action visible without WebGL', async ({
     page,

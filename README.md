@@ -39,9 +39,10 @@ quatro documentos canônicos são:
 Existe um único runtime 3D de produção: `ParticleExperience` seleciona o perfil
 de qualidade e carrega `ParticleScene` sob demanda. A cena só monta quando
 WebGL está disponível, movimento reduzido e Save-Data estão desativados, o
-perfil de memória é elegível, o browser ficou ocioso, o hero está visível e a
-aba está ativa. Perda de contexto desmonta a cena e mantém o fallback 2D. O
-conteúdo semântico, as rotas e os CTAs não dependem do canvas.
+perfil reporta mais de `2 GB` de memória, o browser ficou ocioso, o hero está
+visível e a aba está ativa. O limite de memória vale para desktop e mobile antes
+do import dinâmico. Perda de contexto desmonta a cena e mantém o fallback 2D.
+O conteúdo semântico, as rotas e os CTAs não dependem do canvas.
 
 O contrato de navegador cobre movimento reduzido, WebGL indisponível, limite
 de zero ou um canvas, abertura do gate, ausência de overflow mobile e conteúdo
@@ -49,27 +50,33 @@ interativo abaixo do hero. Movimento reduzido, Save-Data, baixa memória e
 WebGL indisponível também verificam zero requests do chunk pesado. Um perfil
 elegível solicita exatamente um `ParticleScene` sob demanda.
 
+O gate de telemetria do browser falha em qualquer `console.error`, `pageerror`,
+`requestfailed` ou warning não reconhecido. Chromium headless pode emitir dois
+warnings conhecidos do runtime/dependência: stall do driver em `ReadPixels` e
+depreciação de `THREE.Clock`. Eles são allowlisted como warnings, nunca como
+erros, e permanecem explícitos na evidência de QA.
+
 ## Performance e limites medidos
 
 Build de produção medido em 2026-07-15:
 
 | Artefato                                     | Minificado | Gzip (`gzip -c`) |
 | -------------------------------------------- | ---------: | ---------------: |
-| app `index-DmlQ1oVo.js`                      |   344132 B |         105041 B |
-| cena + R3F/Three `ParticleScene-DiwRRYPO.js` |   875193 B |         230252 B |
-| CSS `index-FudVdUwk.css`                     |    17877 B |                — |
+| app `index-DOaxfdvZ.js`                      |   344122 B |         105036 B |
+| cena + R3F/Three `ParticleScene-SdoYL_Oy.js` |   875193 B |         230252 B |
+| CSS `index-HJNICxcs.css`                     |    17977 B |                — |
 | fonte WOFF2                                  |    22444 B |                — |
 
 O limite legado era baseline `92,59 kB` + `10 kB` para o app. O app corrigido
-mede `106,42 kB` no relatório do Vite e `105041 B` com `gzip -c`, portanto
-ultrapassa o teto legado de `102590 B` em `2451 B`; essa diferença não é
+mede `106,41 kB` no relatório do Vite e `105036 B` com `gzip -c`, portanto
+ultrapassa o teto legado de `102590 B` em `2446 B`; essa diferença não é
 ocultada por um chunk inicial auxiliar.
 
 A medição anterior de `101201 B` era incompleta: `index.html` também fazia
 `modulepreload` do vendor Three/R3F de `233094 B`, que continha dependências
 compartilhadas do React e era importado estaticamente pelo entry. O critical
 initial JavaScript real era aproximadamente `334747 B`. O grafo corrigido
-entrega somente `105041 B` de JavaScript inicial, redução de aproximadamente
+entrega somente `105036 B` de JavaScript inicial, redução de aproximadamente
 `68,6%`, e move R3F/Three integralmente para o único `ParticleScene` dinâmico.
 O contrato de produção limita o total inicial corrigido a `106000 B` para evitar
 novo drift. A fonte permanece abaixo de `50 kB`.

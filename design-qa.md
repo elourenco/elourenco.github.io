@@ -25,17 +25,19 @@ The Product Design workflow selected the Codex in-app Browser. The browser-clien
 - Mobile menu: all five navigation links were visible before closing.
 - Reduced motion: zero canvases mounted and the primary CTA remained visible.
 - No WebGL: zero canvases mounted and the primary CTA remained visible.
-- Reduced motion, Save-Data, low-memory, and no-WebGL profiles requested zero
-  `ParticleScene`/`three-vendor` assets; an eligible profile requested exactly
-  one `ParticleScene` asset on demand.
-- Console and uncaught page errors: none across desktop, mobile, reduced-motion, and no-WebGL contexts.
+- Reduced motion, Save-Data, low-memory desktop, and no-WebGL profiles requested
+  zero `ParticleScene`/`three-vendor` assets; an eligible desktop profile
+  requested exactly one `ParticleScene` asset on demand.
+- Browser telemetry recorded zero console errors, uncaught page errors, and
+  request failures. Headless WebGL emitted allowlisted warnings for GPU stalls
+  during `ReadPixels` and the dependency's deprecated `THREE.Clock` usage.
 
 ## Required fidelity surfaces
 
 - Fonts and typography: final name box is y=144 and 263.96 px high, the role begins at y=419.16, and the summary begins at y=522.14 with a 400 px measure. Disciplines use the mono face and preserved localized casing.
 - Spacing and layout rhythm: capability begins at y=740; the first project card begins at y=831; Dona Events title begins at y=927.22. All three desktop CTAs share y=622.42 and a 44 px height.
 - Colors and tokens: black-green base, lime accents, dividers, halo, and grid preserve the reference hierarchy. Minor halo and line-opacity differences remain P3.
-- Image quality and asset fidelity: portrait and dashboard are real bounded raster assets. The right-side portrait mask and one particle field overlap through the face and torso; no custom SVG/CSS image substitute is used.
+- Image quality and asset fidelity: portrait and dashboard are real bounded raster assets. The portrait moved from x=792.31/w=624 to x=700.64/w=704, matching the source's dominant scale; the particle field begins at x=819.47 and overlaps face/torso. No custom SVG/CSS image substitute is used.
 - Icons: all navigation, CTA, capability, and scroll affordances use Phosphor icons. Rail nodes, labels, and footer markers remain within the 132 px rail.
 - Copy and content: Portuguese/English copy, routes, curriculum asset, and destinations remain intact. Desktop rail labels use source-faithful short copy while each link's accessible name and every mobile label preserve the full localized copy.
 
@@ -44,7 +46,7 @@ The Product Design workflow selected the Codex in-app Browser. The browser-clien
 - P0: 0.
 - P1: 0.
 - P2: 0.
-- P3: compact locale typography and small differences in rail type scale, CTA density, halo opacity, and particle distribution.
+- P3: compact locale typography and small differences in rail type scale, CTA density, portrait crop/mask, halo opacity, and particle distribution.
 
 ## Comparison history
 
@@ -116,6 +118,35 @@ The Product Design workflow selected the Codex in-app Browser. The browser-clien
 - Post-fix evidence: `.superpowers/design-qa/portfolio-1488x1058.png`,
   `.superpowers/design-qa/portfolio-390x844.png`, and the regenerated full and
   focused comparisons.
+- Result: no actionable P0/P1/P2 findings remain.
+
+### Iteration 9 — blocked after final review
+
+- Earlier findings: `deviceMemory=2` disabled the scene only when the mobile
+  media query was true; desktop still loaded one heavy chunk/canvas. The
+  portrait remained materially smaller/right-shifted at x=792.31/w=624 versus
+  the source. The console-clean claim had no persistent E2E telemetry gate.
+- RED evidence: the new desktop quality unit received `enabled=true`/3000; the
+  low-memory desktop E2E found one canvas; the portrait contract failed its
+  x<=735 and width>=680 bounds.
+- Result: blocked by one resilience P1 and one visual P2.
+
+### Iteration 10 — passed
+
+- Fixes made: the <=2 GB cutoff now applies before every desktop/mobile dynamic
+  import. The portrait is 44rem wide and shifted left inside a bounded clip
+  margin, while tablet/mobile restore the constrained centered geometry. Added
+  a browser telemetry gate for console errors, page errors, request failures,
+  and unexpected warnings.
+- GREEN evidence: desktop low-memory and eligible profile E2E passed 4/4;
+  responsive/portrait focused E2E passed 18/18. Portrait is x=700.64/w=704,
+  particles are x=819.47/w=608.53, capability remains y=740, and the feature
+  card remains y=831. Telemetry passed 2/2 with zero errors/page errors/request
+  failures; only the two documented headless WebGL/dependency warning classes
+  appeared.
+- Post-fix evidence: regenerated `.superpowers/design-qa/portfolio-1488x1058.png`,
+  `.superpowers/design-qa/portfolio-390x844.png`, full, hero, and portrait-edge
+  comparisons.
 - Result: no actionable P0/P1/P2 findings remain.
 
 ## Follow-up polish
