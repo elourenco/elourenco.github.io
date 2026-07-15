@@ -50,19 +50,19 @@ fechados deterministicamente na seleção unitária de qualidade.
 
 ## Performance e limites medidos
 
-Build de produção medido em 2026-07-14:
+Build de produção medido em 2026-07-15:
 
 | Artefato                               | Minificado | Gzip (`gzip -c`) |
 | -------------------------------------- | ---------: | ---------------: |
-| app `index-BC5Sk6KR.js`                |   298597 B |          92921 B |
-| cena `ParticleScene-DrdVQiSv.js`       |     2617 B |           1333 B |
+| app `index-Dxtly_5o.js`                |   332632 B |         101201 B |
+| cena `ParticleScene-CXH7HEvE.js`       |     3162 B |           1520 B |
 | vendor `three-vendor-CTAtCiMJ.js`      |   883519 B |         233094 B |
 | runtime `rolldown-runtime-QTnfLwEv.js` |      694 B |           420 B¹ |
 | fonte WOFF2                            |    22444 B |                — |
 
 ¹ Valor reportado pelo Vite; o comando de budget comprime explicitamente app,
-cena e vendor. O Vite reportou `93,98 kB` gzip para o app, crescimento de
-`1,39 kB` sobre o baseline de `92,59 kB`, abaixo do limite de `10 kB`. O vendor
+cena e vendor. O Vite reportou `102,49 kB` gzip para o app, crescimento de
+`9,90 kB` sobre o baseline de `92,59 kB`, abaixo do limite de `10 kB`. O vendor
 Three/R3F/Drei caiu de `239,74 kB` para `236,06 kB` no relatório do Vite. A
 fonte permanece abaixo do limite de `50 kB`.
 

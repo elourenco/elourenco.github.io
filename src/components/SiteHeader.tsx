@@ -51,7 +51,6 @@ export function SiteHeader({ content, route }: SiteHeaderProps) {
   return (
     <header className="site-header">
       <DesktopSectionRail
-        brand={content.hero.eyebrow}
         navigationLabel={navigationLabel}
         items={items}
         activeId={navigationActiveId}

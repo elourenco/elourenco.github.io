@@ -35,6 +35,7 @@ describe('HomeHero', () => {
       'Mobile',
       'IA aplicada',
       'Observabilidade',
+      'Role para explorar',
     ]) {
       expect(screen.getByText(label)).toBeVisible();
     }
@@ -67,6 +68,11 @@ describe('HomeHero', () => {
         name: 'Baixar currículo',
       }),
     ).toHaveAttribute('download');
+    expect(
+      within(actionCluster as HTMLElement).getByRole('link', {
+        name: 'Baixar currículo',
+      }),
+    ).not.toHaveClass('button--quiet');
   });
 
   it('keeps the particle surface outside the portrait figure', () => {

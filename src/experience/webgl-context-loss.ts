@@ -7,5 +7,6 @@ export function observeWebGLContextLoss(
     onContextLost();
   };
   canvas.addEventListener('webglcontextlost', handleContextLost);
-  return () => canvas.removeEventListener('webglcontextlost', handleContextLost);
+  return () =>
+    canvas.removeEventListener('webglcontextlost', handleContextLost);
 }

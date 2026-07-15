@@ -81,13 +81,54 @@ test.describe('responsive particle contracts', () => {
     const project = await page.locator('.feature-card').boundingBox();
     const portrait = await page.locator('.hero-portrait').boundingBox();
     const rail = await page.locator('.site-header').boundingBox();
+    const name = await page.locator('.home-hero__name').boundingBox();
+    const summary = await page.locator('.home-hero__summary').boundingBox();
+    const projectTitle = await page.locator('#work-title').boundingBox();
+    const actions = await page
+      .locator('.home-hero .action-cluster .button')
+      .evaluateAll((links) =>
+        links.map((link) => {
+          const bounds = link.getBoundingClientRect();
+          return {
+            y: bounds.y,
+            height: bounds.height,
+            scrollWidth: link.scrollWidth,
+            clientWidth: link.clientWidth,
+          };
+        }),
+      );
+    const railLinksFit = await page
+      .locator('.desktop-section-rail .site-header__nav a')
+      .evaluateAll((links) =>
+        links.every((link) => link.getBoundingClientRect().right <= 132),
+      );
 
     expect(hero).not.toBeNull();
     expect(capability).not.toBeNull();
     expect(project).not.toBeNull();
     expect(portrait).not.toBeNull();
     expect(rail).not.toBeNull();
+    expect(name).not.toBeNull();
+    expect(summary).not.toBeNull();
+    expect(projectTitle).not.toBeNull();
+    expect(name!.height).toBeGreaterThan(240);
+    expect(summary!.width).toBeLessThanOrEqual(400);
+    expect(projectTitle!.y).toBeGreaterThan(880);
+    expect(projectTitle!.y).toBeLessThan(950);
+    expect(actions).toHaveLength(3);
+    expect(actions.every(({ height }) => height <= 48)).toBe(true);
+    expect(actions[0]!.y).toBeGreaterThan(620);
+    expect(actions[0]!.y).toBeLessThan(660);
+    expect(new Set(actions.map(({ y }) => Math.round(y))).size).toBe(1);
+    expect(
+      actions.every(
+        ({ scrollWidth, clientWidth }) => scrollWidth <= clientWidth,
+      ),
+    ).toBe(true);
+    expect(railLinksFit).toBe(true);
     expect(project!.y).toBeLessThan(1058);
+    expect(project!.y).toBeLessThan(900);
+    expect(capability!.y).toBeLessThan(760);
     expect(capability!.y + capability!.height).toBeLessThan(1058);
     expect(portrait!.x).toBeGreaterThan(700);
     expect(rail!.width).toBeLessThanOrEqual(132);

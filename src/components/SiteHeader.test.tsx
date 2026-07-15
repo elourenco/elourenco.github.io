@@ -37,7 +37,7 @@ afterEach(() => {
 
 describe('SiteHeader', () => {
   it('builds one English home navigation contract for both responsive shells', () => {
-    render(
+    const { container } = render(
       <MemoryRouter initialEntries={['/en']}>
         <SiteHeader content={enContent} route="home" />
       </MemoryRouter>,
@@ -63,6 +63,12 @@ describe('SiteHeader', () => {
         'true',
       );
     }
+    expect(
+      container.querySelectorAll('.desktop-section-rail__node'),
+    ).toHaveLength(5);
+    expect(
+      container.querySelector('.desktop-section-rail__footer'),
+    ).toBeInTheDocument();
   });
 
   it('uses localized home paths on project routes and closes the mobile disclosure', () => {

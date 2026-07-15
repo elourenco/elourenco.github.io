@@ -25,7 +25,7 @@
   --rail-width: 8.25rem;
   --container: 81rem;
   --reading-width: 65ch;
-  --hero-name: clamp(5.25rem, 8.2vw, 7.7rem);
+  --hero-name: clamp(5.75rem, 8.8vw, 8.2rem);
   --hero-role: clamp(1.25rem, 1.8vw, 1.65rem);
   --focus-ring: 0 0 0 3px rgb(168 255 62 / 48%);
   --layer-scene: 0;

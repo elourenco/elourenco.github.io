@@ -3,6 +3,7 @@ import {
   ChartBarIcon,
   DeviceMobileIcon,
   GraphIcon,
+  MouseSimpleIcon,
 } from '@phosphor-icons/react';
 import type { PortfolioContent } from '../../content';
 
@@ -15,8 +16,10 @@ const iconByCapability = {
 
 export function CapabilityStrip({
   items,
+  exploreLabel,
 }: {
   items: PortfolioContent['hero']['capabilities'];
+  exploreLabel: string;
 }) {
   return (
     <ul className="capability-strip">
@@ -30,6 +33,10 @@ export function CapabilityStrip({
           </li>
         );
       })}
+      <li className="capability-strip__hint">
+        <MouseSimpleIcon aria-hidden="true" size={34} weight="light" />
+        <span>{exploreLabel}</span>
+      </li>
     </ul>
   );
 }

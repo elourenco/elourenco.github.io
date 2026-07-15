@@ -28,7 +28,7 @@ function HeroActions({ content }: { content: PortfolioContent }) {
         <LinkedinLogoIcon aria-hidden="true" size={20} weight="fill" />
         {content.hero.linkedinCta}
       </a>
-      <a className="button button--quiet" href={PUBLIC_ASSETS.resume} download>
+      <a className="button" href={PUBLIC_ASSETS.resume} download>
         <FileTextIcon aria-hidden="true" size={20} weight="regular" />
         {content.hero.resumeCta}
       </a>
@@ -61,7 +61,14 @@ export function HomeHero({ content }: { content: PortfolioContent }) {
         <HeroPortrait alt={portraitAlt} priority />
         <ParticleExperience className="home-hero__particles" />
       </div>
-      <CapabilityStrip items={content.hero.capabilities} />
+      <CapabilityStrip
+        items={content.hero.capabilities}
+        exploreLabel={
+          content.locale === 'pt-BR'
+            ? 'Role para explorar'
+            : 'Scroll to explore'
+        }
+      />
     </section>
   );
 }
