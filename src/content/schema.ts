@@ -17,6 +17,10 @@ export interface PortfolioContent {
     workCta: string;
     linkedinCta: string;
     resumeCta: string;
+    capabilities: Array<{
+      id: 'distributed' | 'mobile' | 'ai' | 'observability';
+      label: string;
+    }>;
   };
   expertise: Array<{
     id: 'ai' | 'mobile' | 'architecture';

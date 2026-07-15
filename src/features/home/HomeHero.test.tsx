@@ -22,7 +22,7 @@ describe('HomeHero', () => {
     ).toBeVisible();
   });
 
-  it('preserves Portuguese disciplines and the three destination contracts', () => {
+  it('preserves Portuguese disciplines, capabilities, and destination contracts', () => {
     vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
 
     render(<HomeHero content={ptBRContent} />);
@@ -30,21 +30,42 @@ describe('HomeHero', () => {
     expect(
       screen.getByText('IA · Mobile · Arquitetura de Software'),
     ).toBeVisible();
+    for (const label of [
+      'Sistemas distribuídos',
+      'Mobile',
+      'IA aplicada',
+      'Observabilidade',
+    ]) {
+      expect(screen.getByText(label)).toBeVisible();
+    }
 
     const hero = screen.getByRole('region', {
       name: 'Eduardo Lourenco Principal Software Engineer',
     });
+    const actionCluster = hero.querySelector('.action-cluster');
+    expect(actionCluster).toBeInTheDocument();
     expect(
-      within(hero).getByRole('link', { name: 'Ver trabalhos' }),
+      within(actionCluster as HTMLElement).getAllByRole('link'),
+    ).toHaveLength(3);
+    expect(
+      within(actionCluster as HTMLElement).getByRole('link', {
+        name: 'Ver trabalhos',
+      }),
     ).toHaveAttribute('href', '#work');
     expect(
-      within(hero).getByRole('link', { name: 'Conectar no LinkedIn' }),
+      within(actionCluster as HTMLElement).getByRole('link', {
+        name: 'Conectar no LinkedIn',
+      }),
     ).toHaveAttribute('href', 'https://www.linkedin.com/in/dudulourenco');
     expect(
-      within(hero).getByRole('link', { name: 'Baixar currículo' }),
+      within(actionCluster as HTMLElement).getByRole('link', {
+        name: 'Baixar currículo',
+      }),
     ).toHaveAttribute('href', '/cv-eduardo-lourenco-pt-br.pdf');
     expect(
-      within(hero).getByRole('link', { name: 'Baixar currículo' }),
+      within(actionCluster as HTMLElement).getByRole('link', {
+        name: 'Baixar currículo',
+      }),
     ).toHaveAttribute('download');
   });
 

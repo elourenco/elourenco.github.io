@@ -17,6 +17,12 @@ export const ptBRContent = {
     workCta: 'Ver trabalhos',
     linkedinCta: 'Conectar no LinkedIn',
     resumeCta: 'Baixar currículo',
+    capabilities: [
+      { id: 'distributed', label: 'Sistemas distribuídos' },
+      { id: 'mobile', label: 'Mobile' },
+      { id: 'ai', label: 'IA aplicada' },
+      { id: 'observability', label: 'Observabilidade' },
+    ],
   },
   expertise: [
     {

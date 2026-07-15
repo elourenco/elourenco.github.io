@@ -1,3 +1,8 @@
+import {
+  ArrowRightIcon,
+  FileTextIcon,
+  LinkedinLogoIcon,
+} from '@phosphor-icons/react';
 import type { PortfolioContent } from '../../content';
 import { ParticleExperience } from '../../experience/ParticleExperience';
 import {
@@ -6,6 +11,7 @@ import {
   PUBLIC_ASSETS,
   SITE_ANCHORS,
 } from '../../site-contract';
+import { CapabilityStrip } from './CapabilityStrip';
 import { HeroPortrait } from './HeroPortrait';
 
 function HeroActions({ content }: { content: PortfolioContent }) {
@@ -15,12 +21,15 @@ function HeroActions({ content }: { content: PortfolioContent }) {
         className="button button--primary"
         href={INTERNAL_DESTINATIONS.fragment(SITE_ANCHORS.home.work)}
       >
+        <ArrowRightIcon aria-hidden="true" size={20} weight="bold" />
         {content.hero.workCta}
       </a>
       <a className="button" href={EXTERNAL_URLS.linkedin}>
+        <LinkedinLogoIcon aria-hidden="true" size={20} weight="fill" />
         {content.hero.linkedinCta}
       </a>
       <a className="button button--quiet" href={PUBLIC_ASSETS.resume} download>
+        <FileTextIcon aria-hidden="true" size={20} weight="regular" />
         {content.hero.resumeCta}
       </a>
     </div>
@@ -52,6 +61,7 @@ export function HomeHero({ content }: { content: PortfolioContent }) {
         <HeroPortrait alt={portraitAlt} priority />
         <ParticleExperience className="home-hero__particles" />
       </div>
+      <CapabilityStrip items={content.hero.capabilities} />
     </section>
   );
 }
