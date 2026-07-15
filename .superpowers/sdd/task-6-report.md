@@ -56,6 +56,12 @@ font became active, `.home-hero__content` retained its grid-item
 `min-width:auto` and expanded the page to 394 px. The E2E now waits for
 `document.fonts.ready`, and the content grid item explicitly uses `min-width: 0`.
 
+The review correction added two more RED contracts. The CSS suite failed 1 of
+5 tests because `body` still masked overflow globally. The stabilized reference
+E2E failed in both projects with the actual `.feature-card` at
+`y=1217.390625`, proving that checking only the `#work` section boundary was
+insufficient.
+
 ## Implementation
 
 - Replaced the 800/1100 px breakpoint system with exact 1179/767 px boundaries.
@@ -69,8 +75,17 @@ font became active, `.home-hero__content` retained its grid-item
   stack to one column; the capability strip uses two bounded columns.
 - Added `overflow: clip` to `.home-hero__visual`, fixing the actual particle
   boundary instead of hiding overflow globally.
+- Removed `overflow-x: hidden` from `body`; horizontal overflow now fails the
+  real document-width assertions instead of being globally masked.
 - Removed the hero content grid item's intrinsic minimum so the loaded display
   font cannot expand the 390 px layout.
+- Reduced hero minimum height, vertical padding, row gap, portrait bound, and
+  capability padding; reduced only the feature section's leading padding. This
+  moves the real project card into the reference fold while keeping the
+  portrait and capability strip intact.
+- Added a shared E2E readiness helper that waits for `document.fonts.ready`,
+  decodes the portrait, scroll-loads and decodes the lazy dashboard when
+  relevant, then returns to `scrollY=0`. It never waits for canvas or WebGL.
 - Set section titles to `clamp(2.5rem, 4vw, 4.25rem)`, Dona detail title to
   `clamp(4rem, 9vw, 8rem)`, and bounded its metric separately.
 - Removed the viewport-driven `72svh` minimum from the Dona case hero. Existing
@@ -82,19 +97,30 @@ Required gates, run fresh after implementation:
 
 ```text
 node --test scripts/design-system-css.test.mjs
-4 passed, 0 failed
+5 passed, 0 failed
 
 npm run e2e -- --grep "responsive|reference viewport|compact header"
-29 passed, 1 skipped, 0 failed (4.8s)
+29 passed, 1 skipped, 0 failed (7.8s)
 
 npm run test:run
 22 Vitest files passed, 55 tests passed
-13 Node script tests passed
+14 Node script tests passed
 ```
 
-The Playwright gate verifies no horizontal overflow at 390, 768, 1024, 1440,
-and 1488 px in both configured projects. At 1488 x 1058 it verifies the project
-starts above the fold, portrait `x > 700`, and rail width `<= 132`. At 1024 it
+The Playwright gate verifies real document width without global clipping at 390,
+768, 1024, 1440, and 1488 px in both configured projects. Stable 1488 x 1058
+measurements were:
+
+```text
+hero            x=164.00  y=52.14   width=1292  height=794.64
+capability      x=164.00  y=779.78  width=1292  bottom=830.78
+feature-card    x=164.00  y=1024.78 width=1292  height=542.94
+portrait        x=832.73  y=105.03  width=544   height=658.75
+rail            x=0       y=0       width=132   height=1058
+```
+
+Thus the actual card begins 33.22 px before the fold; capability strip is fully
+visible, portrait `x > 700`, and rail width is exactly 132 px. At 1024 the gate
 verifies compact-header/hidden-rail behavior. At 390 it verifies all five menu
 links are visible and Escape closes the panel with focus returned to the toggle.
 
@@ -140,3 +166,5 @@ desktop project. No WebGL test failed.
 ## Commit
 
 `fix: lock portfolio responsive geometry`
+
+Review correction: `fix: address responsive review findings`

@@ -65,6 +65,14 @@ test('owns the responsive shell at the approved breakpoint boundaries', () => {
   assert.doesNotMatch(layoutCss, /@media\s*\(max-width:\s*800px\)/);
 });
 
+test('clips visual overflow locally without masking document overflow', () => {
+  const body = rule(baseCss, 'body');
+  const visual = rule(layoutCss, '.home-hero__visual');
+
+  assert.doesNotMatch(body, /overflow-x:\s*hidden/);
+  assert.match(visual, /overflow:\s*clip/);
+});
+
 test('bounds display typography in the correct CSS owners', () => {
   assert.match(tokensCss, /--rail-width:\s*8\.25rem/);
   assert.match(tokensCss, /--hero-name:\s*clamp\(5\.25rem, 8\.2vw, 7\.7rem\)/);

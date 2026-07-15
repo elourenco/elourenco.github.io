@@ -149,7 +149,7 @@
 .hero-portrait {
   position: relative;
   z-index: 2;
-  width: min(100%, 39rem);
+  width: min(100%, 34rem);
   aspect-ratio: 1024 / 1240;
   margin: 0 auto;
   filter: drop-shadow(0 0 2.5rem rgb(168 255 62 / 14%));
@@ -238,7 +238,7 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   margin: 0;
-  padding: 1.25rem 0 0;
+  padding: 1rem 0 0;
   border-top: 1px solid var(--color-line);
   list-style: none;
 }

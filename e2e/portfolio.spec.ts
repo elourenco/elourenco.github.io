@@ -1,4 +1,33 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
+
+async function waitForDecodedImage(image: Locator) {
+  await image.waitFor({ state: 'attached' });
+  await image.evaluate(async (element: HTMLImageElement) => {
+    if (!element.complete) {
+      await new Promise<void>((resolve) => {
+        element.addEventListener('load', () => resolve(), { once: true });
+        element.addEventListener('error', () => resolve(), { once: true });
+      });
+    }
+
+    if (element.naturalWidth > 0) await element.decode();
+  });
+}
+
+async function waitForVisualReadiness(
+  page: Page,
+  { includeFeature = false }: { includeFeature?: boolean } = {},
+) {
+  await page.evaluate(() => document.fonts.ready);
+  await waitForDecodedImage(page.locator('.hero-portrait img'));
+
+  if (!includeFeature) return;
+
+  await page.locator('.feature-card').scrollIntoViewIfNeeded();
+  await waitForDecodedImage(page.locator('.feature-card__visual img'));
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+}
 
 test.describe('responsive particle contracts', () => {
   for (const viewport of [
@@ -13,7 +42,7 @@ test.describe('responsive particle contracts', () => {
     }) => {
       await page.setViewportSize(viewport);
       await page.goto('/en');
-      await page.evaluate(() => document.fonts.ready);
+      await waitForVisualReadiness(page, { includeFeature: true });
 
       const geometry = await page.evaluate(() => ({
         viewportWidth: window.innerWidth,
@@ -45,17 +74,21 @@ test.describe('responsive particle contracts', () => {
   }) => {
     await page.setViewportSize({ width: 1488, height: 1058 });
     await page.goto('/en');
+    await waitForVisualReadiness(page, { includeFeature: true });
 
     const hero = await page.locator('.home-hero').boundingBox();
-    const project = await page.locator('#work').boundingBox();
+    const capability = await page.locator('.capability-strip').boundingBox();
+    const project = await page.locator('.feature-card').boundingBox();
     const portrait = await page.locator('.hero-portrait').boundingBox();
     const rail = await page.locator('.site-header').boundingBox();
 
     expect(hero).not.toBeNull();
+    expect(capability).not.toBeNull();
     expect(project).not.toBeNull();
     expect(portrait).not.toBeNull();
     expect(rail).not.toBeNull();
     expect(project!.y).toBeLessThan(1058);
+    expect(capability!.y + capability!.height).toBeLessThan(1058);
     expect(portrait!.x).toBeGreaterThan(700);
     expect(rail!.width).toBeLessThanOrEqual(132);
   });
@@ -65,6 +98,7 @@ test.describe('responsive particle contracts', () => {
   }) => {
     await page.setViewportSize({ width: 1024, height: 768 });
     await page.goto('/en');
+    await waitForVisualReadiness(page);
 
     await expect(page.locator('.desktop-section-rail')).toBeHidden();
     await expect(page.locator('.mobile-site-header')).toBeVisible();

@@ -75,14 +75,18 @@
   padding-block: var(--space-section);
 }
 
+.feature-section {
+  padding-top: clamp(3.5rem, 5vw, 4.5rem);
+}
+
 .home-hero {
   display: grid;
-  min-height: 50.5rem;
+  min-height: 44rem;
   grid-template-columns: minmax(27rem, 0.86fr) minmax(31rem, 1.14fr);
   grid-template-rows: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 1.75rem clamp(2rem, 4vw, 4.75rem);
-  padding-block: clamp(4rem, 8vh, 6rem) 2rem;
+  gap: 1rem clamp(2rem, 4vw, 4.75rem);
+  padding-block: clamp(2.5rem, 5vh, 3.5rem) 1rem;
 }
 
 .home-hero__content {
