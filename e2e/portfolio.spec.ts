@@ -132,9 +132,14 @@ test.describe('responsive particle contracts', () => {
     await expect(page.getByTestId('particle-canvas')).toHaveCount(0);
   });
 
-  test('preserves content and CTAs after WebGL context loss', async ({
-    page,
-  }) => {
+  test('preserves content and CTAs after WebGL context loss', async (
+    { page },
+    testInfo,
+  ) => {
+    test.skip(
+      testInfo.project.name !== 'desktop-chromium',
+      'context loss requires the desktop WebGL-eligible profile',
+    );
     await page.setViewportSize({ width: 1440, height: 1024 });
     await page.addInitScript(() => {
       Object.defineProperty(navigator, 'deviceMemory', {
@@ -145,15 +150,30 @@ test.describe('responsive particle contracts', () => {
     await page.goto('/en');
     await page.locator('.home-hero__visual').scrollIntoViewIfNeeded();
 
-    const canvas = page.getByTestId('particle-canvas');
-    await expect
-      .poll(() => page.locator('canvas').count(), { timeout: 5_000 })
-      .toBeLessThanOrEqual(1);
+    const webglAvailable = await page.evaluate(() => {
+      const probe = document.createElement('canvas');
+      return Boolean(probe.getContext('webgl2') ?? probe.getContext('webgl'));
+    });
+    test.skip(!webglAvailable, 'browser has no WebGL implementation');
 
-    if ((await canvas.count()) === 1) {
-      await canvas.dispatchEvent('webglcontextlost');
-      await expect(canvas).toHaveCount(0);
-    }
+    const canvas = page.locator('canvas');
+    await expect(canvas).toHaveCount(1, { timeout: 5_000 });
+    await expect
+      .poll(
+        async () => {
+          if ((await canvas.count()) !== 1) return false;
+          return canvas.evaluate((element) => {
+            const contextLoss = new Event('webglcontextlost', {
+              cancelable: true,
+            });
+            element.dispatchEvent(contextLoss);
+            return contextLoss.defaultPrevented;
+          });
+        },
+        { timeout: 5_000 },
+      )
+      .toBe(true);
+    await expect(canvas).toHaveCount(0);
 
     await expect(
       page.getByRole('heading', {

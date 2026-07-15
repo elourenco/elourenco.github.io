@@ -3,6 +3,18 @@ import { useEffect } from 'react';
 import type { QualityProfile } from './quality';
 import { NeuralParticleField } from './particles/NeuralParticleField';
 
+export function observeWebGLContextLoss(
+  canvas: HTMLCanvasElement,
+  onContextLost: () => void,
+): () => void {
+  const handleContextLost = (event: Event) => {
+    event.preventDefault();
+    onContextLost();
+  };
+  canvas.addEventListener('webglcontextlost', handleContextLost);
+  return () => canvas.removeEventListener('webglcontextlost', handleContextLost);
+}
+
 function Scene({
   particles,
   onContextLost,
@@ -11,15 +23,10 @@ function Scene({
   onContextLost: () => void;
 }) {
   const { gl } = useThree();
-  useEffect(() => {
-    const handleContextLost = (event: Event) => {
-      event.preventDefault();
-      onContextLost();
-    };
-    gl.domElement.addEventListener('webglcontextlost', handleContextLost);
-    return () =>
-      gl.domElement.removeEventListener('webglcontextlost', handleContextLost);
-  }, [gl, onContextLost]);
+  useEffect(
+    () => observeWebGLContextLoss(gl.domElement, onContextLost),
+    [gl, onContextLost],
+  );
   return <NeuralParticleField count={particles} />;
 }
 
