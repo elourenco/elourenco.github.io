@@ -1,102 +1,99 @@
-# Task 3 report — Semantic homepage and accessible navigation
+# Task 3 — Hero alinhado à composição de referência
 
-## Status
+## Escopo entregue
 
-Implemented the bilingual semantic homepage, accessible primary navigation, skip link, stable section anchors, a route-preserving language switch, and a real downloadable PT-BR résumé. The existing typed content and locale persistence boundaries remain unchanged.
+- Estendido `PortfolioContent.hero` com as quatro capabilities tipadas e localizadas, na ordem estável `distributed`, `mobile`, `ai`, `observability`.
+- Criado `CapabilityStrip` como lista semântica, com texto visível e ícones decorativos Phosphor.
+- Mantidos os três destinos existentes do hero e adicionados `ArrowRightIcon`, `LinkedinLogoIcon` e `FileTextIcon` sem alterar os nomes acessíveis.
+- Substituído o JPEG quadrado pelo asset transparente real `eduardo-portrait.png` de 1024 x 1240, com dimensões intrínsecas, prioridade de carregamento e estados `loading`, `ready` e `fallback` preservados.
+- Removidos frame quadrado, scanline, filtros de praia e legenda `EL-01`.
+- Aplicados os tokens e a geometria aprovados para rail, container, espaçamento, nome, cargo, grid do hero, retrato e faixa de capabilities.
+- Adicionado o fundo de referência com gradientes radiais/linear em `body`; o grid técnico existente permanece em `body::before` com `pointer-events: none`.
+- Reservado o aspect ratio do portrait também no fallback para impedir colapso do layout e CLS após erro do asset.
+- O boundary de partículas não foi alterado; Task 4 continua responsável pela dissolução.
 
-## Files
+## Arquivos
 
-- Created `src/components/SkipLink.tsx`
-- Created `src/components/SiteHeader.tsx`
-- Created `src/components/LanguageSwitcher.tsx`
-- Created `src/components/LanguageSwitcher.test.tsx`
-- Created `src/features/home/HomePage.tsx`
-- Created `src/features/home/HomePage.test.tsx`
-- Created `src/features/profile/HeroSection.tsx`
-- Created `src/features/expertise/ExpertiseSection.tsx`
-- Created `src/features/projects/FeaturedProject.tsx`
-- Created `src/features/career/CareerTimeline.tsx`
-- Created `src/features/contact/ContactSection.tsx`
-- Modified `src/app/routes.ts` to compose `HomePage` for both localized home routes
-- Added `public/cv-eduardo-lourenco-pt-br.pdf`, copied byte-for-byte from the supplied CV
-- Modified `src/content/en.ts` to make the PT-BR language of the résumé explicit
+- `src/content/schema.ts`
+- `src/content/pt-BR.ts`
+- `src/content/en.ts`
+- `src/content/content.test.ts`
+- `src/features/home/CapabilityStrip.tsx`
+- `src/features/home/HomeHero.tsx`
+- `src/features/home/HomeHero.test.tsx`
+- `src/features/home/HeroPortrait.tsx`
+- `src/features/home/HeroPortrait.test.tsx`
+- `src/styles/tokens.css`
+- `src/styles/base.css`
+- `src/styles/layout.css`
+- `src/styles/components.css`
 
-## TDD evidence
+`src/styles/base.css` é o único arquivo adicional à lista nominal do brief. Ele é o owner existente de `body` e foi alterado estritamente para cumprir o Step 6, que exige os gradientes diretamente nesse elemento.
 
-### RED
+## Evidência TDD
 
-Command:
+### RED 1 — conteúdo e faixa de capabilities
 
-```text
-npm run test:run -- src/features/home/HomePage.test.tsx src/components/LanguageSwitcher.test.tsx
-```
-
-Result: expected failure. Vitest could not resolve `./HomePage` and `./LanguageSwitcher` because production components did not exist yet.
-
-### GREEN
-
-Command:
-
-```text
-npm run test:run -- src/features/home src/components && npm run typecheck && npm run lint
-```
-
-Result: exit 0; 2 test files passed, 4 tests passed; typecheck and lint passed.
-
-Coverage includes English and Portuguese content, semantic landmarks, real LinkedIn link, all four stable section IDs, localized section navigation, equivalent home route switching, equivalent Dona Events route switching, and navigation continuity when locale persistence throws.
-
-### Review fix RED
-
-Command:
+Comando:
 
 ```text
-npm run test:run -- src/features/home/HomePage.test.tsx
+npm test -- src/content/content.test.ts src/features/home/HomeHero.test.tsx
 ```
 
-Result: expected failure; both locale cases could not find the résumé link. The skip-link and exact four-item localized primary navigation assertions were already satisfied.
+Resultado: exit 1, com duas falhas esperadas.
 
-### Review fix GREEN
+- `content.test.ts`: `capabilities` era `undefined`, portanto o contrato de IDs não podia ser lido.
+- `HomeHero.test.tsx`: `Sistemas distribuídos` não existia no DOM porque a faixa ainda não era renderizada.
 
-Command:
+### GREEN 1 — conteúdo, faixa e CTAs
+
+Comando:
 
 ```text
-npm run test:run -- src/features/home/HomePage.test.tsx
+npm test -- src/content/content.test.ts src/features/home/HomeHero.test.tsx
 ```
 
-Result: exit 0; 1 test file passed, 2 tests passed. Both locale cases assert the résumé anchor's exact `href` and `download` attribute, skip-link label and target, and all four localized primary navigation labels and targets.
+Resultado: 2 arquivos, 5 testes, 0 falhas.
 
-## Full verification
+### RED 2 — portrait transparente
 
-Command:
+Comando:
 
 ```text
-npm run test:run && npm run typecheck && npm run lint && npm run build
+npm test -- src/features/home/HeroPortrait.test.tsx
 ```
 
-Result: exit 0; 7 test files passed, 17 tests passed; typecheck, lint, and production build passed. Vite generated 295.90 kB JavaScript (94.20 kB gzip) before Task 5/6 code splitting and 3D loading work.
+Resultado: exit 1. O teste encontrou o asset legado `eduardo-profile.jpg`, antes de validar as novas dimensões e a remoção do frame.
 
-### Review fix full verification
+### GREEN 2 — portrait transparente e fallback
 
-Command:
+Comando:
 
 ```text
-npm run test:run -- src/features/home src/components && npm run test:run && npm run typecheck && npm run lint && npm run build && test -f dist/cv-eduardo-lourenco-pt-br.pdf && cmp -s public/cv-eduardo-lourenco-pt-br.pdf dist/cv-eduardo-lourenco-pt-br.pdf && shasum -a 256 dist/cv-eduardo-lourenco-pt-br.pdf
+npm test -- src/features/home/HeroPortrait.test.tsx
 ```
 
-Result: exit 0; focused tests passed (2 files, 4 tests), full tests passed (7 files, 17 tests), typecheck and lint passed, and the production build passed at 296.01 kB JavaScript (94.24 kB gzip). The PDF exists in `dist`, is byte-identical to the stable public asset, and has SHA-256 `2495e16f5e7dec3e2465d6af2149020bb8e780163dfd87adac0576bd2434ad32`.
+Resultado: 1 arquivo, 3 testes, 0 falhas. Os estados ready/error existentes continuam cobertos.
 
-## Commit
+## Gates finais
 
-`feat: build bilingual semantic portfolio homepage` (the commit containing this report)
+Executados novamente, em sequência, imediatamente antes do commit funcional:
 
-Review fix commit: `fix: add downloadable PT-BR resume`
+- `npm test -- src/content/content.test.ts src/features/home/HomeHero.test.tsx src/features/home/HeroPortrait.test.tsx`: 3 arquivos, 8 testes, 0 falhas.
+- `npm run typecheck`: exit 0.
+- `npm run build`: exit 0; portrait e Phosphor resolvidos no bundle.
+- `npx prettier --check <arquivos da Task 3>`: passou.
+- `npx eslint <arquivos TypeScript/TSX da Task 3>`: passou.
+- `git diff --check`: passou.
 
-## Self-review and concerns
+Por instrução de escopo, não foram executados suíte completa, Playwright responsivo, compactação das demais seções nem design QA final.
 
-- The homepage remains HTML-first and does not depend on WebGL, JavaScript animation, or external runtime content.
-- Heading order is one `h1`, section `h2` elements, and nested article `h3` elements.
-- Interactive elements are native anchors/React Router links; no clickable non-semantic elements were introduced.
-- `LanguageSwitcher` delegates resilient persistence and equivalent-route navigation to the approved `useLocale` boundary; explicit link destinations remain valid without relying on click handlers alone.
-- The prior concern that no real résumé asset had been supplied was incorrect. The supplied PDF is now stored at the stable public path `/cv-eduardo-lourenco-pt-br.pdf`, rendered as a native download anchor, and verified in the production output.
-- Styling is intentionally browser-minimal. Task 7 owns the Cosmic visual system; Tasks 5/6 own the 3D experience and progressive loading.
-- Existing unrelated `.gitignore` changes and generated `dist/` files were not included in the Task 3 commit.
+## Commits
+
+- `cd386c6 feat: rebuild the portfolio hero`
+
+## Concerns
+
+- O build mantém o warning não bloqueante do chunk lazy `three-vendor` acima de 500 kB. Three.js continua separado do bundle síncrono principal (`index` 324.17 kB; `three-vendor` 883.51 kB), e esta Task não altera o boundary WebGL.
+- A validação visual pixel-level em 1488 x 1058 e os breakpoints 390/768/1024/1440/1488 pertencem às Tasks 6 e 7 e não foram antecipados.
+- A faixa recebeu apenas uma adaptação estrutural mínima em duas colunas abaixo de 800 px para não introduzir overflow óbvio; o contrato responsivo completo permanece na Task 6.
