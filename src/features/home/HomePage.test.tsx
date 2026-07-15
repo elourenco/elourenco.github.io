@@ -31,7 +31,7 @@ describe('HomePage', () => {
     expect(screen.getByRole('navigation', { name: 'Primary' })).toBeVisible();
     expect(
       within(screen.getByRole('banner')).getByRole('link', { name: 'Home' }),
-    ).toHaveAttribute('href', '#main-content');
+    ).toHaveAttribute('href', '#home');
     expect(
       screen.getByRole('link', { name: 'Connect on LinkedIn' }),
     ).toHaveAttribute('href', 'https://www.linkedin.com/in/dudulourenco');
@@ -93,7 +93,7 @@ describe('HomePage', () => {
     ).toBeVisible();
     expect(
       within(screen.getByRole('banner')).getByRole('link', { name: 'Início' }),
-    ).toHaveAttribute('href', '#main-content');
+    ).toHaveAttribute('href', '#home');
     expect(
       screen.getByRole('link', { name: 'Conectar no LinkedIn' }),
     ).toHaveAttribute('href', 'https://www.linkedin.com/in/dudulourenco');

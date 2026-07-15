@@ -16,6 +16,7 @@ export const PUBLIC_ASSETS = {
 export const SITE_ANCHORS = {
   main: 'main-content',
   home: {
+    hero: 'home',
     heroTitle: 'hero-title',
     work: 'work',
     workTitle: 'work-title',
@@ -35,6 +36,14 @@ export const SITE_ANCHORS = {
 } as const;
 
 export const HOME_SECTION_ANCHORS = [
+  SITE_ANCHORS.home.work,
+  SITE_ANCHORS.home.expertise,
+  SITE_ANCHORS.home.career,
+  SITE_ANCHORS.home.contact,
+] as const;
+
+export const HOME_NAVIGATION_ANCHORS = [
+  SITE_ANCHORS.home.hero,
   SITE_ANCHORS.home.work,
   SITE_ANCHORS.home.expertise,
   SITE_ANCHORS.home.career,
@@ -62,7 +71,7 @@ export function pageInternalLinks(locale: Locale, route: RouteKey): string[] {
   if (route === 'home') {
     return [
       INTERNAL_DESTINATIONS.fragment(SITE_ANCHORS.main),
-      INTERNAL_DESTINATIONS.fragment(SITE_ANCHORS.main),
+      INTERNAL_DESTINATIONS.fragment(SITE_ANCHORS.home.hero),
       ...HOME_SECTION_ANCHORS.map(INTERNAL_DESTINATIONS.fragment),
       INTERNAL_DESTINATIONS.route('en', 'home'),
       INTERNAL_DESTINATIONS.route('pt-BR', 'home'),

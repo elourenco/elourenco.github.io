@@ -35,6 +35,7 @@ export function HomeHero({ content }: { content: PortfolioContent }) {
 
   return (
     <section
+      id={SITE_ANCHORS.home.hero}
       className="home-hero section-shell"
       aria-labelledby={SITE_ANCHORS.home.heroTitle}
     >
