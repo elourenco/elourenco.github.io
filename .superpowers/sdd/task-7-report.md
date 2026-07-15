@@ -6,8 +6,10 @@ Passed from baseline `8ab76bacd95a2fc1b37214661ec6c936fbcfdfc5`.
 The verified implementation commit is
 `5a4223221bc1fd4836d61143d74895216443b35d` (`feat: deliver the
 reference-faithful portfolio`). Review corrections are committed as
-`655eacc` (`fix: preserve rail and lazy scene boundaries`). The final QA record
-is `design-qa.md`, whose last line is exactly `final result: passed`.
+`655eacc` (`fix: preserve rail and lazy scene boundaries`) and
+`7935b108774b59f4762207a9b63715ddaa379ab3` (`fix: harden experience gates
+and portrait geometry`). The final QA record is `design-qa.md`, whose last line
+is exactly `final result: passed`.
 
 ## Visual evidence
 
@@ -25,8 +27,8 @@ is `design-qa.md`, whose last line is exactly `final result: passed`.
 The source, current desktop capture, mobile capture, full comparison, and all
 six focused comparisons are present and were inspected after the final CSS
 change. Final finding counts are P0=0, P1=0, P2=0. Remaining P3-only optical
-differences are locale density, rail type scale, and small CTA, halo,
-border-opacity, and particle-distribution drift.
+differences are locale density, rail type scale, and small CTA, portrait-mask,
+halo, border-opacity, and particle-distribution drift.
 
 ## Comparison history
 
@@ -51,6 +53,14 @@ border-opacity, and particle-distribution drift.
    accessible names and full mobile labels. Removing the recursive manual
    group and module preloading puts R3F/Three entirely inside the dynamic
    `ParticleScene`. Regenerated comparisons have no P0-P2 findings.
+9. Final review reopened QA because `deviceMemory=2` still enabled the desktop
+   scene, the portrait was x=792.31/w=624 instead of the source-dominant scale,
+   and no persistent E2E telemetry gate backed the console-clean claim.
+10. The memory cutoff is now global before dynamic import. The portrait is
+    x=700.64/w=704 while the particles remain x=819.47/w=608.53 and overlap the
+    face/torso; capability y=740, card y=831, CTA geometry, rail, mobile, and
+    overflow contracts remain stable. The telemetry gate records console,
+    page, and network failures and recognizes only the documented warnings.
 
 Structural mismatches received RED assertions before the smallest production
 fix, followed by focused GREEN runs. The final CSS contract, component tests,
@@ -74,16 +84,18 @@ headless run then captured and exercised the local preview.
 - All five mobile navigation links are present.
 - Reduced motion and no-WebGL each mount zero canvases while preserving the
   primary CTA.
-- Reduced motion, Save-Data, low-memory, and no-WebGL profiles request zero
-  heavy particle assets. An eligible profile requests exactly one
+- Reduced motion, Save-Data, low-memory desktop, and no-WebGL profiles request
+  zero heavy particle assets. An eligible desktop profile requests exactly one
   `ParticleScene` asset on demand.
 - Portuguese rail labels are source-short, one line, x=42.58/right=123 inside
   132 px, and have 44 px targets. `Trabalhos` retains the full accessible name
   `Trabalhos selecionados`; the mobile shell retains the full visible copy.
 - WebGL context-loss, Save-Data, low-memory, one-canvas, and responsive-width
   paths pass in the complete Playwright suite.
-- Desktop, mobile, reduced-motion, and no-WebGL runs produced no console or
-  uncaught page errors.
+- The production telemetry gate recorded zero `console.error`, `pageerror`, and
+  `requestfailed` events. Headless WebGL emitted the two known warning classes:
+  GPU stall during `ReadPixels` and deprecated `THREE.Clock` usage. Both remain
+  explicit and any other warning fails the gate.
 
 ## Final gates
 
@@ -94,11 +106,11 @@ npm run check        passed
   Prettier           passed
   ESLint             passed
   TypeScript         passed
-  Vitest             22 files, 56 tests passed
+  Vitest             22 files, 57 tests passed
   Node contracts     17 tests passed
   build/content/link passed
 
-npm run e2e          51 passed, 1 expected skip, 0 failed
+npm run e2e          53 passed, 1 expected skip, 0 failed
 npm run build        passed
 npm audit --omit=dev found 0 vulnerabilities
 git diff --check     passed
@@ -114,21 +126,21 @@ were not audited because the required production gate is
 Fresh `dist/assets` byte counts:
 
 ```text
-index-DmlQ1oVo.js                              344132
+index-HJNICxcs.css                              17977
+index-DOaxfdvZ.js                              344122
 eduardo-portrait-Crkpn2Ob.png                1030881
 barlow-condensed-latin-700-normal-v1xN8_Wq.woff2 22444
-index-FudVdUwk.css                              17877
-ParticleScene-DiwRRYPO.js                      875193
+ParticleScene-SdoYL_Oy.js                      875193
 dona-events-dashboard-JgUJpnrW.webp             33844
 ```
 
-Measured gzip sizes are 105041 bytes for the initial app and 230252 bytes for
+Measured gzip sizes are 105036 bytes for the initial app and 230252 bytes for
 the dynamic `ParticleScene`, which now owns R3F/Three. `index.html` references
 no heavy particle asset and the entry contains no static Three import. The
-corrected initial total exceeds the legacy 102590 B budget by 2451 B; this is
+corrected initial total exceeds the legacy 102590 B budget by 2446 B; this is
 reported rather than hidden in an initial vendor chunk. The previous 101201 B
 app metric omitted a preloaded 233094 B Three vendor, so initial JavaScript was
-approximately 334747 B. Correct initial JavaScript is now 105041 B, about 68.6%
+approximately 334747 B. Correct initial JavaScript is now 105036 B, about 68.6%
 lower, and is guarded at 106000 B against further drift.
 
 ## Performance, concurrency, and resilience
@@ -155,8 +167,8 @@ Node PID 12586 (exec session 75322).
 
 - Only P3 optical polish remains; another loop is not warranted by the task's
   acceptance boundary.
-- The corrected 105041 B critical initial exceeds the legacy 102590 B guardrail
-  by 2451 B. Preserving the old apparent number would require putting shared
+- The corrected 105036 B critical initial exceeds the legacy 102590 B guardrail
+  by 2446 B. Preserving the old apparent number would require putting shared
   React code back into the 230252 B heavy preload, recreating the latency bug.
 - Vite reports the intentionally isolated `ParticleScene` above 500 kB raw. It
   is dynamically loaded once for eligible profiles and not requested by any
