@@ -1,102 +1,129 @@
-# Task 4 report — Public bilingual Dona Events case
+# Task 4 report — Portrait dissolve field
 
 ## Status
 
-Implemented the public Dona Events case in English and Portuguese on the existing canonical routes. The page uses the shared header and locale switch, remains HTML-first, links to the public product, and limits its content to public product facts plus Eduardo's stated end-to-end ownership.
+Implemented on base `050e519`. The portrait now blends into a deterministic,
+right-biased particle field with sparse connection segments. Points and lines
+share the existing lazy Three.js scene and its single canvas.
+
+Implementation commit: `f6352af feat: integrate the portrait dissolve field`.
 
 ## Files
 
-- Created `src/features/projects/DonaEventsPage.tsx`
-- Created `src/features/projects/DonaEventsPage.test.tsx`
-- Modified `src/content/schema.ts`
-- Modified `src/content/en.ts`
-- Modified `src/content/pt-BR.ts`
-- Modified `src/app/routes.ts`, the existing route-composition owner consumed by `AppRouter`
+- Modified `src/experience/particles/particle-layout.ts`
+- Modified `src/experience/particles/particle-layout.test.ts`
+- Modified `src/experience/particles/NeuralParticleField.tsx`
+- Modified `src/experience/particles/particle-shaders.ts`
+- Modified `src/experience/particles/particle-shaders.test.ts`
+- Modified `src/styles/components.css`
+- Modified `e2e/portfolio.spec.ts`
+
+No hero copy, CTA destinations, capability content, section layout, global
+responsive rules, dependencies, or routing were changed.
 
 ## TDD evidence
 
-### RED
+### RED — particle layout
 
 Command:
 
 ```text
-npm run test:run -- src/features/projects/DonaEventsPage.test.tsx
+npm test -- src/experience/particles/particle-layout.test.ts
 ```
 
-Result: expected failure. Vitest could not resolve `./DonaEventsPage` because the production page did not exist.
+Result: exit 1; 1 file failed and 3 tests failed for the intended reasons:
+`connections` was missing, determinism could not inspect it, and the empty
+layout did not expose an empty connection buffer.
 
-### GREEN
+### RED — shader motion and opacity
 
 Command:
 
 ```text
-npm run test:run -- src/features/projects && npm run typecheck
+npm test -- src/experience/particles/particle-shaders.test.ts
 ```
 
-Result: exit 0; 1 test file passed, 2 tests passed; typecheck passed. Coverage renders both locales at their canonical path, checks the exact public role, 35k public metric, shared localized navigation, public external link, and absence of proprietary disclosure terms.
+Result: exit 1; 2 of 4 tests failed because production still used drift rates
+`0.35` / `0.12` and fragment alpha multiplier `0.88`.
 
-## Full verification
+### GREEN — focused unit and component contracts
 
-Command:
+Final command:
 
 ```text
-git diff --check
-npm run test:run && npm run typecheck && npm run lint && npm run build
+npm test -- src/experience/particles/particle-layout.test.ts src/experience/particles/particle-shaders.test.ts src/experience/ParticleExperience.test.tsx
 ```
 
-Result: exit 0; 8 test files passed, 19 tests passed; typecheck and lint passed; Vite production build passed. Output JavaScript was 298.82 kB (94.84 kB gzip).
+Result: exit 0; 3 files passed and 8 tests passed. Coverage proves deterministic
+buffers, at least 70% positive X positions, connection tuples divisible by six,
+empty-buffer behavior, slow independent shader drift, circular point falloff,
+softened alpha, and preservation of the existing particle host contract.
 
-## Commit
+The pre-existing size assertion was aligned from `0.6` to the approved layout
+contract minimum of `0.55`.
 
-`feat: add Dona Events portfolio case` (the commit containing this report)
+## E2E evidence
 
-## Self-review and concerns
+Final command:
 
-- The case exposes only public capabilities: Dona AI image/content generation, invitations, guest management, real-time RSVP, notifications, digital gifts, Pix/card payments, and the public 35k+ event count.
-- Ownership is stated only at the approved product/mobile/web/backend/infrastructure/AI scope. No providers, models, costs, latencies, private metrics, or internal diagrams are present.
-- The product role is consistently `Creator & Principal Engineer` in both locales, avoiding ambiguity from translating a public professional title.
-- Content is semantic HTML and does not depend on WebGL or external runtime data. The external product is a normal anchor and does not block rendering.
-- `AppRouter.tsx` remains the provider shell. Route composition already lives in `src/app/routes.ts`, so the case replaced the placeholder there instead of duplicating routing authority.
-- Styling remains intentionally minimal because the approved task sequence assigns the visual system to Task 7.
-- Existing unrelated `.gitignore` changes and generated `dist/` files are excluded from this task commit.
+```text
+npm run e2e -- --grep "particle|WebGL|canvas"
+```
 
-## Review fix — route-aware header navigation
+Result: exit 0; 22 tests passed across desktop Chromium and mobile Chromium in
+4.9 seconds. The focused browser coverage verifies:
 
-Architect's Nexus review identified that the Dona Events header used fragment-only links, so navigation targeted sections absent from the case page. `SiteHeader` now has an explicit `SiteHeaderProps` contract with a `RouteKey`: home preserves `#main-content`, `#expertise`, `#work`, `#career`, and `#contact`; Dona Events resolves the localized home with `toLocalePath(content.locale, 'home')` and appends each section fragment.
+- reduced motion leaves the semantic hero available without a canvas;
+- Save-Data and mobile low-memory gates keep the portrait, navigation, and CTA
+  available after the 1.2 second idle-gate window;
+- unavailable WebGL keeps portrait, navigation, and primary CTAs visible;
+- `webglcontextlost` removes the canvas while preserving heading, portrait,
+  navigation, and CTAs;
+- the active experience mounts zero or one canvas, never more;
+- semantic content below the hero remains interactive.
 
-### TDD evidence
+The first sandboxed E2E attempt could not bind `127.0.0.1:4188` (`EPERM`). The
+same project script was rerun with the required local-server permission and
+passed. Playwright stopped its `webServer`; `lsof` found no listener remaining
+on port 4188.
 
-- RED: `npm run test:run -- src/features/projects/DonaEventsPage.test.tsx` exited 1 with 2 expected failures: English Home received `#main-content` instead of `/en`, and Portuguese Início received `#main-content` instead of `/pt-br`.
-- GREEN: `npm run test:run -- src/features/projects/DonaEventsPage.test.tsx src/features/home/HomePage.test.tsx` exited 0; 2 files and 4 tests passed. The case tests assert exact brand and primary-navigation hrefs for both locales; existing homepage assertions continue to require fragment-only hrefs.
-- Full verification: `git diff --check && npm run test:run && npm run typecheck && npm run lint && npm run build` exited 0; 8 files and 19 tests passed, typecheck and lint passed, and the Vite production build completed with 298.87 kB JavaScript (94.87 kB gzip).
+## Performance, concurrency, and throughput
 
-### Fix commit
+- Layout generation remains deterministic and runs once per quality-profile
+  particle count through `useMemo`.
+- Connection search examines at most the preceding 12 particles for each sixth
+  particle, so construction is bounded linear work rather than an all-pairs
+  `O(n²)` scan.
+- At the 9,000-particle desktop ceiling, the connection buffer has at most
+  1,499 segments / 8,994 floats (about 36 KiB). Total point, phase, size, and
+  maximum connection buffers remain about 211 KiB before Three.js overhead.
+- Connections add one draw call inside the existing scene. There is still one
+  `<Canvas>`, one React Three Fiber `useFrame`, no added
+  `requestAnimationFrame`, and no React state update per frame.
+- Three.js remains behind the existing async `LazyParticleScene` boundary; this
+  task did not move it into the synchronous bundle.
 
-`fix: make site header route-aware` (the commit containing this report)
+## Resilience and interaction isolation
 
-### Concerns
+- The particle host remains `pointer-events: none`, so the higher visual
+  `z-index` cannot intercept CTA or navigation input.
+- The existing quality gate still rejects unavailable WebGL, reduced motion,
+  Save-Data, and constrained mobile memory before loading the scene.
+- Context loss still transitions through the existing React event boundary;
+  the animation loop itself does not update React state.
+- The portrait is HTML-first and outside the particle canvas. Complementary
+  standard and WebKit masks blend its right edge with the canvas while keeping
+  the fallback portrait markup independent of WebGL.
 
-- This uses normal anchors intentionally because the target includes fragments on another localized document route; there is no new runtime state, async work, or throughput-sensitive path.
-- Route generation remains centralized in `toLocalePath`; no locale path is hardcoded in production code.
+## Review and concerns
 
-## Review coverage fix — homepage brand links
-
-Added exact homepage assertions for the shared header brand link in both locales. The tests scope the query to the `banner` landmark before selecting `Home` or `Início`, so the assertion cannot accidentally match the separate skip link. Both brand links are required to target `#main-content`.
-
-### Verification evidence
-
-- Focused: `npm run test:run -- src/features/home/HomePage.test.tsx src/features/projects/DonaEventsPage.test.tsx` exited 0; 2 files and 4 tests passed.
-- Full tests: `npm run test:run` exited 0; 8 files and 19 tests passed.
-- Typecheck: `npm run typecheck` exited 0.
-- Lint: `npm run lint` exited 0.
-- Build: `npm run build` exited 0; Vite built 42 modules and emitted 298.87 kB JavaScript (94.87 kB gzip).
-- Diff validation: `git diff --check` exited 0 before commit.
-
-### Test-only commit
-
-`f20f78e test: cover home header brand links`
-
-### Concerns
-
-- No production code changed because the existing `SiteHeader` behavior already satisfies the contract.
-- The report update is intentionally outside the test-only commit.
+- `git diff --check` passed before the implementation commit.
+- Source inspection found exactly one `<Canvas>` owner and exactly one
+  `useFrame` call under `src/experience`; no second RAF was introduced.
+- Connection segments intentionally remain static while points drift by a small
+  shader-only amplitude. Updating line positions per frame would add CPU/GPU
+  synchronization and another mutation path for negligible visual benefit.
+- Full cross-browser visual comparison against the 1488 x 1058 reference is not
+  claimed here; that remains the explicitly assigned Task 7 QA boundary.
+- No full unit suite, global responsive QA, or production build was run because
+  this worker was restricted to the Task 4 focused unit and E2E gates.
