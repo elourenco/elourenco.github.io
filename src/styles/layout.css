@@ -64,6 +64,13 @@
   padding-block: var(--space-section);
 }
 
+.feature-section,
+.expertise-section,
+.career-section,
+.contact-section {
+  padding-block: var(--space-section);
+}
+
 .home-hero {
   display: grid;
   min-height: 50.5rem;
@@ -84,7 +91,6 @@
   min-width: 0;
 }
 
-.feature-section,
 .contact-section {
   display: grid;
   grid-template-columns: minmax(14rem, 0.7fr) minmax(0, 1.3fr);
@@ -92,10 +98,15 @@
   gap: clamp(2rem, 8vw, 7rem);
 }
 
-.feature-section > .button,
 .contact-section .action-cluster {
   grid-column: 2;
   justify-self: start;
+}
+
+.feature-card {
+  display: grid;
+  grid-template-columns: minmax(18rem, 0.72fr) minmax(30rem, 1.28fr);
+  gap: clamp(2rem, 4vw, 4rem);
 }
 
 .expertise-grid {
@@ -106,7 +117,7 @@
 
 .timeline {
   max-width: 60rem;
-  margin: var(--space-6) 0 0 auto;
+  margin: 3rem 0 0 auto;
   padding: 0;
   list-style: none;
 }

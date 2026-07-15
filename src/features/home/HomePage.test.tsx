@@ -16,7 +16,7 @@ afterEach(() => {
 
 describe('HomePage', () => {
   it('renders the English portfolio with semantic navigation and real links', () => {
-    render(
+    const { container } = render(
       <MemoryRouter initialEntries={['/en']}>
         <HomePage content={enContent} />
       </MemoryRouter>,
@@ -36,6 +36,27 @@ describe('HomePage', () => {
       screen.getByRole('link', { name: 'Connect on LinkedIn' }),
     ).toHaveAttribute('href', 'https://www.linkedin.com/in/dudulourenco');
     expect(screen.getByText('Dona Events')).toBeVisible();
+
+    const featuredSection = container.querySelector('#work');
+    expect(featuredSection).toBeInTheDocument();
+    expect(featuredSection?.querySelector('.feature-card')).toBeInTheDocument();
+    expect(
+      within(featuredSection as HTMLElement).getAllByRole('heading', {
+        level: 2,
+        name: 'Dona Events',
+      }),
+    ).toHaveLength(1);
+    const dashboard = featuredSection?.querySelector(
+      '.feature-card__visual img',
+    );
+    expect(dashboard).toHaveAttribute('alt', '');
+    expect(dashboard).toHaveAttribute('loading', 'lazy');
+    expect(dashboard).toHaveAttribute('width', '1120');
+    expect(dashboard).toHaveAttribute('height', '700');
+    expect(dashboard).toHaveAttribute(
+      'src',
+      expect.stringContaining('dona-events-dashboard.webp'),
+    );
 
     expect(
       screen.getByRole('link', { name: 'Skip to content' }),
@@ -127,7 +148,7 @@ describe('HomePage', () => {
       /AI CORE|FEATURED WORK|SYSTEM MAP|CAPABILITIES|FLIGHT LOG|OPEN CHANNEL|IDENTITY/i,
     );
 
-    for (const ornament of ['// 01', '// 02', '// 03', '// 04', 'EL-01']) {
+    for (const ornament of ['// 01', '// 02', '// 03', '// 04']) {
       expect(screen.getByText(ornament)).toHaveAttribute('aria-hidden', 'true');
     }
   });
