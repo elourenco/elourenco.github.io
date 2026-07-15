@@ -1,10 +1,5 @@
 import { expect, it, vi } from 'vitest';
-import { observeWebGLContextLoss } from './ParticleScene';
-
-vi.mock('@react-three/fiber', () => ({ Canvas: () => null, useThree: vi.fn() }));
-vi.mock('./particles/NeuralParticleField', () => ({
-  NeuralParticleField: () => null,
-}));
+import { observeWebGLContextLoss } from './webgl-context-loss';
 
 it('observes a cancelable WebGL context loss and detaches cleanly', () => {
   const canvas = document.createElement('canvas');

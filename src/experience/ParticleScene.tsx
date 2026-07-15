@@ -2,18 +2,7 @@ import { Canvas, useThree } from '@react-three/fiber';
 import { useEffect } from 'react';
 import type { QualityProfile } from './quality';
 import { NeuralParticleField } from './particles/NeuralParticleField';
-
-export function observeWebGLContextLoss(
-  canvas: HTMLCanvasElement,
-  onContextLost: () => void,
-): () => void {
-  const handleContextLost = (event: Event) => {
-    event.preventDefault();
-    onContextLost();
-  };
-  canvas.addEventListener('webglcontextlost', handleContextLost);
-  return () => canvas.removeEventListener('webglcontextlost', handleContextLost);
-}
+import { observeWebGLContextLoss } from './webgl-context-loss';
 
 function Scene({
   particles,
