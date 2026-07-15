@@ -1,54 +1,80 @@
-# Task 4 Report: Semantic Constructed Reality hero
+# Task 4 report — Public bilingual Dona Events case
 
 ## Status
 
-DONE
+Implemented the public Dona Events case in English and Portuguese on the existing canonical routes. The page uses the shared header and locale switch, remains HTML-first, links to the public product, and limits its content to public product facts plus Eduardo's stated end-to-end ownership.
 
-## RED
+## Files
 
-- Adicionados testes para o heading acessível composto, contratos dos três CTAs, conteúdo localizado, composição sibling entre retrato e partículas e estados do retrato.
-- Comando: `npm test -- --run src/features/home/HomeHero.test.tsx src/features/home/HomePage.test.tsx`
-- Resultado esperado observado: exit 1. `HomeHero` ainda não existia e os dois testes de `HomePage` falharam porque o `h1` expunha somente `Principal Software Engineer`.
-- Primeiro GREEN intermediário também capturou a concatenação sem espaço entre spans (`Eduardo LourencoPrincipal Software Engineer`), corrigida com separação textual explícita.
+- Created `src/features/projects/DonaEventsPage.tsx`
+- Created `src/features/projects/DonaEventsPage.test.tsx`
+- Modified `src/content/schema.ts`
+- Modified `src/content/en.ts`
+- Modified `src/content/pt-BR.ts`
+- Modified `src/app/routes.ts`, the existing route-composition owner consumed by `AppRouter`
 
-## GREEN
+## TDD evidence
 
-- Comando: `npm test -- --run src/features/home/HomeHero.test.tsx src/features/home/HomePage.test.tsx src/features/home/HeroPortrait.test.tsx`
-- Resultado: exit 0, 3 arquivos e 8 testes passaram, output limpo.
-- Comando: `npm test -- --run src/app/App.test.tsx`
-- Resultado: exit 0, 1 arquivo e 1 teste passou, output limpo.
-- Comando: `npm run typecheck`
-- Resultado: exit 0.
-- Comando: `npm run lint`
-- Resultado: exit 0.
-- Comando: `npm run test:run`
-- Resultado: exit 0, 20 arquivos/50 testes Vitest e 6 testes Node passaram, output limpo.
+### RED
 
-## Implementação
+Command:
 
-- `HomeHero` concentra a composição semântica, mantém `HeroActions` privado e preserva URLs, labels e ordem dos destinos existentes.
-- O `h1` combina nome e cargo em spans distintos com nome acessível separado corretamente.
-- `HeroPortrait` mantém imagem DOM prioritária, dimensões intrínsecas 752×752 e estados `loading`, `ready` e `fallback`.
-- Em erro, a imagem quebrada fica oculta e `EL` permanece em camada decorativa `aria-hidden`.
-- `ParticleExperience` é sibling do `HeroPortrait` dentro de `.home-hero__visual`, fora do `figure`.
-- `HomePage` não mantém mais observation/scene mapping nem o canvas adaptativo global; renderiza `HomeHero` diretamente.
-- `pageInternalLinks(locale, 'home')` permaneceu validado por igualdade nos testes existentes.
-- `App.test.tsx` declara explicitamente jsdom sem WebGL (`getContext` retorna `null`) para eliminar warnings introduzidos pela nova composição, sem alterar sua assertion funcional. Ajuste autorizado pelo coordenador.
+```text
+npm run test:run -- src/features/projects/DonaEventsPage.test.tsx
+```
 
-## Arquivos
+Result: expected failure. Vitest could not resolve `./DonaEventsPage` because the production page did not exist.
 
-- Criado: `src/features/home/HomeHero.tsx`
-- Criado: `src/features/home/HomeHero.test.tsx`
-- Criado: `src/features/home/HeroPortrait.tsx`
-- Criado: `src/features/home/HeroPortrait.test.tsx`
-- Modificado: `src/features/home/HomePage.tsx`
-- Modificado: `src/features/home/HomePage.test.tsx`
-- Modificado: `src/app/App.test.tsx`
-- Removido: `src/features/profile/HeroSection.tsx`
-- Removido: `src/components/ProfilePortrait.tsx`
-- Removido: `src/components/ProfilePortrait.test.tsx`
+### GREEN
 
-## Concerns
+Command:
 
-- Nenhum concern funcional no escopo da Task 4.
-- As novas classes estruturais ainda não recebem o styling final; isso foi deliberadamente reservado para a Task 5 conforme o brief.
+```text
+npm run test:run -- src/features/projects && npm run typecheck
+```
+
+Result: exit 0; 1 test file passed, 2 tests passed; typecheck passed. Coverage renders both locales at their canonical path, checks the exact public role, 35k public metric, shared localized navigation, public external link, and absence of proprietary disclosure terms.
+
+## Full verification
+
+Command:
+
+```text
+git diff --check
+npm run test:run && npm run typecheck && npm run lint && npm run build
+```
+
+Result: exit 0; 8 test files passed, 19 tests passed; typecheck and lint passed; Vite production build passed. Output JavaScript was 298.82 kB (94.84 kB gzip).
+
+## Commit
+
+`feat: add Dona Events portfolio case` (the commit containing this report)
+
+## Self-review and concerns
+
+- The case exposes only public capabilities: Dona AI image/content generation, invitations, guest management, real-time RSVP, notifications, digital gifts, Pix/card payments, and the public 35k+ event count.
+- Ownership is stated only at the approved product/mobile/web/backend/infrastructure/AI scope. No providers, models, costs, latencies, private metrics, or internal diagrams are present.
+- The product role is consistently `Creator & Principal Engineer` in both locales, avoiding ambiguity from translating a public professional title.
+- Content is semantic HTML and does not depend on WebGL or external runtime data. The external product is a normal anchor and does not block rendering.
+- `AppRouter.tsx` remains the provider shell. Route composition already lives in `src/app/routes.ts`, so the case replaced the placeholder there instead of duplicating routing authority.
+- Styling remains intentionally minimal because the approved task sequence assigns the visual system to Task 7.
+- Existing unrelated `.gitignore` changes and generated `dist/` files are excluded from this task commit.
+
+## Review fix — route-aware header navigation
+
+Architect's Nexus review identified that the Dona Events header used fragment-only links, so navigation targeted sections absent from the case page. `SiteHeader` now has an explicit `SiteHeaderProps` contract with a `RouteKey`: home preserves `#main-content`, `#expertise`, `#work`, `#career`, and `#contact`; Dona Events resolves the localized home with `toLocalePath(content.locale, 'home')` and appends each section fragment.
+
+### TDD evidence
+
+- RED: `npm run test:run -- src/features/projects/DonaEventsPage.test.tsx` exited 1 with 2 expected failures: English Home received `#main-content` instead of `/en`, and Portuguese Início received `#main-content` instead of `/pt-br`.
+- GREEN: `npm run test:run -- src/features/projects/DonaEventsPage.test.tsx src/features/home/HomePage.test.tsx` exited 0; 2 files and 4 tests passed. The case tests assert exact brand and primary-navigation hrefs for both locales; existing homepage assertions continue to require fragment-only hrefs.
+- Full verification: `git diff --check && npm run test:run && npm run typecheck && npm run lint && npm run build` exited 0; 8 files and 19 tests passed, typecheck and lint passed, and the Vite production build completed with 298.87 kB JavaScript (94.87 kB gzip).
+
+### Fix commit
+
+`fix: make site header route-aware` (the commit containing this report)
+
+### Concerns
+
+- This uses normal anchors intentionally because the target includes fragments on another localized document route; there is no new runtime state, async work, or throughput-sensitive path.
+- Route generation remains centralized in `toLocalePath`; no locale path is hardcoded in production code.
