@@ -187,3 +187,36 @@ Fix commit: `73bf93a test: make WebGL context loss deterministic`.
 This fix does not add a canvas, RAF, render loop, or per-frame React state. It
 extracts the existing listener registration into a testable function and keeps
 the same effect cleanup semantics in `ParticleScene`.
+
+## Re-review cleanup — Fast Refresh ownership
+
+Re-review found one Minor: exporting `observeWebGLContextLoss` from
+`ParticleScene.tsx` violated the React module ownership expected by
+`react-refresh/only-export-components`.
+
+### RED
+
+```text
+npm exec eslint -- --max-warnings=0 src/experience/ParticleScene.tsx
+```
+
+Result: exit 1 with one `react-refresh/only-export-components` warning on the
+non-component export.
+
+### GREEN
+
+The DOM listener moved unchanged to `src/experience/webgl-context-loss.ts`; its
+test moved to `src/experience/webgl-context-loss.test.ts`; `ParticleScene.tsx`
+now exports only the React component and imports the helper.
+
+```text
+npm test -- src/experience/webgl-context-loss.test.ts src/experience/ParticleExperience.test.tsx
+npm exec eslint -- --max-warnings=0 src/experience/ParticleScene.tsx src/experience/webgl-context-loss.ts src/experience/webgl-context-loss.test.ts
+git diff --check
+```
+
+Result: exit 0; 2 test files and 2 tests passed, ESLint emitted zero warnings,
+and the diff check passed. E2E was not repeated because this is a pure module
+ownership extraction with identical event registration and cleanup behavior.
+
+Cleanup commit: `997d8b1 refactor: isolate WebGL context-loss listener`.
