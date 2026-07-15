@@ -8,7 +8,7 @@ export function CareerTimeline({ content }: { content: PortfolioContent }) {
       className="career-section section-shell"
       aria-labelledby={SITE_ANCHORS.home.careerTitle}
     >
-      <div className="section-heading">
+      <div className="section-heading career-section__heading">
         <p className="eyebrow" aria-hidden="true">
           // 03
         </p>
@@ -16,12 +16,12 @@ export function CareerTimeline({ content }: { content: PortfolioContent }) {
       </div>
       <ol className="timeline">
         {content.career.items.map((item) => (
-          <li key={`${item.company}-${item.role}`}>
+          <li className="timeline__item" key={`${item.company}-${item.role}`}>
             <article className="timeline__entry">
               <p className="timeline__period">{item.period}</p>
-              <h3>{item.company}</h3>
-              <p>{item.role}</p>
-              <p>{item.summary}</p>
+              <h3 className="timeline__company">{item.company}</h3>
+              <p className="timeline__role">{item.role}</p>
+              <p className="timeline__summary">{item.summary}</p>
             </article>
           </li>
         ))}

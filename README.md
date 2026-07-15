@@ -34,31 +34,75 @@ quatro documentos canônicos são:
 - `/pt-br`
 - `/pt-br/projetos/dona-events`
 
+## Runtime de partículas e gates
+
+Existe um único runtime 3D de produção: `ParticleExperience` seleciona o perfil
+de qualidade e carrega `ParticleScene` sob demanda. A cena só monta quando
+WebGL está disponível, movimento reduzido e Save-Data estão desativados, o
+perfil de memória é elegível, o browser ficou ocioso, o hero está visível e a
+aba está ativa. Perda de contexto desmonta a cena e mantém o fallback 2D. O
+conteúdo semântico, as rotas e os CTAs não dependem do canvas.
+
+O contrato de navegador cobre movimento reduzido, WebGL indisponível, limite
+de zero ou um canvas, abertura do gate, ausência de overflow mobile e conteúdo
+interativo abaixo do hero. Os perfis de baixa memória e Save-Data também são
+fechados deterministicamente na seleção unitária de qualidade.
+
 ## Performance e limites medidos
 
-Baseline do build de produção em 2026-07-13:
+Build de produção medido em 2026-07-14:
 
-| Artefato              | Minificado |      Gzip |
-| --------------------- | ---------: | --------: |
-| app principal         |  293,13 kB |  92,59 kB |
-| `AdaptiveCanvas`      |    6,98 kB |   2,59 kB |
-| vendor Three/R3F/Drei |  899,17 kB | 239,74 kB |
-| runtime do bundler    |    0,69 kB |   0,42 kB |
+| Artefato                               | Minificado | Gzip (`gzip -c`) |
+| -------------------------------------- | ---------: | ---------------: |
+| app `index-BC5Sk6KR.js`                |   298597 B |          92921 B |
+| cena `ParticleScene-DrdVQiSv.js`       |     2617 B |           1333 B |
+| vendor `three-vendor-CTAtCiMJ.js`      |   883519 B |         233094 B |
+| runtime `rolldown-runtime-QTnfLwEv.js` |      694 B |           420 B¹ |
+| fonte WOFF2                            |    22444 B |                — |
 
-O vendor 3D é um chunk separado, mas atualmente é solicitado logo após o
-primeiro render. O build emite o warning de chunk acima de 500 kB. O custo é
-aceito como budget explícito desta versão porque o conteúdo semântico não
-depende dele; visibility/idle gating deve ser a próxima otimização se medição
-em dispositivo mostrar contenção de rede/main thread. Não foi adicionada
-complexidade de scheduling sem essa evidência.
+¹ Valor reportado pelo Vite; o comando de budget comprime explicitamente app,
+cena e vendor. O Vite reportou `93,98 kB` gzip para o app, crescimento de
+`1,39 kB` sobre o baseline de `92,59 kB`, abaixo do limite de `10 kB`. O vendor
+Three/R3F/Drei caiu de `239,74 kB` para `236,06 kB` no relatório do Vite. A
+fonte permanece abaixo do limite de `50 kB`.
 
-Lighthouse não estava instalado no ambiente de validação, portanto não há
-números inventados de LCP, CLS ou INP. Também não foi feita medição de FPS em
-dispositivo representativo. Os gates automatizados provam apenas carregamento
-desktop/mobile, rotas diretas, equivalência de locale e usabilidade sem WebGL;
-não provam os pisos de 60/30 FPS. Nenhum warning de API Three depreciada foi
-observado em build, testes ou E2E; upgrades de Three/R3F/Drei devem manter o
-chunk isolado e repetir profiling de dispositivo.
+O build continua emitindo o warning conhecido de chunk acima de `500 kB` para
+`three-vendor`; ele é registrado e aceito, não ocultado. A cena permanece em
+chunk assíncrono e os gates evitam download/execução nos perfis inelegíveis.
+
+Validação exata:
+
+```bash
+npm run check
+npm run e2e
+npm run build
+find dist/assets -maxdepth 1 -type f -print0 | xargs -0 -n1 sh -c 'printf "%s " "$0"; wc -c < "$0"'
+gzip -c dist/assets/index-*.js | wc -c
+gzip -c dist/assets/ParticleScene-*.js | wc -c
+npm audit --omit=dev
+```
+
+## Profiling instrumentado do runtime
+
+Uma sessão Chromium contra o preview de produção instrumentou
+`requestAnimationFrame` antes do bootstrap e instalou o hook de commits do
+React. Em um intervalo estável de 1 segundo com um canvas animando, foi observado
+máximo de `1` callback RAF pendente, `60` callbacks executados e `0` commits
+React adicionais. Essa contagem de callbacks não é uma medição de FPS.
+
+Ao navegar da home para Dona Events, o canvas passou de `1` para `0`, o RAF
+pendente de `1` para `0` e houve `1` cancelamento. Ao despachar
+`visibilitychange` com `visibilityState=hidden`, canvas e RAF pendente também
+passaram a `0`; ao retornar para `visible`, o gate reabriu com `1` canvas e `1`
+RAF pendente.
+
+A evidência completa está fora do bundle em
+`/tmp/elourenco-futuristic-captures/runtime-profile.json`. O teste de visibilidade
+controla `document.visibilityState` antes do bootstrap e despacha o evento real,
+portanto prova o boundary da aplicação, não uma troca de aba pelo sistema
+operacional. A instrumentação não observa trabalho interno do compositor,
+alocações da GPU nem liberação de recursos no driver. Não há alegação de FPS,
+GPU resources, LCP, CLS ou INP.
 
 ## Resiliência e escalabilidade
 

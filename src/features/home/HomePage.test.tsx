@@ -1,11 +1,18 @@
 import { cleanup, render, screen, within } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { enContent, ptBRContent } from '../../content';
 import { HomePage } from './HomePage';
 import { pageInternalLinks } from '../../site-contract';
 
-afterEach(cleanup);
+beforeEach(() => {
+  vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
+});
+
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+});
 
 describe('HomePage', () => {
   it('renders the English portfolio with semantic navigation and real links', () => {
@@ -18,7 +25,7 @@ describe('HomePage', () => {
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: 'Principal Software Engineer',
+        name: 'Eduardo Lourenco Principal Software Engineer',
       }),
     ).toBeVisible();
     expect(screen.getByRole('navigation', { name: 'Primary' })).toBeVisible();
@@ -78,7 +85,7 @@ describe('HomePage', () => {
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: 'Principal Software Engineer',
+        name: 'Eduardo Lourenco Principal Software Engineer',
       }),
     ).toBeVisible();
     expect(

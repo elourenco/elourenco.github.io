@@ -9,16 +9,16 @@ export function FeaturedProject({ content }: { content: PortfolioContent }) {
       className="feature-section section-shell"
       aria-labelledby={SITE_ANCHORS.home.workTitle}
     >
-      <div className="section-heading">
+      <div className="section-heading feature-section__heading">
         <p className="eyebrow" aria-hidden="true">
           // 01
         </p>
-        <p>{content.dona.label}</p>
+        <p className="feature-section__label">{content.dona.label}</p>
         <h2 id={SITE_ANCHORS.home.workTitle}>{content.dona.title}</h2>
       </div>
       <div className="feature-panel">
         <p className="feature-panel__role">{content.dona.role}</p>
-        <p>{content.dona.summary}</p>
+        <p className="feature-panel__summary">{content.dona.summary}</p>
         <p className="metric">{content.dona.metric}</p>
       </div>
       <Link

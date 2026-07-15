@@ -1,5 +1,152 @@
 import { expect, test } from '@playwright/test';
 
+test.describe('responsive particle contracts', () => {
+  test('shows the desktop rail and constructed-reality hero', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 1024 });
+    await page.goto('/en');
+
+    await expect(page.locator('.desktop-section-rail')).toBeVisible();
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: /Principal Software Engineer/,
+      }),
+    ).toBeVisible();
+  });
+
+  test('shows the mobile header without horizontal overflow', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/en');
+
+    await expect(page.locator('.mobile-site-header')).toBeVisible();
+    await expect(page.locator('.desktop-section-rail')).toBeHidden();
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () => document.documentElement.scrollWidth <= window.innerWidth,
+        ),
+      )
+      .toBe(true);
+  });
+
+  test('reflows the hero while preserving the desktop rail at 834px', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 834, height: 1194 });
+    await page.goto('/en');
+
+    await expect(page.locator('.desktop-section-rail')).toBeVisible();
+    await expect(page.locator('.mobile-site-header')).toBeHidden();
+
+    const name = await page.locator('.home-hero__name').boundingBox();
+    const content = await page.locator('.home-hero__content').boundingBox();
+    expect(name).not.toBeNull();
+    expect(content).not.toBeNull();
+    expect(name!.height).toBeLessThanOrEqual(170);
+    expect(content!.width).toBeGreaterThanOrEqual(500);
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () => document.documentElement.scrollWidth <= window.innerWidth,
+        ),
+      )
+      .toBe(true);
+  });
+
+  test('does not mount the particle canvas with reduced motion', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/en');
+
+    await expect(page.getByTestId('particle-canvas')).toHaveCount(0);
+    await expect(
+      page.getByRole('link', { name: 'Connect on LinkedIn' }),
+    ).toBeVisible();
+  });
+
+  test('keeps primary calls to action visible without WebGL', async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      const originalGetContext = HTMLCanvasElement.prototype.getContext;
+      Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
+        configurable: true,
+        value(contextId: string, ...args: unknown[]) {
+          if (contextId === 'webgl' || contextId === 'webgl2') return null;
+          return originalGetContext.call(this, contextId, ...args);
+        },
+      });
+    });
+    await page.goto('/en');
+
+    await expect(
+      page.getByRole('link', { name: 'View selected work' }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: 'Connect on LinkedIn' }),
+    ).toBeVisible();
+    await expect(page.getByTestId('particle-canvas')).toHaveCount(0);
+  });
+
+  test('mounts at most one canvas after the idle gate opens', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 1024 });
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'deviceMemory', {
+        configurable: true,
+        value: 8,
+      });
+    });
+    await page.goto('/en');
+    await page.locator('.home-hero__visual').scrollIntoViewIfNeeded();
+
+    await expect
+      .poll(() => page.locator('canvas').count(), { timeout: 5_000 })
+      .toBeLessThanOrEqual(1);
+
+    const webglAvailable = await page.evaluate(() => {
+      const probe = document.createElement('canvas');
+      return Boolean(probe.getContext('webgl2') ?? probe.getContext('webgl'));
+    });
+    if (webglAvailable) {
+      await expect.poll(() => page.locator('canvas').count()).toBe(1);
+
+      const visual = await page.locator('.home-hero__visual').boundingBox();
+      const host = await page.locator('.home-hero__particles').boundingBox();
+      const content = await page.locator('.home-hero__content').boundingBox();
+      expect(visual).not.toBeNull();
+      expect(host).not.toBeNull();
+      expect(content).not.toBeNull();
+      expect(host!.width).toBeGreaterThan(0);
+      expect(host!.height).toBeGreaterThan(0);
+      expect(host!.x).toBeGreaterThan(visual!.x);
+      expect(host!.width).toBeLessThan(visual!.width);
+      expect(host!.x).toBeGreaterThanOrEqual(content!.x + content!.width);
+    }
+  });
+
+  test('keeps semantic content interactive below the hero', async ({
+    page,
+  }) => {
+    await page.goto('/en');
+    const projectLink = page.getByRole('link', { name: 'Explore Dona Events' });
+
+    await projectLink.scrollIntoViewIfNeeded();
+    await expect(projectLink).toBeVisible();
+    await projectLink.click();
+    await expect(page).toHaveURL('/en/projects/dona-events');
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Dona Events' }),
+    ).toBeVisible();
+  });
+});
+
 const routes = [
   '/en',
   '/en/projects/dona-events',

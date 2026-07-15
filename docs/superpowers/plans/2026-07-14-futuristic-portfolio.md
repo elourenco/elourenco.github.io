@@ -68,15 +68,23 @@
 
 ---
 
-### Task 1: Capability profiles and progressive experience gate
+### Task 1: Capability gate and progressive particle runtime
+
+**Execution amendment approved on 2026-07-14:** the original Tasks 1 and 2
+form one atomic delivery. Do not commit the `QualityProfile` shape while the
+orbital consumers still depend on its removed fields. Implement and validate
+the capability gate and particle runtime together, then create one commit only
+after focused tests and `npm run typecheck` pass.
 
 **Files:**
+
 - Modify: `src/experience/quality.ts`
 - Modify: `src/experience/quality.test.ts`
 - Create: `src/experience/useExperienceGate.ts`
 - Create: `src/experience/useExperienceGate.test.tsx`
 
 **Interfaces:**
+
 - Produces: `selectQualityProfile(input: QualityProfileInput): QualityProfile`.
 - Produces: `useExperienceGate(input: ExperienceGateInput): ExperienceGateState`.
 - `QualityProfile` is `{ enabled: boolean; dpr: [number, number]; particles: number }`.
@@ -85,38 +93,62 @@
 - [ ] **Step 1: Replace quality tests with the approved budgets**
 
 ```ts
-expect(selectQualityProfile({
-  webgl: false,
-  reducedMotion: false,
-  saveData: false,
-  mobile: false,
-  memoryGb: 8,
-})).toEqual({ enabled: false, dpr: [1, 1], particles: 0 });
+expect(
+  selectQualityProfile({
+    webgl: false,
+    reducedMotion: false,
+    saveData: false,
+    mobile: false,
+    memoryGb: 8,
+  }),
+).toEqual({ enabled: false, dpr: [1, 1], particles: 0 });
 
-expect(selectQualityProfile({
-  webgl: true,
-  reducedMotion: false,
-  saveData: false,
-  mobile: true,
-  memoryGb: 8,
-})).toEqual({ enabled: true, dpr: [1, 1], particles: 3000 });
+expect(
+  selectQualityProfile({
+    webgl: true,
+    reducedMotion: false,
+    saveData: false,
+    mobile: true,
+    memoryGb: 8,
+  }),
+).toEqual({ enabled: true, dpr: [1, 1], particles: 3000 });
 
-expect(selectQualityProfile({
-  webgl: true,
-  reducedMotion: false,
-  saveData: false,
-  mobile: false,
-  memoryGb: 8,
-})).toEqual({ enabled: true, dpr: [1, 1.5], particles: 9000 });
+expect(
+  selectQualityProfile({
+    webgl: true,
+    reducedMotion: false,
+    saveData: false,
+    mobile: false,
+    memoryGb: 8,
+  }),
+).toEqual({ enabled: true, dpr: [1, 1.5], particles: 9000 });
 ```
 
 Cover every disabling capability explicitly:
 
 ```ts
 const disabledInputs: QualityProfileInput[] = [
-  { webgl: true, reducedMotion: true, saveData: false, mobile: false, memoryGb: 8 },
-  { webgl: true, reducedMotion: false, saveData: true, mobile: false, memoryGb: 8 },
-  { webgl: true, reducedMotion: false, saveData: false, mobile: true, memoryGb: 2 },
+  {
+    webgl: true,
+    reducedMotion: true,
+    saveData: false,
+    mobile: false,
+    memoryGb: 8,
+  },
+  {
+    webgl: true,
+    reducedMotion: false,
+    saveData: true,
+    mobile: false,
+    memoryGb: 8,
+  },
+  {
+    webgl: true,
+    reducedMotion: false,
+    saveData: false,
+    mobile: true,
+    memoryGb: 2,
+  },
 ];
 
 for (const input of disabledInputs) {
@@ -157,7 +189,9 @@ const DISABLED: QualityProfile = {
   particles: 0,
 };
 
-export function selectQualityProfile(input: QualityProfileInput): QualityProfile {
+export function selectQualityProfile(
+  input: QualityProfileInput,
+): QualityProfile {
   if (
     !input.webgl ||
     input.reducedMotion ||
@@ -210,18 +244,19 @@ Run: `npm test -- --run src/experience/quality.test.ts src/experience/useExperie
 
 Expected: both files PASS with no leaked timer warning.
 
-- [ ] **Step 7: Commit the capability boundary**
+- [ ] **Step 7: Verify the capability boundary without committing**
 
 ```bash
-git add src/experience/quality.ts src/experience/quality.test.ts src/experience/useExperienceGate.ts src/experience/useExperienceGate.test.tsx
-git commit -m "feat: gate the adaptive particle experience"
+npm run typecheck
 ```
 
----
+Expected: this check may remain red until Part B replaces the legacy
+consumers. Do not create an intermediate commit.
 
-### Task 2: Deterministic single-draw-call particle scene
+#### Part B: Deterministic single-draw-call particle scene
 
 **Files:**
+
 - Create: `src/experience/particles/particle-layout.ts`
 - Create: `src/experience/particles/particle-layout.test.ts`
 - Create: `src/experience/particles/particle-shaders.ts`
@@ -231,6 +266,7 @@ git commit -m "feat: gate the adaptive particle experience"
 - Create: `src/experience/ParticleExperience.tsx`
 
 **Interfaces:**
+
 - Consumes: `QualityProfile` and `useExperienceGate` from Task 1.
 - Produces: `buildParticleLayout(count: number, seed?: number): ParticleLayout`.
 - Produces: `ParticleExperience({ className?: string }): JSX.Element`.
@@ -337,11 +373,12 @@ Run: `npm test -- --run src/experience/particles/particle-layout.test.ts src/exp
 
 Expected: PASS; React reports no state update during a mocked frame.
 
-- [ ] **Step 9: Commit the replacement runtime**
+- [ ] **Step 9: Typecheck and commit the atomic replacement runtime**
 
 ```bash
+npm run typecheck
 git add src/experience
-git commit -m "feat: add the progressive neural particle scene"
+git commit -m "feat: add the progressive neural particle runtime"
 ```
 
 ---
@@ -349,6 +386,7 @@ git commit -m "feat: add the progressive neural particle scene"
 ### Task 3: Responsive navigation shell
 
 **Files:**
+
 - Create: `src/components/navigation/DesktopSectionRail.tsx`
 - Create: `src/components/navigation/MobileSiteHeader.tsx`
 - Modify: `src/components/SiteHeader.tsx`
@@ -356,6 +394,7 @@ git commit -m "feat: add the progressive neural particle scene"
 - Modify: `src/features/home/HomePage.tsx`
 
 **Interfaces:**
+
 - Consumes: `PortfolioContent`, `RouteKey`, `HOME_SECTION_ANCHORS`, and `INTERNAL_DESTINATIONS`.
 - Produces: the existing `SiteHeaderProps` API unchanged.
 
@@ -410,6 +449,7 @@ git commit -m "feat: add the responsive signal navigation"
 ### Task 4: Semantic Constructed Reality hero
 
 **Files:**
+
 - Create: `src/features/home/HomeHero.tsx`
 - Create: `src/features/home/HeroPortrait.tsx`
 - Create: `src/features/home/HomeHero.test.tsx`
@@ -421,6 +461,7 @@ git commit -m "feat: add the responsive signal navigation"
 - Remove: `src/components/ProfilePortrait.test.tsx`
 
 **Interfaces:**
+
 - Consumes: `PortfolioContent`, `ParticleExperience`, and existing site destinations.
 - Produces: `HomeHero({ content }: { content: PortfolioContent }): JSX.Element`.
 - Produces: `HeroPortrait({ alt, priority }: { alt: string; priority?: boolean }): JSX.Element`.
@@ -438,7 +479,10 @@ Expected: FAIL because the current `h1` contains only the role.
 - [ ] **Step 3: Implement the semantic hero composition**
 
 ```tsx
-<section className="home-hero section-shell" aria-labelledby={SITE_ANCHORS.home.heroTitle}>
+<section
+  className="home-hero section-shell"
+  aria-labelledby={SITE_ANCHORS.home.heroTitle}
+>
   <div className="home-hero__content">
     <h1 id={SITE_ANCHORS.home.heroTitle} className="home-hero__title">
       <span className="home-hero__name">{content.hero.eyebrow}</span>
@@ -483,6 +527,7 @@ git commit -m "feat: build the constructed reality hero"
 ### Task 5: Green editorial design system and secondary routes
 
 **Files:**
+
 - Create: `src/assets/fonts/barlow-condensed-latin-700-normal.woff2`
 - Create: `src/styles/base.css`
 - Create: `src/styles/layout.css`
@@ -497,6 +542,7 @@ git commit -m "feat: build the constructed reality hero"
 - Modify: `src/components/NotFoundPage.tsx`
 
 **Interfaces:**
+
 - Consumes: existing semantic markup and content; no content-schema changes.
 - Produces: CSS custom properties and class contracts only.
 
@@ -591,6 +637,7 @@ git commit -m "feat: apply the constructed reality design system"
 ### Task 6: Remove the orbital runtime and close browser contracts
 
 **Files:**
+
 - Remove: `src/experience/CosmicStation.tsx`
 - Remove: `src/experience/SceneController.tsx`
 - Remove: `src/experience/materials.ts`
@@ -603,6 +650,7 @@ git commit -m "feat: apply the constructed reality design system"
 - Modify: `README.md`
 
 **Interfaces:**
+
 - Consumes: completed `ParticleExperience`, responsive shell, and visual system.
 - Produces: one production 3D runtime with measured budgets and full fallback coverage.
 
