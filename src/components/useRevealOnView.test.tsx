@@ -26,22 +26,26 @@ function mediaQuery(matches: boolean): MediaQueryList {
 
 beforeEach(() => {
   disconnect = vi.fn<() => void>();
-  vi.stubGlobal('matchMedia', vi.fn(() => mediaQuery(false)));
-
-  class ObserverMock implements IntersectionObserver {
-    constructor(next: IntersectionObserverCallback) {
+  vi.stubGlobal(
+    'matchMedia',
+    vi.fn(() => mediaQuery(false)),
+  );
+  observer = {
+    root: null,
+    rootMargin: '',
+    thresholds: [],
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect,
+    takeRecords: () => [],
+  };
+  vi.stubGlobal(
+    'IntersectionObserver',
+    vi.fn(function ObserverMock(next: IntersectionObserverCallback) {
       callback = next;
-      observer = this;
-    }
-    observe = vi.fn();
-    unobserve = vi.fn();
-    disconnect = disconnect;
-    root = null;
-    rootMargin = '';
-    thresholds = [];
-    takeRecords = () => [];
-  }
-  vi.stubGlobal('IntersectionObserver', ObserverMock);
+      return observer;
+    }),
+  );
 });
 
 afterEach(() => {

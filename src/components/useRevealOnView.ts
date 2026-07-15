@@ -3,7 +3,9 @@ import { useEffect, useRef, useState } from 'react';
 function shouldRevealImmediately(): boolean {
   if (typeof window === 'undefined') return true;
   if (typeof IntersectionObserver === 'undefined') return true;
-  return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
+  return (
+    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true
+  );
 }
 
 export function useRevealOnView<T extends HTMLElement>() {

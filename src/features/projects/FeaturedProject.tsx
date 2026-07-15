@@ -6,10 +6,7 @@ import { INTERNAL_DESTINATIONS, SITE_ANCHORS } from '../../site-contract';
 
 export function FeaturedProject({ content }: { content: PortfolioContent }) {
   const { ref, revealed } = useRevealOnView<HTMLElement>();
-  const destination = INTERNAL_DESTINATIONS.route(
-    content.locale,
-    'donaEvents',
-  );
+  const destination = INTERNAL_DESTINATIONS.route(content.locale, 'donaEvents');
 
   return (
     <section
