@@ -7,6 +7,33 @@ afterEach(() => {
 });
 
 describe('Seo', () => {
+  it('replaces server metadata and updates the share preview on navigation', () => {
+    document.head.insertAdjacentHTML(
+      'beforeend',
+      '<meta data-seo="true" property="og:title" content="Static title" /><meta data-seo="true" property="og:image" content="https://example.com/stale.png" />',
+    );
+    const view = render(<Seo locale="en" route="home" />);
+    const meta = (key: string) =>
+      document.head.querySelectorAll<HTMLMetaElement>(
+        `meta[property="${key}"], meta[name="${key}"]`,
+      );
+    expect(meta('og:title')).toHaveLength(1);
+    expect(meta('og:image')).toHaveLength(1);
+    expect(meta('og:image')[0].content).toBe(
+      'https://eduardolourenco.dev/og-home.png',
+    );
+    expect(meta('twitter:card')[0]?.content).toBe('summary_large_image');
+    view.rerender(<Seo locale="pt-BR" route="donaEvents" />);
+    expect(meta('og:image')).toHaveLength(1);
+    expect(meta('og:image')[0].content).toBe(
+      'https://eduardolourenco.dev/og-dona-events.png',
+    );
+    expect(meta('og:locale')[0]?.content).toBe('pt_BR');
+    expect(meta('twitter:title')[0]?.content).toBe(
+      'Dona Events | Eduardo Lourenco',
+    );
+  });
+
   it('publishes localized canonical, alternates, Open Graph and JSON-LD', () => {
     render(<Seo locale="pt-BR" route="donaEvents" />);
 

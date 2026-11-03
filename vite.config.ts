@@ -1,6 +1,7 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
 import type { Plugin } from 'vite';
+import { staticSeo } from './scripts/seo-plugin';
 import { enContent } from './src/content/en';
 import { ptBRContent } from './src/content/pt-BR';
 import { toLocalePath } from './src/i18n/locale-paths';
@@ -69,7 +70,7 @@ function publicationManifest(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), publicationManifest()],
+  plugins: [react(), publicationManifest(), staticSeo()],
   build: {
     modulePreload: false,
   },

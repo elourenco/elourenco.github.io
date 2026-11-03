@@ -18,6 +18,7 @@
   },
   "scripts": {
     "icons:generate": "node scripts/generate-icons.mjs",
+    "og:generate": "node scripts/generate-open-graph.mjs",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "test": "vitest",

@@ -34,6 +34,25 @@ quatro documentos canônicos são:
 - `/pt-br`
 - `/pt-br/projetos/dona-events`
 
+## Open Graph
+
+O build gera um `index.html` para cada rota canônica, além da raiz com os
+metadados da home em inglês. Título, descrição, canonical, alternates, Open
+Graph e Twitter Card chegam no HTML sem executar JavaScript. O conteúdo da
+aplicação continua renderizado pelo React; o componente `Seo` substitui as
+tags estáticas ao montar e mantém os metadados atualizados na navegação.
+
+Os cards `public/og-home.png` e `public/og-dona-events.png` têm 1200 × 630 px e
+usam a identidade visual do site. Para regenerá-los após editar o template:
+
+```bash
+npm run og:generate
+npm run check
+```
+
+Os testes do build verificam cada documento sem JavaScript, as URLs absolutas,
+as dimensões das imagens publicadas e a referência ao bundle da aplicação.
+
 ## Runtime de partículas e gates
 
 Existe um único runtime 3D de produção: `ParticleExperience` seleciona o perfil

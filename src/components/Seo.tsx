@@ -2,36 +2,7 @@ import { useEffect } from 'react';
 import type { Locale, RouteKey } from '../content';
 import { toLocalePath } from '../i18n/locale-paths';
 import { EXTERNAL_URLS, SITE_ORIGIN } from '../site-contract';
-
-const metadata = {
-  en: {
-    home: {
-      title: 'Eduardo Lourenco | Principal AI System Architect',
-      description:
-        'Principal AI System Architect focused on AI, mobile engineering and scalable software architecture.',
-    },
-    donaEvents: {
-      title: 'Dona Events | Eduardo Lourenco',
-      description:
-        'Dona Events is an AI-powered event platform created and engineered end to end by Eduardo Lourenco.',
-    },
-  },
-  'pt-BR': {
-    home: {
-      title: 'Eduardo Lourenco | Principal AI System Architect',
-      description:
-        'Principal AI System Architect com foco em IA, engenharia de aplicativos móveis e arquitetura de software escalável.',
-    },
-    donaEvents: {
-      title: 'Dona Events | Eduardo Lourenco',
-      description:
-        'Dona Events é uma plataforma de eventos com IA criada e desenvolvida de ponta a ponta por Eduardo Lourenco.',
-    },
-  },
-} satisfies Record<
-  Locale,
-  Record<RouteKey, { title: string; description: string }>
->;
+import { metadata, seoMetaTags } from '../seo';
 
 function appendMeta(
   attribute: 'name' | 'property',
@@ -61,12 +32,13 @@ export function Seo({ locale, route }: { locale: Locale; route: RouteKey }) {
     document.documentElement.lang = locale;
     document.title = current.title;
 
-    appendMeta('name', 'description', current.description);
-    appendMeta('property', 'og:type', route === 'home' ? 'profile' : 'website');
-    appendMeta('property', 'og:title', current.title);
-    appendMeta('property', 'og:description', current.description);
-    appendMeta('property', 'og:url', canonical);
-    appendMeta('property', 'og:locale', locale === 'pt-BR' ? 'pt_BR' : 'en_US');
+    // Static HTML already contains SEO tags for crawlers. Replace them on mount.
+    document.head
+      .querySelectorAll('[data-seo]')
+      .forEach((node) => node.remove());
+    for (const { attribute, key, content } of seoMetaTags(locale, route)) {
+      appendMeta(attribute, key, content);
+    }
     appendLink('canonical', canonical);
     appendLink('alternate', `${SITE_ORIGIN}${toLocalePath('en', route)}`, 'en');
     appendLink(
