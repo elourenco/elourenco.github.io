@@ -1,7 +1,7 @@
 import type { Locale, RouteKey } from './content';
 import { toLocalePath } from './i18n/locale-paths';
 
-export const SITE_ORIGIN = 'https://elourenco.github.io';
+export const SITE_ORIGIN = 'https://eduardolourenco.dev';
 
 export const EXTERNAL_URLS = {
   linkedin: 'https://www.linkedin.com/in/dudulourenco',
@@ -28,6 +28,7 @@ export const SITE_ANCHORS = {
     contactTitle: 'contact-title',
   },
   donaEvents: {
+    challengeTitle: 'dona-challenge-title',
     outcomeTitle: 'dona-outcome-title',
     ownershipTitle: 'dona-ownership-title',
     capabilitiesTitle: 'dona-capabilities-title',
@@ -89,5 +90,6 @@ export function pageInternalLinks(locale: Locale, route: RouteKey): string[] {
     ),
     INTERNAL_DESTINATIONS.route('en', 'donaEvents'),
     INTERNAL_DESTINATIONS.route('pt-BR', 'donaEvents'),
+    INTERNAL_DESTINATIONS.routeFragment(locale, 'home', SITE_ANCHORS.home.work),
   ];
 }

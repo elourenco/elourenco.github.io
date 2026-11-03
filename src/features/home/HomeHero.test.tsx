@@ -17,7 +17,7 @@ describe('HomeHero', () => {
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: 'Eduardo Lourenco Principal Software Engineer',
+        name: 'Eduardo Lourenco Principal AI System Architect',
       }),
     ).toBeVisible();
   });
@@ -28,7 +28,7 @@ describe('HomeHero', () => {
     render(<HomeHero content={ptBRContent} />);
 
     expect(
-      screen.getByText('IA · Mobile · Arquitetura de Software'),
+      screen.getByText('Sistemas de IA · Arquitetura de Software · Mobile'),
     ).toBeVisible();
     for (const label of [
       'Sistemas distribuídos',
@@ -41,7 +41,7 @@ describe('HomeHero', () => {
     }
 
     const hero = screen.getByRole('region', {
-      name: 'Eduardo Lourenco Principal Software Engineer',
+      name: 'Eduardo Lourenco Principal AI System Architect',
     });
     const actionCluster = hero.querySelector('.action-cluster');
     expect(actionCluster).toBeInTheDocument();
@@ -72,7 +72,7 @@ describe('HomeHero', () => {
       within(actionCluster as HTMLElement).getByRole('link', {
         name: 'Baixar currículo',
       }),
-    ).not.toHaveClass('button--quiet');
+    ).toHaveClass('button--quiet');
   });
 
   it('keeps the particle surface outside the portrait figure', () => {

@@ -2,3 +2,4 @@ public/sitemap.xml
 dist/
 test-results/
 playwright-report/
+.agents/

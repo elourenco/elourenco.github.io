@@ -22,8 +22,20 @@ describe('DonaEventsPage', () => {
     ).toBeInTheDocument();
     expect(
       container.querySelectorAll('section.dona-case__section'),
-    ).toHaveLength(4);
+    ).toHaveLength(5);
     expect(container.querySelectorAll('ul.dona-case__list')).toHaveLength(2);
+    expect(
+      screen.getByRole('region', { name: 'The product challenge' }),
+    ).toHaveTextContent(enContent.donaCase.challenge);
+    expect(
+      screen.getByRole('region', { name: 'Approach and ownership' }),
+    ).toHaveTextContent(enContent.donaCase.ownership);
+    expect(
+      screen.getByRole('region', { name: 'Product outcome' }),
+    ).toHaveTextContent(enContent.donaCase.outcome);
+    expect(
+      screen.getByRole('link', { name: 'Back to selected work' }),
+    ).toHaveAttribute('href', '/en#work');
     expect(container.querySelector('a.dona-case__cta')).toHaveAttribute(
       'target',
       '_blank',
@@ -87,6 +99,15 @@ describe('DonaEventsPage', () => {
     ).toBeVisible();
     expect(screen.getByText('Creator & Principal Engineer')).toBeVisible();
     expect(screen.getByText(/35 mil\+ eventos criados/i)).toBeVisible();
+    expect(
+      screen.getByRole('region', { name: 'O desafio do produto' }),
+    ).toHaveTextContent(ptBRContent.donaCase.challenge);
+    expect(
+      screen.getByRole('region', { name: 'Abordagem e responsabilidade' }),
+    ).toHaveTextContent(ptBRContent.donaCase.ownership);
+    expect(
+      screen.getByRole('link', { name: 'Voltar aos trabalhos selecionados' }),
+    ).toHaveAttribute('href', '/pt-br#work');
     expect(
       screen.getByRole('link', { name: 'Visitar Dona Events' }),
     ).toHaveAttribute('href', 'https://dona.events');

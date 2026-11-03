@@ -15,7 +15,7 @@ describe('Seo', () => {
     expect(
       document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]')
         ?.href,
-    ).toBe('https://elourenco.github.io/pt-br/projetos/dona-events');
+    ).toBe('https://eduardolourenco.dev/pt-br/projetos/dona-events');
     expect(
       document.head.querySelectorAll('link[rel="alternate"][hreflang]'),
     ).toHaveLength(3);

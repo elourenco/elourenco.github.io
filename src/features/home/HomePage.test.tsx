@@ -25,7 +25,7 @@ describe('HomePage', () => {
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: 'Eduardo Lourenco Principal Software Engineer',
+        name: 'Eduardo Lourenco Principal AI System Architect',
       }),
     ).toBeVisible();
     expect(screen.getByRole('navigation', { name: 'Primary' })).toBeVisible();
@@ -35,7 +35,7 @@ describe('HomePage', () => {
     expect(
       screen.getByRole('link', { name: 'Connect on LinkedIn' }),
     ).toHaveAttribute('href', 'https://www.linkedin.com/in/dudulourenco');
-    expect(screen.getByText('Dona Events')).toBeVisible();
+    expect(screen.getByRole('heading', { name: 'Dona Events' })).toBeVisible();
 
     const featuredSection = container.querySelector('#work');
     expect(featuredSection).toBeInTheDocument();
@@ -106,11 +106,11 @@ describe('HomePage', () => {
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: 'Eduardo Lourenco Principal Software Engineer',
+        name: 'Eduardo Lourenco Principal AI System Architect',
       }),
     ).toBeVisible();
     expect(
-      screen.getByText('IA · Mobile · Arquitetura de Software'),
+      screen.getByText('Sistemas de IA · Arquitetura de Software · Mobile'),
     ).toBeVisible();
     expect(
       within(screen.getByRole('banner')).getByRole('link', { name: 'Início' }),

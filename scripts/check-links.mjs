@@ -14,7 +14,7 @@ validateBuiltLinks(manifest);
 for (const page of manifest.pages) {
   assert.match(
     sitemap,
-    new RegExp(`<loc>https://elourenco\\.github\\.io${page.pathname}</loc>`),
+    new RegExp(`<loc>https://eduardolourenco\\.dev${page.pathname}</loc>`),
   );
 }
 for (const asset of manifest.assets) {

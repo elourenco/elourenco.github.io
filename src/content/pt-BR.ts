@@ -10,10 +10,10 @@ export const ptBRContent = {
   },
   hero: {
     eyebrow: 'Eduardo Lourenco',
-    title: 'Principal Software Engineer',
-    disciplines: 'IA · Mobile · Arquitetura de Software e Soluções',
+    title: 'Principal AI System Architect',
+    disciplines: 'Sistemas de IA · Arquitetura de Software · Mobile',
     summary:
-      'Projeto e construo produtos digitais inteligentes, da arquitetura de sistemas até a produção.',
+      'Projeto sistemas de IA e levo produtos inteligentes à produção, conectando arquitetura de software, experiências mobile e engenharia de ponta a ponta.',
     workCta: 'Ver trabalhos',
     linkedinCta: 'Conectar no LinkedIn',
     resumeCta: 'Baixar currículo',
@@ -68,12 +68,16 @@ export const ptBRContent = {
     cta: 'Explorar Dona Events',
   },
   donaCase: {
+    challengeTitle: 'O desafio do produto',
+    challenge:
+      'Reunir convites, confirmações de convidados, notificações e presentes digitais em uma experiência de eventos no mobile e na web.',
+    backCta: 'Voltar aos trabalhos selecionados',
     outcomeTitle: 'Resultado do produto',
     outcome:
       'Dona Events reúne a jornada do evento em um único produto, da criação do convite à gestão de convidados, confirmações e presentes digitais.',
-    ownershipTitle: 'Responsabilidade de ponta a ponta',
+    ownershipTitle: 'Abordagem e responsabilidade',
     ownership:
-      'Criado e desenvolvido de ponta a ponta entre produto, mobile, web, backend, infraestrutura e IA.',
+      'Criação e desenvolvimento do produto de ponta a ponta: experiências mobile e web, backend, infraestrutura e IA, com geração de imagens e conteúdo integrada à jornada do evento.',
     capabilitiesTitle: 'Capacidades públicas',
     capabilities: [
       'Geração de imagens e conteúdo com Dona IA',
@@ -93,7 +97,7 @@ export const ptBRContent = {
       {
         period: 'Atual',
         company: 'IXC Soft',
-        role: 'Principal Software Engineer',
+        role: 'Principal AI System Architect',
         summary:
           'Liderança de decisões de arquitetura e engenharia para produtos digitais escaláveis.',
       },
@@ -128,8 +132,9 @@ export const ptBRContent = {
     ],
   },
   contact: {
+    linkedinCta: 'Conversar no LinkedIn',
     title: 'Canal aberto',
     summary:
-      'Vamos conversar sobre arquitetura de software, produtos inteligentes e liderança de engenharia.',
+      'Vamos conversar sobre sistemas de IA, arquitetura de software e produtos mobile, da direção técnica à produção.',
   },
 } satisfies PortfolioContent;

@@ -1,8 +1,13 @@
+import { Link } from 'react-router-dom';
 import type { PortfolioContent } from '../../content';
 import { SiteHeader } from '../../components/SiteHeader';
 import { SkipLink } from '../../components/SkipLink';
 import { Seo } from '../../components/Seo';
-import { EXTERNAL_URLS, SITE_ANCHORS } from '../../site-contract';
+import {
+  EXTERNAL_URLS,
+  INTERNAL_DESTINATIONS,
+  SITE_ANCHORS,
+} from '../../site-contract';
 
 export function DonaEventsPage({ content }: { content: PortfolioContent }) {
   const isPortuguese = content.locale === 'pt-BR';
@@ -30,13 +35,13 @@ export function DonaEventsPage({ content }: { content: PortfolioContent }) {
           </header>
 
           <section
-            className="dona-case__section"
-            aria-labelledby={SITE_ANCHORS.donaEvents.outcomeTitle}
+            className="dona-case__section dona-case__section--challenge"
+            aria-labelledby={SITE_ANCHORS.donaEvents.challengeTitle}
           >
-            <h2 id={SITE_ANCHORS.donaEvents.outcomeTitle}>
-              {project.outcomeTitle}
+            <h2 id={SITE_ANCHORS.donaEvents.challengeTitle}>
+              {project.challengeTitle}
             </h2>
-            <p>{project.outcome}</p>
+            <p>{project.challenge}</p>
           </section>
 
           <section
@@ -81,14 +86,36 @@ export function DonaEventsPage({ content }: { content: PortfolioContent }) {
             </ul>
           </section>
 
-          <a
-            className="dona-case__cta button button--primary"
-            href={EXTERNAL_URLS.donaEvents}
-            target="_blank"
-            rel="noreferrer"
+          <section
+            className="dona-case__section"
+            aria-labelledby={SITE_ANCHORS.donaEvents.outcomeTitle}
           >
-            {project.externalCta}
-          </a>
+            <h2 id={SITE_ANCHORS.donaEvents.outcomeTitle}>
+              {project.outcomeTitle}
+            </h2>
+            <p>{project.outcome}</p>
+          </section>
+
+          <footer className="dona-case__actions">
+            <a
+              className="dona-case__cta button button--primary"
+              href={EXTERNAL_URLS.donaEvents}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {project.externalCta}
+            </a>
+            <Link
+              className="dona-case__back button"
+              to={INTERNAL_DESTINATIONS.routeFragment(
+                content.locale,
+                'home',
+                SITE_ANCHORS.home.work,
+              )}
+            >
+              {project.backCta}
+            </Link>
+          </footer>
         </article>
       </main>
     </>

@@ -10,10 +10,10 @@ export const enContent = {
   },
   hero: {
     eyebrow: 'Eduardo Lourenco',
-    title: 'Principal Software Engineer',
-    disciplines: 'AI · Mobile · Software Architecture and Solutions',
+    title: 'Principal AI System Architect',
+    disciplines: 'AI Systems · Software Architecture · Mobile',
     summary:
-      'I design and build intelligent digital products, from system architecture to production.',
+      'I design AI systems and bring intelligent products to production, connecting software architecture, mobile experiences and end-to-end engineering.',
     workCta: 'View selected work',
     linkedinCta: 'Connect on LinkedIn',
     resumeCta: 'Download résumé (PT-BR)',
@@ -68,12 +68,16 @@ export const enContent = {
     cta: 'Explore Dona Events',
   },
   donaCase: {
+    challengeTitle: 'The product challenge',
+    challenge:
+      'Bring invitations, guest confirmations, notifications and digital gifts into one event experience across mobile and web.',
+    backCta: 'Back to selected work',
     outcomeTitle: 'Product outcome',
     outcome:
       'Dona Events brings the event journey into one product, from creating an invitation to managing guests, confirmations and digital gifts.',
-    ownershipTitle: 'End-to-end ownership',
+    ownershipTitle: 'Approach and ownership',
     ownership:
-      'Created and engineered end to end across product, mobile, web, backend, infrastructure and AI.',
+      'Created and engineered the product end to end: mobile and web experiences, backend, infrastructure and AI, with image and content generation integrated into the event journey.',
     capabilitiesTitle: 'Public capabilities',
     capabilities: [
       'Dona AI image and content generation',
@@ -93,7 +97,7 @@ export const enContent = {
       {
         period: 'Current',
         company: 'IXC Soft',
-        role: 'Principal Software Engineer',
+        role: 'Principal AI System Architect',
         summary:
           'Leading architecture and engineering decisions for scalable digital products.',
       },
@@ -128,8 +132,9 @@ export const enContent = {
     ],
   },
   contact: {
+    linkedinCta: 'Let’s talk on LinkedIn',
     title: 'Open channel',
     summary:
-      'Let’s connect to discuss software architecture, intelligent products and engineering leadership.',
+      'Let’s discuss AI systems, software architecture and mobile products, from technical direction to production.',
   },
 } satisfies PortfolioContent;

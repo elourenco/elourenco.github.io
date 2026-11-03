@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://elourenco.github.io/sitemap.xml
+Sitemap: https://eduardolourenco.dev/sitemap.xml

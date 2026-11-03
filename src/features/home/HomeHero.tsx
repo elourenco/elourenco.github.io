@@ -3,6 +3,7 @@ import {
   FileTextIcon,
   LinkedinLogoIcon,
 } from '@phosphor-icons/react';
+import { Fragment } from 'react';
 import type { PortfolioContent } from '../../content';
 import { ParticleExperience } from '../../experience/ParticleExperience';
 import {
@@ -28,7 +29,7 @@ function HeroActions({ content }: { content: PortfolioContent }) {
         <LinkedinLogoIcon aria-hidden="true" size={20} weight="fill" />
         {content.hero.linkedinCta}
       </a>
-      <a className="button" href={PUBLIC_ASSETS.resume} download>
+      <a className="button button--quiet" href={PUBLIC_ASSETS.resume} download>
         <FileTextIcon aria-hidden="true" size={20} weight="regular" />
         {content.hero.resumeCta}
       </a>
@@ -50,12 +51,23 @@ export function HomeHero({ content }: { content: PortfolioContent }) {
     >
       <div className="home-hero__content">
         <h1 id={SITE_ANCHORS.home.heroTitle} className="home-hero__title">
-          <span className="home-hero__name">{content.hero.eyebrow}</span>{' '}
+          <span className="home-hero__name">
+            {content.hero.eyebrow.split(' ').map((word, index) => (
+              <Fragment key={`${word}-${index}`}>
+                {index > 0 ? ' ' : ''}
+                <span className="home-hero__word">{word}</span>
+              </Fragment>
+            ))}
+          </span>{' '}
           <span className="home-hero__role">{content.hero.title}</span>
         </h1>
         <p className="home-hero__disciplines">{content.hero.disciplines}</p>
         <p className="home-hero__summary">{content.hero.summary}</p>
         <HeroActions content={content} />
+        <div className="home-hero__proof">
+          <span>{content.dona.title}</span>
+          <strong>{content.donaCase.metric}</strong>
+        </div>
       </div>
       <div className="home-hero__visual">
         <HeroPortrait alt={portraitAlt} priority />

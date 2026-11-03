@@ -6,9 +6,9 @@ import { EXTERNAL_URLS, SITE_ORIGIN } from '../site-contract';
 const metadata = {
   en: {
     home: {
-      title: 'Eduardo Lourenco | Principal Software Engineer',
+      title: 'Eduardo Lourenco | Principal AI System Architect',
       description:
-        'Principal Software Engineer focused on AI, mobile engineering and scalable software architecture.',
+        'Principal AI System Architect focused on AI, mobile engineering and scalable software architecture.',
     },
     donaEvents: {
       title: 'Dona Events | Eduardo Lourenco',
@@ -18,9 +18,9 @@ const metadata = {
   },
   'pt-BR': {
     home: {
-      title: 'Eduardo Lourenco | Principal Software Engineer',
+      title: 'Eduardo Lourenco | Principal AI System Architect',
       description:
-        'Principal Software Engineer com foco em IA, engenharia mobile e arquitetura de software escalável.',
+        'Principal AI System Architect com foco em IA, engenharia mobile e arquitetura de software escalável.',
     },
     donaEvents: {
       title: 'Dona Events | Eduardo Lourenco',
@@ -89,7 +89,7 @@ export function Seo({ locale, route }: { locale: Locale; route: RouteKey }) {
             '@context': 'https://schema.org',
             '@type': 'Person',
             name: 'Eduardo Lourenco',
-            jobTitle: 'Principal Software Engineer',
+            jobTitle: 'Principal AI System Architect',
             url: canonical,
             sameAs: [EXTERNAL_URLS.linkedin, EXTERNAL_URLS.github],
           }

@@ -50,8 +50,8 @@
 
 .desktop-section-rail .site-header__nav {
   flex: none;
-  height: min(38rem, 62vh);
-  margin: clamp(6rem, 13vh, 8.5rem) 0 0 1.9rem;
+  height: min(35rem, 65vh);
+  margin: 5rem 0 0 1.5rem;
   border-left: 1px solid var(--color-line);
 }
 
@@ -85,35 +85,34 @@
 }
 
 .feature-section {
-  width: 100%;
-  padding-top: 1.5rem;
+  padding-top: 2.5rem;
 }
 
 .home-hero {
   display: grid;
-  width: min(calc(100% - 7.5rem), var(--container));
+  width: min(calc(100% - 5rem), var(--container));
   min-height: auto;
-  grid-template-columns: minmax(34rem, 0.92fr) minmax(0, 1.08fr);
-  grid-template-rows: 45.5rem auto;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  grid-template-rows: auto auto;
   align-items: center;
   gap: 0.75rem clamp(1.5rem, 2.5vw, 2.5rem);
-  padding-block: 0 1rem;
+  padding-block: 6rem 1rem;
 }
 
 .home-hero__content {
   position: relative;
   z-index: 2;
   min-width: 0;
-  align-self: start;
-  margin-top: 9rem;
+  align-self: center;
+  margin-top: 0;
 }
 
 .home-hero__visual {
   position: relative;
-  height: 45.5rem;
+  height: clamp(28rem, 39vw, 38rem);
   min-width: 0;
   overflow: clip;
-  overflow-clip-margin: 5rem;
+  overflow-clip-margin: 0;
 }
 
 .contact-section {
@@ -130,19 +129,20 @@
 
 .feature-card {
   display: grid;
-  grid-template-columns: minmax(18rem, 0.72fr) minmax(30rem, 1.28fr);
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
   gap: clamp(2rem, 4vw, 4rem);
 }
 
 .expertise-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin-top: var(--space-6);
+  gap: 1rem;
+  margin-top: 2.5rem;
 }
 
 .timeline {
-  max-width: 60rem;
-  margin: 3rem 0 0 auto;
+  max-width: none;
+  margin: 2.5rem 0 0;
   padding: 0;
   list-style: none;
 }
@@ -152,7 +152,7 @@
 }
 
 .dona-case {
-  padding-block: clamp(5rem, 12vw, 10rem);
+  padding-block: clamp(3rem, 5vw, 5rem);
 }
 
 .dona-case__section {
@@ -227,7 +227,7 @@
   .home-hero {
     width: min(calc(100% - 4rem), var(--container));
     min-height: auto;
-    grid-template-columns: repeat(2, minmax(21rem, 1fr));
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
     grid-template-rows: auto auto;
     gap: 1.5rem clamp(1.5rem, 3vw, 2.5rem);
     padding-top: clamp(3rem, 8vw, 5rem);
@@ -239,12 +239,12 @@
   }
 
   .home-hero__visual {
-    height: auto;
+    height: clamp(24rem, 50vw, 35rem);
     overflow-clip-margin: 0;
   }
 
   .feature-card {
-    grid-template-columns: minmax(14rem, 0.72fr) minmax(24rem, 1.28fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: clamp(1.5rem, 3vw, 2.5rem);
   }
 }
@@ -266,7 +266,8 @@
   .home-hero {
     min-height: auto;
     align-items: start;
-    padding-top: clamp(4rem, 16vw, 7rem);
+    padding-top: 2.5rem;
+    row-gap: 2rem;
   }
 
   .home-hero .action-cluster {
@@ -278,8 +279,9 @@
   }
 
   .home-hero__visual {
-    width: min(100%, 42rem);
-    justify-self: end;
+    width: min(100%, 24rem);
+    height: 22rem;
+    justify-self: center;
   }
 
   .feature-section > .button,

@@ -40,6 +40,56 @@ function trackHeavyParticleRequests(page: Page) {
 }
 
 test.describe('responsive particle contracts', () => {
+  test('keeps the full name on two readable lines on small screens', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    for (const width of [320, 360, 390, 430]) {
+      await page.setViewportSize({ width, height: 844 });
+      await page.goto('/pt-br');
+      await waitForVisualReadiness(page);
+      const name = await page
+        .locator('.home-hero__name')
+        .evaluate((element) => ({
+          height: element.getBoundingClientRect().height,
+          fontSize: parseFloat(getComputedStyle(element).fontSize),
+          width: element.scrollWidth,
+          available: element.clientWidth,
+        }));
+      expect(
+        name.height,
+        `Name wraps to three lines at ${width}px`,
+      ).toBeLessThanOrEqual(name.fontSize * 2.4);
+      expect(name.width).toBeLessThanOrEqual(name.available);
+    }
+  });
+
+  test('opens a project at the beginning and moves keyboard focus to its title', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/pt-br');
+    await page
+      .getByRole('link', { name: 'Explorar Dona Events', exact: true })
+      .click();
+    await expect(page).toHaveURL('/pt-br/projetos/dona-events');
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Dona Events' }),
+    ).toBeFocused();
+
+    await page
+      .getByRole('link', { name: 'Voltar aos trabalhos selecionados' })
+      .click();
+    await expect(page).toHaveURL('/pt-br#work');
+    const workTitle = page.getByRole('heading', {
+      level: 2,
+      name: 'Dona Events',
+    });
+    await expect(workTitle).toBeFocused();
+    await expect(workTitle).toBeInViewport();
+  });
+
   for (const viewport of [
     { width: 390, height: 844 },
     { width: 768, height: 1024 },
@@ -79,103 +129,41 @@ test.describe('responsive particle contracts', () => {
     });
   }
 
-  test('matches the reference viewport geometry at 1488px', async ({
+  test('keeps desktop content readable and clear of the portrait and navigation', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1488, height: 1058 });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/en');
     await waitForVisualReadiness(page, { includeFeature: true });
 
-    const hero = await page.locator('.home-hero').boundingBox();
-    const capability = await page.locator('.capability-strip').boundingBox();
-    const project = await page.locator('.feature-card').boundingBox();
-    const portrait = await page.locator('.hero-portrait').boundingBox();
+    const copy = await page.locator('.home-hero__content').boundingBox();
+    const visual = await page.locator('.home-hero__visual').boundingBox();
+    const strip = await page.locator('.capability-strip').boundingBox();
     const rail = await page.locator('.site-header').boundingBox();
-    const name = await page.locator('.home-hero__name').boundingBox();
-    const summary = await page.locator('.home-hero__summary').boundingBox();
-    const projectTitle = await page.locator('#work-title').boundingBox();
-    const actions = await page
-      .locator('.home-hero .action-cluster .button')
-      .evaluateAll((links) =>
-        links.map((link) => {
-          const bounds = link.getBoundingClientRect();
-          return {
-            y: bounds.y,
-            height: bounds.height,
-            scrollWidth: link.scrollWidth,
-            clientWidth: link.clientWidth,
-          };
-        }),
-      );
-    const railLinksFit = await page
-      .locator('.desktop-section-rail .site-header__nav a')
-      .evaluateAll((links) =>
-        links.every((link) => link.getBoundingClientRect().right <= 132),
-      );
-    const railLabelGeometry = await page
-      .locator('.desktop-section-rail__visible-label')
-      .evaluateAll((labels) =>
-        labels.map((label) => {
-          const bounds = label.getBoundingClientRect();
-          return {
-            text: label.textContent,
-            height: bounds.height,
-            right: bounds.right,
-            scrollWidth: label.scrollWidth,
-            clientWidth: label.clientWidth,
-          };
-        }),
-      );
-
-    expect(hero).not.toBeNull();
-    expect(capability).not.toBeNull();
-    expect(project).not.toBeNull();
-    expect(portrait).not.toBeNull();
+    expect(copy).not.toBeNull();
+    expect(visual).not.toBeNull();
+    expect(strip).not.toBeNull();
     expect(rail).not.toBeNull();
-    expect(name).not.toBeNull();
-    expect(summary).not.toBeNull();
-    expect(projectTitle).not.toBeNull();
-    expect(name!.height).toBeGreaterThan(240);
-    expect(summary!.width).toBeLessThanOrEqual(400);
-    expect(projectTitle!.y).toBeGreaterThan(880);
-    expect(projectTitle!.y).toBeLessThan(950);
-    expect(actions).toHaveLength(3);
-    expect(actions.every(({ height }) => height <= 48)).toBe(true);
-    expect(actions[0]!.y).toBeGreaterThan(620);
-    expect(actions[0]!.y).toBeLessThan(660);
-    expect(new Set(actions.map(({ y }) => Math.round(y))).size).toBe(1);
-    expect(
-      actions.every(
-        ({ scrollWidth, clientWidth }) => scrollWidth <= clientWidth,
-      ),
-    ).toBe(true);
-    expect(railLinksFit).toBe(true);
-    expect(railLabelGeometry.map(({ text }) => text)).toEqual([
-      'Home',
-      'Work',
-      'Expertise',
-      'Career',
-      'Contact',
-    ]);
-    expect(
-      railLabelGeometry.every(
-        ({ height, right, scrollWidth, clientWidth }) =>
-          height < 20 && right <= 132 && scrollWidth <= clientWidth,
-      ),
-    ).toBe(true);
+    expect(copy!.x).toBeGreaterThanOrEqual(rail!.x + rail!.width);
+    expect(copy!.x + copy!.width).toBeLessThanOrEqual(visual!.x);
+    expect(strip!.y).toBeGreaterThanOrEqual(copy!.y + copy!.height);
+    expect(strip!.y).toBeGreaterThanOrEqual(visual!.y + visual!.height);
     await expect(
-      page
-        .locator('.desktop-section-rail')
-        .getByRole('link', { name: 'Selected work' }),
-    ).toHaveAttribute('href', '#work');
-    expect(project!.y).toBeLessThan(1058);
-    expect(project!.y).toBeLessThan(900);
-    expect(capability!.y).toBeLessThan(760);
-    expect(capability!.y + capability!.height).toBeLessThan(1058);
-    expect(portrait!.x).toBeGreaterThanOrEqual(680);
-    expect(portrait!.x).toBeLessThanOrEqual(735);
-    expect(portrait!.width).toBeGreaterThanOrEqual(680);
-    expect(rail!.width).toBeLessThanOrEqual(132);
+      page.getByRole('link', { name: 'View selected work', exact: true }),
+    ).toBeInViewport();
+
+    for (const link of await page
+      .locator('.desktop-section-rail .site-header__nav a')
+      .all()) {
+      const bounds = await link.boundingBox();
+      expect(bounds!.height).toBeGreaterThanOrEqual(44);
+      expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(rail!.width);
+      const fontSize = await link.evaluate((el) =>
+        parseFloat(getComputedStyle(el).fontSize),
+      );
+      expect(fontSize).toBeGreaterThanOrEqual(12);
+    }
   });
 
   test('shows the compact header and hides the desktop rail at 1024px', async ({
@@ -190,7 +178,7 @@ test.describe('responsive particle contracts', () => {
     await expect(page.locator('.site-header')).toHaveCSS('position', 'sticky');
   });
 
-  test('keeps Portuguese rail labels single-line, accessible, and inside 132px', async ({
+  test('keeps Portuguese rail labels single-line, accessible, and inside the navigation', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1488, height: 1058 });
@@ -213,6 +201,7 @@ test.describe('responsive particle contracts', () => {
         }),
       );
 
+    const railBounds = await page.locator('.site-header').boundingBox();
     expect(labels.map(({ text }) => text)).toEqual([
       'Início',
       'Trabalhos',
@@ -223,7 +212,9 @@ test.describe('responsive particle contracts', () => {
     expect(
       labels.every(
         ({ right, height, scrollWidth, clientWidth }) =>
-          right <= 132 && height < 20 && scrollWidth <= clientWidth,
+          right <= railBounds!.width &&
+          height < 20 &&
+          scrollWidth <= clientWidth,
       ),
     ).toBe(true);
     await expect(
@@ -429,7 +420,7 @@ test.describe('responsive particle contracts', () => {
     await expect(
       page.getByRole('heading', {
         level: 1,
-        name: /Principal Software Engineer/,
+        name: /Principal AI System Architect/,
       }),
     ).toBeVisible();
     await expect(
@@ -514,7 +505,7 @@ for (const route of routes) {
     await expect(page.locator('main')).toBeVisible();
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
       'href',
-      `https://elourenco.github.io${route}`,
+      `https://eduardolourenco.dev${route}`,
     );
   });
 }

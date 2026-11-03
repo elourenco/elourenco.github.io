@@ -37,6 +37,9 @@ export interface PortfolioContent {
     cta: string;
   };
   donaCase: {
+    challengeTitle: string;
+    challenge: string;
+    backCta: string;
     outcomeTitle: string;
     outcome: string;
     ownershipTitle: string;
@@ -57,5 +60,5 @@ export interface PortfolioContent {
       summary: string;
     }>;
   };
-  contact: { title: string; summary: string };
+  contact: { title: string; summary: string; linkedinCta: string };
 }

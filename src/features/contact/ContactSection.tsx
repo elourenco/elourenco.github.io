@@ -22,7 +22,7 @@ export function ContactSection({ content }: { content: PortfolioContent }) {
       <p className="contact-section__summary">{content.contact.summary}</p>
       <div className="action-cluster">
         <a className="button button--primary" href={EXTERNAL_URLS.linkedin}>
-          LinkedIn
+          {content.contact.linkedinCta}
         </a>
         <a className="button" href={EXTERNAL_URLS.github}>
           GitHub
