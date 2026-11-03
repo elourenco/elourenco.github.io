@@ -1,4 +1,42 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { readFile } from 'node:fs/promises';
+
+test('downloads a real PDF in the selected language after switching locales', async ({
+  page,
+}) => {
+  await page.goto('/en');
+  for (const entry of [
+    {
+      language: 'en',
+      label: 'Download resume',
+      filename: 'cv-eduardo-lourenco-en.pdf',
+    },
+    {
+      language: 'pt-BR',
+      label: 'Baixar currículo',
+      filename: 'cv-eduardo-lourenco-pt-br.pdf',
+    },
+  ]) {
+    if (entry.language === 'pt-BR') {
+      await page.getByRole('link', { name: 'PT-BR', exact: true }).click();
+      await expect(page).toHaveURL('/pt-br');
+    }
+    await expect(page.locator('html')).toHaveAttribute('lang', entry.language);
+    const link = page.getByRole('link', { name: entry.label, exact: true });
+    await expect(link).toHaveAttribute('href', `/${entry.filename}`);
+    await expect(link).toHaveAttribute('hreflang', entry.language);
+    const downloadEvent = page.waitForEvent('download');
+    await link.click();
+    const download = await downloadEvent;
+    expect(download.suggestedFilename()).toBe(entry.filename);
+    expect(await download.failure()).toBeNull();
+    const path = await download.path();
+    expect(path).not.toBeNull();
+    const pdf = await readFile(path!);
+    expect(pdf.subarray(0, 5).toString()).toBe('%PDF-');
+    expect(pdf.toString('latin1')).toContain(`/Lang (${entry.language})`);
+  }
+});
 
 async function waitForDecodedImage(image: Locator) {
   await image.waitFor({ state: 'attached' });

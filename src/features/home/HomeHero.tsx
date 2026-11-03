@@ -9,7 +9,7 @@ import { ParticleExperience } from '../../experience/ParticleExperience';
 import {
   EXTERNAL_URLS,
   INTERNAL_DESTINATIONS,
-  PUBLIC_ASSETS,
+  resumeForLocale,
   SITE_ANCHORS,
 } from '../../site-contract';
 import { CapabilityStrip } from './CapabilityStrip';
@@ -29,7 +29,13 @@ function HeroActions({ content }: { content: PortfolioContent }) {
         <LinkedinLogoIcon aria-hidden="true" size={20} weight="fill" />
         {content.hero.linkedinCta}
       </a>
-      <a className="button button--quiet" href={PUBLIC_ASSETS.resume} download>
+      <a
+        className="button button--quiet"
+        href={resumeForLocale(content.locale)}
+        hrefLang={content.locale}
+        type="application/pdf"
+        download
+      >
         <FileTextIcon aria-hidden="true" size={20} weight="regular" />
         {content.hero.resumeCta}
       </a>

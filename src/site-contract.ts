@@ -10,8 +10,13 @@ export const EXTERNAL_URLS = {
 } as const;
 
 export const PUBLIC_ASSETS = {
-  resume: '/cv-eduardo-lourenco-pt-br.pdf',
+  resumeEn: '/cv-eduardo-lourenco-en.pdf',
+  resumePtBR: '/cv-eduardo-lourenco-pt-br.pdf',
 } as const;
+
+export function resumeForLocale(locale: Locale): string {
+  return locale === 'en' ? PUBLIC_ASSETS.resumeEn : PUBLIC_ASSETS.resumePtBR;
+}
 
 export const SITE_ANCHORS = {
   main: 'main-content',
@@ -77,7 +82,7 @@ export function pageInternalLinks(locale: Locale, route: RouteKey): string[] {
       INTERNAL_DESTINATIONS.route('en', 'home'),
       INTERNAL_DESTINATIONS.route('pt-BR', 'home'),
       INTERNAL_DESTINATIONS.fragment(SITE_ANCHORS.home.work),
-      PUBLIC_ASSETS.resume,
+      resumeForLocale(locale),
       INTERNAL_DESTINATIONS.route(locale, 'donaEvents'),
     ];
   }

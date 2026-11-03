@@ -1,0 +1,248 @@
+{
+  "name": "Eduardo Rodrigo de Lourenço",
+  "title": "Principal AI System Architect",
+  "email": "elourenco@outlook.com",
+  "phone": "+55 11 99846 5998",
+  "locales": {
+    "pt-BR": {
+      "filename": "cv-eduardo-lourenco-pt-br.pdf",
+      "location": "São Paulo, Brasil",
+      "educationTitle": "Formação e certificações",
+      "projectsTitle": "Projetos",
+      "experienceTitle": "Experiência profissional",
+      "education": [
+        ["Faculdade Estácio de Cotia", "Sistemas de Informação - concluído."],
+        ["AWS", "Certificação AWS Certified Cloud Practitioner."],
+        [
+          "Udacity Brasil",
+          "Deep Learning Nanodegree Foundation; React Developer Nanodegree."
+        ],
+        [
+          "Caelum",
+          "Desenvolvimento ágil para web com Ruby on Rails 3; desenvolvimento de aplicativos para iOS."
+        ],
+        ["IBTA", "DBA for Oracle 9i."],
+        [
+          "KaSolution",
+          "MCAD: aplicações web e Windows com Visual C#; SQL Server 2008 e BI: Transact-SQL, Database, Analysis Services, Integration Services e Reporting Services; desenvolvimento com SharePoint 2010; PMBOK v4 e gestão ágil de projetos com Scrum."
+        ],
+        [
+          "FYI Brasil",
+          "Development I e Development II in Microsoft Dynamics AX 2012 (80304AC)."
+        ]
+      ],
+      "projects": [
+        [
+          "Dona Events",
+          "Projeto pessoal com React Native, Next.js e backend em Bun, utilizando arquitetura hexagonal e adaptador de API REST."
+        ],
+        [
+          "SD2 Import & Export System",
+          "Gestão de processos aduaneiros e faturamento em FoxPro."
+        ],
+        [
+          "Fatura Trade",
+          "Aplicação web de análise de dados e inteligência de negócios em C#."
+        ],
+        [
+          "SD2Comex",
+          "Aplicação web de gestão de processos aduaneiros e faturamento em Ruby on Rails."
+        ],
+        [
+          "NOW Kids / Minha NET / Minha Claro",
+          "Aplicativos para iOS e Android e backend em Node.js."
+        ],
+        ["Pipoca (Alpha)", "Assistente virtual Claro/NET para TV."],
+        [
+          "Push Manager (Alpha)",
+          "Sistema de campanhas por notificações push, com Node.js e arquitetura serverless."
+        ],
+        [
+          "Mobile Notification Center",
+          "Módulo de visita técnica com notificações push, Node.js e arquitetura serverless."
+        ],
+        ["LynxMail", "Cliente de e-mail de código aberto em React Native."],
+        [
+          "Quero Bolsa / VAI Car / Midway",
+          "Desenvolvimento de aplicativos em React Native."
+        ]
+      ],
+      "experience": [
+        [
+          "IXC Soft",
+          "Atual",
+          "Principal AI System Architect",
+          "Liderança nas decisões de arquitetura e engenharia para produtos digitais escaláveis."
+        ],
+        [
+          "Midway S.A.",
+          "Abril de 2021 - Junho de 2024",
+          "Engenheiro sênior mobile e full stack",
+          "Desenvolvimento de aplicativos em React Native e de BFF com GraphQL e Node.js."
+        ],
+        [
+          "VAI Car Ltda.",
+          "Dezembro de 2018 - Abril de 2021",
+          "Engenheiro sênior mobile e full stack",
+          "Arquitetura, análise e desenvolvimento de aplicativos em React Native; backend em Ruby on Rails na AWS."
+        ],
+        [
+          "Quero Educação Ltda.",
+          "Julho de 2018 - Novembro de 2018",
+          "Engenheiro sênior mobile e full stack",
+          "Arquitetura, análise e desenvolvimento de aplicativos em React Native; backend em Node.js na AWS; CI/CD com Jenkins, App Center e Firebase."
+        ],
+        [
+          "Globalhitss Ltda. (Claro Brasil)",
+          "Fevereiro de 2017 - Julho de 2018",
+          "Engenheiro sênior mobile e full stack",
+          "Arquitetura e desenvolvimento para iOS, Android e Windows Phone com APIs REST. Participação no desenvolvimento de uma plataforma de suporte a aplicativos com Node.js, MongoDB e Express na AWS, utilizando DevOps, Scrum e XP. Participação no desenho da migração das soluções móveis da AWS para o Microsoft Azure. Arquitetura e desenvolvimento de módulo de aprendizado de máquina com Dynatrace, BigQuery e AWS Pinpoint; criação do projeto Alpha PushManager."
+        ],
+        [
+          "Quality Software Ltda. (Claro Brasil)",
+          "Janeiro de 2015 - Fevereiro de 2017",
+          "Desenvolvedor sênior de aplicativos móveis",
+          "Análise e desenvolvimento para iOS, Android e Windows Phone, com APIs REST e backend em Ruby on Rails na AWS; práticas de DevOps e Scrum."
+        ],
+        [
+          "Mobihouse Ltda. (Claro Brasil)",
+          "Julho de 2013 - Dezembro de 2014",
+          "Desenvolvedor sênior de aplicativos móveis",
+          "Desenvolvimento de aplicativos para múltiplos dispositivos, iOS e Windows Phone; backend em Ruby on Rails com APIs REST; WebViews em HTML5, JavaScript, CoffeeScript e CSS3, com controle de versão em Git."
+        ],
+        [
+          "Columbia Trading S.A.",
+          "Agosto de 2006 - Junho de 2013",
+          "Desenvolvedor sênior de software",
+          "Integrações empresariais com BizTalk 2010, Web Services e WCF. Participação na implantação de NEXT ERP, Softway, Becomex e Dynamics AX 2012 R2. Manutenção e desenvolvimento do SD2 Comex Import/Export em Visual FoxPro 7 e 9. Configuração do Dynamics AX: AOS, Report Server, Analysis Services e Enterprise Portal. Desenvolvimento do FaturaTrader com o framework CW Platypus, Visual C# e SQL Server."
+        ],
+        [
+          "Target Importação, Exportação e Representações Ltda.",
+          "Fevereiro de 2002 - Agosto de 2006",
+          "Estagiário de análise de TI",
+          "Manutenção de hardware; administração de redes Windows, Exchange Server 2000/2003, Oracle 9i e SQL Server 2000/2005. Implantação do Symantec Antivirus Enterprise, suporte a usuários, firewalls e VPN com Gentoo 2006.0. Participação na implantação do ERP Conexos e do sistema VoIP Asterisk; gestão da infraestrutura de dados e telefonia."
+        ]
+      ]
+    },
+    "en": {
+      "filename": "cv-eduardo-lourenco-en.pdf",
+      "location": "São Paulo, Brazil",
+      "educationTitle": "Education and certifications",
+      "projectsTitle": "Projects",
+      "experienceTitle": "Professional experience",
+      "education": [
+        ["Faculdade Estácio de Cotia", "Information Systems - completed."],
+        ["AWS", "AWS Certified Cloud Practitioner certification."],
+        [
+          "Udacity Brasil",
+          "Deep Learning Nanodegree Foundation; React Developer Nanodegree."
+        ],
+        [
+          "Caelum",
+          "Agile web development with Ruby on Rails 3; iOS application development."
+        ],
+        ["IBTA", "DBA for Oracle 9i."],
+        [
+          "KaSolution",
+          "MCAD: web and Windows applications with Visual C#; SQL Server 2008 and BI: Transact-SQL, Database, Analysis Services, Integration Services and Reporting Services; SharePoint 2010 application development; PMBOK v4 and agile project management with Scrum."
+        ],
+        [
+          "FYI Brasil",
+          "Development I and Development II in Microsoft Dynamics AX 2012 (80304AC)."
+        ]
+      ],
+      "projects": [
+        [
+          "Dona Events",
+          "Personal project built with React Native, Next.js and a Bun backend, using hexagonal architecture and a REST API adapter."
+        ],
+        [
+          "SD2 Import & Export System",
+          "Customs process management and billing system built with FoxPro."
+        ],
+        [
+          "Fatura Trade",
+          "Web application for data analytics and business intelligence, built with C#."
+        ],
+        [
+          "SD2Comex",
+          "Web application for customs process management and billing, built with Ruby on Rails."
+        ],
+        [
+          "NOW Kids / Minha NET / Minha Claro",
+          "iOS and Android applications with a Node.js backend."
+        ],
+        ["Pipoca (Alpha)", "Claro/NET virtual assistant for TV."],
+        [
+          "Push Manager (Alpha)",
+          "Push notification campaign system using Node.js and serverless architecture."
+        ],
+        [
+          "Mobile Notification Center",
+          "Field service module with push notifications, Node.js and serverless architecture."
+        ],
+        ["LynxMail", "Open-source email client built with React Native."],
+        [
+          "Quero Bolsa / VAI Car / Midway",
+          "Application development with React Native."
+        ]
+      ],
+      "experience": [
+        [
+          "IXC Soft",
+          "Present",
+          "Principal AI System Architect",
+          "Leading architecture and engineering decisions for scalable digital products."
+        ],
+        [
+          "Midway S.A.",
+          "April 2021 - June 2024",
+          "Senior Mobile Full Stack Engineer",
+          "Developed mobile applications with React Native and BFF services with GraphQL and Node.js."
+        ],
+        [
+          "VAI Car Ltda.",
+          "December 2018 - April 2021",
+          "Senior Mobile Full Stack Engineer",
+          "Designed, analyzed and developed mobile applications with React Native and Ruby on Rails backend services on AWS."
+        ],
+        [
+          "Quero Educação Ltda.",
+          "July 2018 - November 2018",
+          "Senior Mobile Full Stack Engineer",
+          "Designed, analyzed and developed mobile applications with React Native and Node.js backend services on AWS. Implemented CI/CD with Jenkins, App Center and Firebase."
+        ],
+        [
+          "Globalhitss Ltda. (Claro Brasil)",
+          "February 2017 - July 2018",
+          "Senior Mobile Full Stack Engineer",
+          "Designed and developed iOS, Android and Windows Phone applications with REST APIs. Contributed to a mobile application support platform using Node.js, MongoDB and Express on AWS, with DevOps, Scrum and XP practices. Contributed to the design of the mobile solutions migration from AWS to Microsoft Azure. Designed and developed a machine learning module using Dynatrace, BigQuery and AWS Pinpoint; created the Alpha PushManager project."
+        ],
+        [
+          "Quality Software Ltda. (Claro Brasil)",
+          "January 2015 - February 2017",
+          "Senior Mobile Developer",
+          "Analyzed and developed iOS, Android and Windows Phone applications with REST APIs and a Ruby on Rails backend on AWS, using DevOps and Scrum practices."
+        ],
+        [
+          "Mobihouse Ltda. (Claro Brasil)",
+          "July 2013 - December 2014",
+          "Senior Mobile Developer",
+          "Developed applications for multiple devices, iOS and Windows Phone; Ruby on Rails backend services with REST APIs; and WebViews using HTML5, JavaScript, CoffeeScript and CSS3, with Git version control."
+        ],
+        [
+          "Columbia Trading S.A.",
+          "August 2006 - June 2013",
+          "Senior Software Developer",
+          "Developed enterprise integrations with BizTalk 2010, Web Services and WCF. Contributed to NEXT ERP, Softway, Becomex and Dynamics AX 2012 R2 implementations. Maintained and developed SD2 Comex Import/Export using Visual FoxPro 7 and 9. Configured Dynamics AX components: AOS, Report Server, Analysis Services and Enterprise Portal. Developed FaturaTrader with the CW Platypus framework, Visual C# and SQL Server."
+        ],
+        [
+          "Target Importação, Exportação e Representações Ltda.",
+          "February 2002 - August 2006",
+          "IT Analyst Intern",
+          "Maintained hardware and administered Windows networks, Exchange Server 2000/2003, Oracle 9i and SQL Server 2000/2005. Deployed Symantec Antivirus Enterprise, supported users and implemented firewalls and VPNs with Gentoo 2006.0. Contributed to the Conexos ERP and Asterisk VoIP implementations; managed data and telephony infrastructure."
+        ]
+      ]
+    }
+  }
+}

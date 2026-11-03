@@ -9,6 +9,26 @@ afterEach(() => {
 });
 
 describe('HomeHero', () => {
+  it.each([
+    ['en', enContent, 'Download resume', '/cv-eduardo-lourenco-en.pdf'],
+    [
+      'pt-BR',
+      ptBRContent,
+      'Baixar currículo',
+      '/cv-eduardo-lourenco-pt-br.pdf',
+    ],
+  ] as const)(
+    'downloads the matching language for %s',
+    (language, content, label, href) => {
+      vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
+      render(<HomeHero content={content} />);
+      const link = screen.getByRole('link', { name: label });
+      expect(link).toHaveAttribute('href', href);
+      expect(link).toHaveAttribute('hrefLang', language);
+      expect(link).toHaveAttribute('download');
+    },
+  );
+
   it('combines the English name and role in the accessible heading', () => {
     vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
 
@@ -28,11 +48,13 @@ describe('HomeHero', () => {
     render(<HomeHero content={ptBRContent} />);
 
     expect(
-      screen.getByText('Sistemas de IA · Arquitetura de Software · Mobile'),
+      screen.getByText(
+        'Sistemas de IA · Arquitetura de Software · Aplicativos móveis',
+      ),
     ).toBeVisible();
     for (const label of [
       'Sistemas distribuídos',
-      'Mobile',
+      'Aplicativos móveis',
       'IA aplicada',
       'Observabilidade',
       'Role para explorar',

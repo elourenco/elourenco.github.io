@@ -16,7 +16,7 @@ export const enContent = {
       'I design AI systems and bring intelligent products to production, connecting software architecture, mobile experiences and end-to-end engineering.',
     workCta: 'View selected work',
     linkedinCta: 'Connect on LinkedIn',
-    resumeCta: 'Download résumé (PT-BR)',
+    resumeCta: 'Download resume',
     capabilities: [
       { id: 'distributed', label: 'Distributed systems' },
       { id: 'mobile', label: 'Mobile' },
@@ -29,7 +29,7 @@ export const enContent = {
       id: 'ai',
       title: 'Artificial Intelligence',
       description:
-        'AI-oriented products, generative experiences and intelligent workflows designed for production.',
+        'AI-powered products, generative experiences and intelligent workflows designed for production.',
       skills: [
         'AI products',
         'Generative experiences',
@@ -64,21 +64,21 @@ export const enContent = {
     summary:
       'AI-powered event platform with mobile apps, digital invitations, real-time RSVP, event management and digital gifts.',
     metric:
-      'More than 35,000 events created, with Dona AI image and content generation, guest management, notifications, Pix and card payments.',
+      'More than 35,000 events created. Features include Dona AI image and content generation, guest management, notifications, and Pix and card payments.',
     cta: 'Explore Dona Events',
   },
   donaCase: {
     challengeTitle: 'The product challenge',
     challenge:
-      'Bring invitations, guest confirmations, notifications and digital gifts into one event experience across mobile and web.',
+      'Bring invitations, RSVPs, notifications and digital gifts into one event experience across mobile and web.',
     backCta: 'Back to selected work',
     outcomeTitle: 'Product outcome',
     outcome:
-      'Dona Events brings the event journey into one product, from creating an invitation to managing guests, confirmations and digital gifts.',
+      'Dona Events brings the event journey into one product, from creating an invitation to managing guests, RSVPs and digital gifts.',
     ownershipTitle: 'Approach and ownership',
     ownership:
       'Created and engineered the product end to end: mobile and web experiences, backend, infrastructure and AI, with image and content generation integrated into the event journey.',
-    capabilitiesTitle: 'Public capabilities',
+    capabilitiesTitle: 'Product features',
     capabilities: [
       'Dona AI image and content generation',
       'Digital invitations',
@@ -106,28 +106,28 @@ export const enContent = {
         company: 'Midway',
         role: 'Software Engineer',
         summary:
-          'Built reliable mobile and financial product experiences for production scale.',
+          'Built reliable mobile experiences and financial products at production scale.',
       },
       {
         period: 'Previous',
         company: 'VAI Car',
         role: 'Software Engineer',
         summary:
-          'Delivered mobile and backend capabilities for a high-availability mobility platform.',
+          'Delivered mobile and backend features for a high-availability mobility platform.',
       },
       {
         period: 'Previous',
         company: 'Quero Bolsa',
         role: 'Software Engineer',
         summary:
-          'Evolved consumer-facing education products with performance and maintainability in focus.',
+          'Developed consumer-facing education products with a focus on performance and maintainability.',
       },
       {
         period: 'Previous',
         company: 'Claro',
         role: 'Technology Professional',
         summary:
-          'Developed the infrastructure foundation that shaped a career across systems and products.',
+          'Built a foundation in infrastructure that shaped my work across systems and products.',
       },
     ],
   },

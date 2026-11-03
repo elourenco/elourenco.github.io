@@ -62,10 +62,10 @@ describe('HomePage', () => {
       screen.getByRole('link', { name: 'Skip to content' }),
     ).toHaveAttribute('href', '#main-content');
     expect(
-      screen.getByRole('link', { name: 'Download résumé (PT-BR)' }),
-    ).toHaveAttribute('href', '/cv-eduardo-lourenco-pt-br.pdf');
+      screen.getByRole('link', { name: 'Download resume' }),
+    ).toHaveAttribute('href', '/cv-eduardo-lourenco-en.pdf');
     expect(
-      screen.getByRole('link', { name: 'Download résumé (PT-BR)' }),
+      screen.getByRole('link', { name: 'Download resume' }),
     ).toHaveAttribute('download');
 
     const primary = screen.getByRole('navigation', { name: 'Primary' });
@@ -110,7 +110,9 @@ describe('HomePage', () => {
       }),
     ).toBeVisible();
     expect(
-      screen.getByText('Sistemas de IA · Arquitetura de Software · Mobile'),
+      screen.getByText(
+        'Sistemas de IA · Arquitetura de Software · Aplicativos móveis',
+      ),
     ).toBeVisible();
     expect(
       within(screen.getByRole('banner')).getByRole('link', { name: 'Início' }),

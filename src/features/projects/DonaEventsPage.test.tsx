@@ -97,8 +97,8 @@ describe('DonaEventsPage', () => {
     expect(
       screen.getByRole('heading', { level: 1, name: 'Dona Events' }),
     ).toBeVisible();
-    expect(screen.getByText('Creator & Principal Engineer')).toBeVisible();
-    expect(screen.getByText(/35 mil\+ eventos criados/i)).toBeVisible();
+    expect(screen.getByText('Criador e engenheiro principal')).toBeVisible();
+    expect(screen.getByText(/Mais de 35 mil eventos criados/i)).toBeVisible();
     expect(
       screen.getByRole('region', { name: 'O desafio do produto' }),
     ).toHaveTextContent(ptBRContent.donaCase.challenge);

@@ -20,7 +20,7 @@ const metadata = {
     home: {
       title: 'Eduardo Lourenco | Principal AI System Architect',
       description:
-        'Principal AI System Architect com foco em IA, engenharia mobile e arquitetura de software escalável.',
+        'Principal AI System Architect com foco em IA, engenharia de aplicativos móveis e arquitetura de software escalável.',
     },
     donaEvents: {
       title: 'Dona Events | Eduardo Lourenco',
