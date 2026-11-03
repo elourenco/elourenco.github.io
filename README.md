@@ -53,6 +53,14 @@ npm run check
 Os testes do build verificam cada documento sem JavaScript, as URLs absolutas,
 as dimensões das imagens publicadas e a referência ao bundle da aplicação.
 
+Em 2026-11-03, o Node oficial 22.23.4 (zlib 1.3.1) mediu `105981 B` gzip no
+bundle anterior (`9bdac9f`) e `106203 B` com Open Graph (`ed2c1a7`): acréscimo
+de `222 B` (0,21%). O orçamento de JavaScript inicial passou de `106000 B`
+para `106500 B`, mantendo 297 B de margem. Distribuições locais do Node com
+outra zlib podem medir valores diferentes; use a distribuição oficial para
+comparações com o CI. Os cards são assets de compartilhamento e não são
+baixados pela aplicação ao renderizar a página.
+
 ## Runtime de partículas e gates
 
 Existe um único runtime 3D de produção: `ParticleExperience` seleciona o perfil
@@ -97,8 +105,9 @@ compartilhadas do React e era importado estaticamente pelo entry. O critical
 initial JavaScript real era aproximadamente `334747 B`. O grafo corrigido
 entrega somente `105036 B` de JavaScript inicial, redução de aproximadamente
 `68,6%`, e move R3F/Three integralmente para o único `ParticleScene` dinâmico.
-O contrato de produção limita o total inicial corrigido a `106000 B` para evitar
-novo drift. A fonte permanece abaixo de `50 kB`.
+O contrato de produção limitava o total inicial corrigido a `106000 B`; o
+orçamento atual é `106500 B`, conforme a medição de Open Graph acima. A fonte
+permanece abaixo de `50 kB`.
 
 O build continua emitindo o warning conhecido de chunk acima de `500 kB` para
 `ParticleScene`; ele é registrado e aceito, não ocultado. `modulePreload` foi
