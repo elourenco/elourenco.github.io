@@ -17,6 +17,7 @@
     "three": "0.183.2"
   },
   "scripts": {
+    "icons:generate": "node scripts/generate-icons.mjs",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "test": "vitest",
