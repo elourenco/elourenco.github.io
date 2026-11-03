@@ -63,6 +63,12 @@
   justify-content: center;
 }
 
+@media (min-width: 1180px) {
+  .language-switcher {
+    gap: 1rem;
+  }
+}
+
 .mobile-site-header {
   display: none;
 }
